@@ -1,0 +1,20 @@
+/* Ẩn thanh track */
+::-webkit-scrollbar-track {
+    display: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+/* Tùy chỉnh kích thước và màu sắc của thanh cuộn */
+::-webkit-scrollbar {
+    width: 3px;
+}
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 2px;
+}
+
+/* Thay đổi màu sắc của thanh cuộn khi di chuột vào */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

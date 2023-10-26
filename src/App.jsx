@@ -2,6 +2,11 @@ import { createRoot } from 'react-dom/client'
 import CreateForm from './pages/WorkspaceManager/CreateForm.jsx'
 import WList from './pages/WorkspaceManager/WorkspaceList.jsx'
 import ChatBox from '/components/ChatBox'
+import ColleagueChat from '/pages/ColleagueChat'
+import Login from '/pages/Auth/Login'
+import SignUp from '/pages/Auth/SignUp'
+import ForgetPassword from '/pages/Auth/ForgetPassword'
+import VerifyForgetPassword from '/pages/Auth/VerifyForgetPassword'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -24,6 +29,26 @@ const router = createBrowserRouter([
    {
       path: "/test",
       element: <ChatBox />
+   },
+   {
+      path: "/colleague",
+      element: <ColleagueChat />
+   },
+   {
+      path: "login",
+      element: <Login />
+   },
+   {
+      path: "signup",
+      element: <SignUp />
+   },
+   {
+      path: "forget-password",
+      element: <ForgetPassword />
+   },
+   {
+      path: "verify-forget-password",
+      element: <VerifyForgetPassword />
    }
 ])
 const App = function(){
