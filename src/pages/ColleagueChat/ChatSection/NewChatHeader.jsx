@@ -1,7 +1,7 @@
 import UserDropList from "./UserDropList";
 import { useState } from "react";
 export default function NewChatHeader(props) {
-  const [isChanged, setIsChanged] = useState(false);
+  const [searchNewChat, setSearchNewChat] = useState("");
   const [isFocus, setIsFocus] = useState(false);
   return (
     <div className= {"h-12 flex flex-row relative justify-between items-center shadow " + (isFocus ? "border-b-2 border-bold-blue" : "border-b-2 border-transparent")}>
@@ -12,14 +12,13 @@ export default function NewChatHeader(props) {
             type="text"
             name="search"
             placeholder="Enter name, email"
-            onChange={(e) => setIsChanged(true)}
+            onChange={(e) => setSearchNewChat(e.target.value)}
             onFocus={() => setIsFocus(true)}
             onBlur={() => {
-              console.log("blur");
               setIsFocus(false)} }
           />
           <p className="absolute top-3.5 left-5 text-sm">To:</p>
-          { isFocus && <UserDropList isChanged={isChanged} />}
+          { isFocus && <UserDropList />}
         </div>
       </div>
       <svg

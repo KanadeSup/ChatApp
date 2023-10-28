@@ -6,7 +6,7 @@ export default function ForgetPassword() {
       <div className="min-h-screen bg-gray-100 flex flex-col justify-start">
         <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
           <h1 className="w-1/2 mx-auto mb-4">
-            <img src="src\assets\img\logo-no-background.png" alt="" />
+            <img src="assets\img\logo-no-background.png" alt="" />
           </h1>
 
           <div className="bg-white shadow w-full rounded-lg divide-gray-200">

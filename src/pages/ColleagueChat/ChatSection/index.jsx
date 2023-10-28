@@ -20,7 +20,7 @@ export default function (props) {
       <div
         style={{
           height: "calc(100vh - 7rem)",
-          width: "calc(100vw - 20.5rem)",
+          width: "calc(100vw - 22rem)",
         }}
         className="flex flex-col justify-start overflow-scroll hover:overflow-y-scroll min-w-[480px]"
       >

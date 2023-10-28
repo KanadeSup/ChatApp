@@ -6,6 +6,7 @@ export default function Message() {
   const [isHoveredPin, setIsHoveredPin] = useState(false);
   const [isHoveredReply, setIsHoveredReply] = useState(false);
   const [isHoveredDelete, setIsHoveredDelete] = useState(false);
+  const [isHoverViewReply, setIsHoverViewReply] = useState(false);
 
   return (
     <div
@@ -22,6 +23,7 @@ export default function Message() {
             src="https://www.famousbirthdays.com/headshots/russell-crowe-8.jpg"
           />
         </div>
+
         <div className="">
           <div className="flex relative bottom-1">
             <span className="font-bold text-sm">username</span>
@@ -35,6 +37,34 @@ export default function Message() {
             incidunt officiis distinctio veniam error maiores sit accusamus
             facere tenetur laudantium at excepturi voluptates nostrum commodi
             neque fugiat provident earum?
+          </div>
+
+          {/*-- Reply --*/}
+          <div
+            className="flex relative select-none -left-1 flex-row mt-1 w-1/2 py-1 rounded-md cursor-pointer border border-transparent hover:border-gray-400 transition-all duration-200"
+            onMouseEnter={() => setIsHoverViewReply(true)}
+            onMouseLeave={() => setIsHoverViewReply(false)}
+          >
+            <div className="text-xs text-bold-blue ml-1 mr-2 hover:underline">
+              1 replies
+            </div>
+            {isHoverViewReply ? (
+              <>
+                <div className="text-xs text-gray-500 flex-grow">View reply</div>
+                <svg
+                  className="w-3 h-3 mt-0.5 mr-3"
+                  viewBox="0 0 512 512"
+                  fill="#000000"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M214.78,478l-20.67-21.57L403.27,256,194.11,55.57,214.78,34,446.46,256ZM317.89,256,86.22,34,65.54,55.57,274.7,256,65.54,456.43,86.22,478Z" />
+                </svg>
+              </>
+            ) : (
+              <div className="text-xs text-gray-500">
+                Last reply at 11:10 10/10/2023
+              </div>
+            )}
           </div>
         </div>
       </div>
