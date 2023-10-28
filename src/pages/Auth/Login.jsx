@@ -16,7 +16,7 @@ export default function Login() {
       <div className="min-h-screen bg-gray-100 flex flex-col justify-start border-solid">
         <div className="p-10 xs:p-0 mx-auto w-full max-w-md">
           <h1 className="w-1/2 mx-auto mb-4">
-            <img src="src\assets\img\logo-no-background.png" alt="" />
+            <img src="assets\img\logo-no-background.png" alt="" />
           </h1>
 
           <div className="bg-white shadow w-full rounded-lg divide-gray-200">
@@ -94,7 +94,7 @@ export default function Login() {
                 <span className="text-xs text-gray-400 font-semibold">
                   Don't have account?
                 </span>
-                <Link to={"/signup"} class="text-xs mx-1 font-semibold text-blue-600">
+                <Link to={"/signup"} className="text-xs mx-1 font-semibold text-blue-600">
                   Sign up
                 </Link>
               </div>

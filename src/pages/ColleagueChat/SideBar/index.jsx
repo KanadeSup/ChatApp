@@ -13,7 +13,7 @@ export default function (props) {
     fetchData();
   }, []);
   return (
-    <div className="h-screen w-64 bg-gray-100 shadow-xl px-1 flex-shrink-0">
+    <div className="h-screen w-72 bg-gray-100 shadow-xl px-1 flex-shrink-0">
       <SideBarHeader isNewChat={props.isNewChat} setIsNewChat={props.setIsNewChat} />
 
       <div

@@ -7,7 +7,7 @@ export default function FilterConversation(props) {
       <div className="relative flex h-12 justify-start items-center px-1">
         <input
           type="text"
-          className="h-8 rounded-md border border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="h-8 rounded-md border w-full border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Filter by name"
           onChange={(e) => {setIsChanged(true); props.setFilterName(e.target.value)}} // Khi thay đổi giá trị của ô input thì set giá trị cho biến filterName
         />
