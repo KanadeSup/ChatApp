@@ -20,7 +20,7 @@ export default function() {
       }
    })
    return (
-      <div className="border border-black rounded-md m-10 py-1 px-2">
+      <div className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2">
          {/* Format bar */}
          <div className="flex">
             <button 
@@ -93,7 +93,7 @@ export default function() {
          </div>
 
          {/* Chatbox */}
-         <div className="outline-none">
+         <div className="outline-none mt-1 mb-2">
             <EditorContent editor={editor} spellCheck="false"/>
          </div>
       </div>

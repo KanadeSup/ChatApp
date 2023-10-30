@@ -65,7 +65,7 @@ function removeUpload(e){
 
 export default function() {
    return (
-      <div className="grow flex justify-center items-start">
+      <div className="grow flex justify-center items-start shadow-xl">
          <form className=" p-10">
             {/* Top */}
             <div className="flex gap-20">
