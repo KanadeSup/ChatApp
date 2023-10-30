@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Emoji from "../../../Components/emoij";
+import Emoji from "/components/Emoij";
 
 export default function Message() {
   const [showEmoij, setShowEmoij] = useState(false);

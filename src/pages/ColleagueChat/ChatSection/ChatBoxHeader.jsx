@@ -1,4 +1,4 @@
-import Search from "../../../Components/Search";
+import Search from "/components/Search";
 import ChatOption from "./ChatOption";
 export default function ChatBoxHeader(props) {
   return (

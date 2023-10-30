@@ -1,4 +1,3 @@
-
 function showMenu(event) {
    document.querySelector(".user-menu").classList.toggle("hidden")
 }
@@ -6,17 +5,17 @@ export default function() {
    return (
       <div className="w-16 flex flex-col items-center py-3 bg-gray-200 border-2 border-gray shadow-xl gap-5">
          {/* Logo */}
-         <svg class="w-11 h-11 text-blue-500 cursor-pointer" fill="currentColor" viewBox="0 0 20 20">
+         <svg className="w-11 h-11 text-blue-500 cursor-pointer" fill="currentColor" viewBox="0 0 20 20">
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M11.757 2.034a1 1 0 01.638.519c.483.967.844 1.554 1.207 2.03.368.482.756.876 1.348 1.467A6.985 6.985 0 0117 11a7.002 7.002 0 01-14 0c0-1.79.684-3.583 2.05-4.95a1 1 0 011.707.707c0 1.12.07 1.973.398 2.654.18.374.461.74.945 1.067.116-1.061.328-2.354.614-3.58.225-.966.505-1.93.839-2.734.167-.403.356-.785.57-1.116.208-.322.476-.649.822-.88a1 1 0 01.812-.134zm.364 13.087A2.998 2.998 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879.586.585.879 1.353.879 2.121s-.293 1.536-.879 2.121z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               />
          </svg>
 
          {/* Utilities */}
-         <a href="" className="flex w-12 h-12 items-center justify-center hover:bg-blue-300 rounded-md">
-            <svg className="w-12 h-12 relative left-1 stroke-current hover:stroke-white hover:fill-white fill-black"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="matrix(1, 0, 0, 1, 0, 0)rotate(0)" >
+         <a href="" className="flex w-12 h-12 items-center justify-center hover:bg-gray-300 rounded-md">
+            <svg width="37" height="37" className="relative left-1 stroke-current fill-black"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="matrix(1, 0, 0, 1, 0, 0)rotate(0)" >
                <g id="SVGRepo_bgCarrier" fill="red" strokeWidth={0} />
                <g id="SVGRepo_tracerCarrier" fill="red" strokeLinecap="round" strokeLinejoin="round"/>
                <g id="SVGRepo_iconCarrier">
@@ -37,9 +36,21 @@ export default function() {
             </svg>
          </a>
 
-         <a href="" className="flex w-12 h-12 items-center justify-center hover:bg-blue-300 rounded-md">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor" className="w-12 h-12 hover:stroke-white">
-               <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+         <a href="" className="flex w-12 h-12 items-center justify-center hover:bg-gray-300 rounded-md">
+            <svg width="28px" height="28px" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg" fill="#000000" >
+               <g id="SVGRepo_bgCarrier" strokeWidth={0} />
+               <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#CCCCCC" strokeWidth="0.144" />
+               <g id="SVGRepo_iconCarrier">
+                  <title />
+                  <g id="Complete">
+                     <g id="bell">
+                        <g>
+                           <path d="M18.9,11.2s0-8.7-6.9-8.7-6.9,8.7-6.9,8.7v3.9L2.5,17.5h19l-2.6-2.4Z" fill="none" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7759999999999998" />
+                           <path d="M14.5,20.5s-.5,1-2.5,1-2.5-1-2.5-1" fill="none" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7759999999999998" />
+                        </g>
+                     </g>
+                  </g>
+               </g>
             </svg>
          </a>
 

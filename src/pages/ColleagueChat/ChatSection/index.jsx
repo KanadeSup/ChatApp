@@ -1,7 +1,7 @@
 import ChatBoxHeader from "./ChatBoxHeader";
 import NewChatHeader from "./NewChatHeader";
 import Message from "./Message";
-import WriteSend from "./WriteSend";
+import ChatBox from "/components/ChatBox"
 
 export default function (props) {
   return (
@@ -36,7 +36,7 @@ export default function (props) {
         <Message />
       </div>
 
-      <WriteSend />
+      <ChatBox />
     </div>
   );
 }
