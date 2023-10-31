@@ -7,6 +7,7 @@ import Login from '/pages/Auth/Login'
 import SignUp from '/pages/Auth/SignUp'
 import ForgetPassword from '/pages/Auth/ForgetPassword'
 import VerifyForgetPassword from '/pages/Auth/VerifyForgetPassword'
+import Notification from './pages/Notification'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
    {
       path: "verify-forget-password",
       element: <VerifyForgetPassword />
+   },
+   {
+      path: "notification",
+      element: <Notification />
    }
 ])
 const App = function(){
