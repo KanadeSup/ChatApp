@@ -29,6 +29,7 @@ function descKeyHandler(e) {
    if(e.key === 'Enter')
       e.preventDefault()
 }
+
 function descOnChange(e) {
    const remainLength = document.querySelector(".remain-length-desc")
    const descInput = document.querySelector(".desc-input")
