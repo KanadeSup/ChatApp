@@ -7,6 +7,7 @@ import Login from '/pages/Auth/Login'
 import SignUp from '/pages/Auth/SignUp'
 import ForgetPassword from '/pages/Auth/ForgetPassword'
 import VerifyForgetPassword from '/pages/Auth/VerifyForgetPassword'
+import UserSetting from '/pages/UserSetting'
 import Notification from './pages/Notification'
 import {
   createBrowserRouter,
@@ -14,6 +15,7 @@ import {
 } from "react-router-dom";
 import './index.css'
 import WManager from './pages/WorkspaceManager/'
+import SettingSection from './pages/UserSetting/SettingSection'
 
 const router = createBrowserRouter([
    {
@@ -28,8 +30,11 @@ const router = createBrowserRouter([
       ]
    },
    {
-      path: "/test",
-      element: <ChatBox />
+      path: "/usersetting",
+      element: <UserSetting />,
+      children: [
+      { index: true, element: <SettingSection />},
+      ]
    },
    {
       path: "/colleague",
