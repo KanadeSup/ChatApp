@@ -16,6 +16,10 @@ import {
 import './index.css'
 import WManager from './pages/WorkspaceManager/'
 import SettingSection from './pages/UserSetting/SettingSection'
+import WSetting from './pages/WorkspaceSetting'
+import Overview from './pages/WorkspaceSetting/Overview'
+import MemberManage from './pages/WorkspaceSetting/MemberManage'
+import InviteMember from './pages/WorkspaceSetting/InviteMember'
 
 const router = createBrowserRouter([
    {
@@ -33,7 +37,22 @@ const router = createBrowserRouter([
       path: "/usersetting",
       element: <UserSetting />,
       children: [
-      { index: true, element: <SettingSection />},
+         { index: true, element: <SettingSection />},
+      ]
+   },
+   {
+      path: "/WorkspaceSetting",
+      element: <WSetting />,
+      children: [
+         { index: true, element: <Overview />},
+         {
+            path: "MemberManage",
+            element: <MemberManage />
+         },
+         {
+            path: "InviteMember",
+            element: <InviteMember />
+         }
       ]
    },
    {
