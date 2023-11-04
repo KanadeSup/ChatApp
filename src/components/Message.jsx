@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Emoji from "/components/Emoij";
 
-export default function Message() {
+export default function Message(props) {
   const [showEmoij, setShowEmoij] = useState(false);
+
   const [isHoveredPin, setIsHoveredPin] = useState(false);
   const [isHoveredReply, setIsHoveredReply] = useState(false);
   const [isHoveredDelete, setIsHoveredDelete] = useState(false);
@@ -41,16 +42,24 @@ export default function Message() {
 
           {/*-- Reply --*/}
           <div
-            className="flex relative select-none -left-1 flex-row mt-1 w-1/2 py-1 rounded-md cursor-pointer border border-transparent hover:border-gray-400 transition-all duration-200"
+            className="flex relative select-none -left-1 flex-row mt-1 w-1/2 min-w-[240px] py-1 rounded-md cursor-pointer border border-transparent hover:border-gray-400 transition-all duration-200"
             onMouseEnter={() => setIsHoverViewReply(true)}
             onMouseLeave={() => setIsHoverViewReply(false)}
+            onClick={() => {
+              props.setIsClickedReply(true);
+              if (props.setIsClickedChannelUtility) {
+                props.setIsClickedChannelUtility(false);
+              }
+            }}
           >
             <div className="text-xs text-bold-blue ml-1 mr-2 hover:underline">
               1 replies
             </div>
             {isHoverViewReply ? (
               <>
-                <div className="text-xs text-gray-500 flex-grow">View reply</div>
+                <div className="text-xs text-gray-500 flex-grow">
+                  View reply
+                </div>
                 <svg
                   className="w-3 h-3 mt-0.5 mr-3"
                   viewBox="0 0 512 512"

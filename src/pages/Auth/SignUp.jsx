@@ -28,11 +28,13 @@ function ValidatePassword(inputText) {
 
 function ValidateSubmit(error) {
   return (
-    Object.keys(error).length === 4 &&
+    Object.keys(error).length === 6 &&
     error.email === "" &&
     error.username === "" &&
     error.password === "" &&
-    error.repassword === ""
+    error.repassword === "" &&
+    error.firstname === "" &&
+    error.lastname === ""
   );
 }
 
@@ -70,16 +72,23 @@ export default function SignUp() {
         }
         break;
       case "password":
-        if (!ValidatePassword(e.target.value)) {
-          setError({
+        if (e.target.value !== formState.repassword) {
+          setError(error => ({
             ...error,
-            password: "Password is more than 6 characters",
-          });
-        } else {
-          setError({
+            repassword: "RePassword is not match",
+          }));
+        }
+        if (!ValidatePassword(e.target.value)) {
+          setError(error => ({
+            ...error,
+            password: "Password must be more than 6 characters",
+          }));
+        }
+        else {
+          setError(error => ({
             ...error,
             password: "",
-          });
+          }));
         }
         break;
       case "repassword":
@@ -95,6 +104,32 @@ export default function SignUp() {
           });
         }
         break;
+      case "firstname":
+        if (e.target.value === "" || e.target.value.length < 2) {
+          setError({
+            ...error,
+            firstname: "First Name is invalid",
+          });
+        } else {
+          setError({
+            ...error,
+            firstname: "",
+          });
+        }
+        break;
+      case "lastname":
+        if (e.target.value === "" || e.target.value.length < 2) {
+          setError({
+            ...error,
+            lastname: "Last Name is invalid",
+          });
+        } else {
+          setError({
+            ...error,
+            lastname: "",
+          });
+        }
+        break;
     }
 
     setFormState({
@@ -105,6 +140,7 @@ export default function SignUp() {
   useEffect(() => {
     setIsSubmit(ValidateSubmit(error));
     console.log(ValidateSubmit(error));
+    console.log(formState);
   }, [error]);
   return (
     <>
@@ -119,6 +155,7 @@ export default function SignUp() {
               <h1 className="font-bold text-2xl text-gray-900">Sign Up</h1>
             </div>
 
+            {/* email */}
             <div className="px-5 pb-1">
               <div className="flex justify-between items-center">
                 <label className="font-semibold text-sm text-gray-600 my-1">
@@ -140,7 +177,7 @@ export default function SignUp() {
                   onChange={(e) => handleChange(e)}
                 />
               </div>
-
+              {/* username */}
               <div className="flex justify-between items-center">
                 <label className="font-semibold text-sm text-gray-600 my-1">
                   Username
@@ -161,7 +198,7 @@ export default function SignUp() {
                   onChange={(e) => handleChange(e)}
                 />
               </div>
-
+              {/* password */}
               <div className="flex justify-between items-center">
                 <label className="font-semibold text-sm text-gray-600 my-1">
                   Password
@@ -182,7 +219,7 @@ export default function SignUp() {
                   onChange={(e) => handleChange(e)}
                 />
               </div>
-
+              {/* repassword */}
               <div className="flex justify-between items-center">
                 <label className="font-semibold text-sm text-gray-600 my-1">
                   RePassword
@@ -191,7 +228,7 @@ export default function SignUp() {
                   {error.repassword}
                 </div>
               </div>
-              <div className="flex mb-5">
+              <div className="flex mb-2">
                 <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
                   <i className="mdi mdi-lock-outline text-gray-400 text-lg" />
                 </div>
@@ -200,6 +237,48 @@ export default function SignUp() {
                   name="repassword"
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
                   placeholder="************"
+                  onChange={(e) => handleChange(e)}
+                />
+              </div>
+              {/* firstname */}
+              <div className="flex justify-between items-center">
+                <label className="font-semibold text-sm text-gray-600 my-1">
+                  First Name
+                </label>
+                <div className="text-red-500 text-xs italic my-1">
+                  {error.firstname}
+                </div>
+              </div>
+              <div className="flex mb-2">
+                <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <i className="mdi mdi-lock-outline text-gray-400 text-lg" />
+                </div>
+                <input
+                  type="text"
+                  name="firstname"
+                  className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                  placeholder="John"
+                  onChange={(e) => handleChange(e)}
+                />
+              </div>
+              {/* lastname */}
+              <div className="flex justify-between items-center">
+                <label className="font-semibold text-sm text-gray-600 my-1">
+                  Last Name
+                </label>
+                <div className="text-red-500 text-xs italic my-1">
+                  {error.lastname}
+                </div>
+              </div>
+              <div className="flex mb-2">
+                <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                  <i className="mdi mdi-lock-outline text-gray-400 text-lg" />
+                </div>
+                <input
+                  type="text"
+                  name="lastname"
+                  className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                  placeholder="Tran"
                   onChange={(e) => handleChange(e)}
                 />
               </div>

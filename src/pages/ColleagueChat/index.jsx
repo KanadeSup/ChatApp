@@ -1,13 +1,14 @@
 import { useState } from "react";
 import SideBar from "./SideBar";
 import ChatSection from "./ChatSection";
+import ReplySection from "../../components/ReplySection";
 import "/assets/styles/scrollBar.css";
 import UtilityBar from "/components/UtilityBar";
 export default function () {
   const [isChatOption, setIsChatOption] = useState(false);
   const [isNewChat, setIsNewChat] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
-
+  const [isClickedReply, setIsClickedReply] = useState(false);
   return (
     <div className="flex ">
       {/* Utility bar */}
@@ -22,7 +23,10 @@ export default function () {
         setIsChatOption={setIsChatOption}
         isNewChat={isNewChat}
         setIsNewChat={setIsNewChat}
+        isClickedReply={isClickedReply}
+        setIsClickedReply={setIsClickedReply}
       />
+      
       
     </div>
   );

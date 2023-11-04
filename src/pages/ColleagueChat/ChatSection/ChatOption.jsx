@@ -1,4 +1,4 @@
-export default function MoreFriendChat() {
+export default function ChatOption() {
   return (
     <div className="user-menu absolute top-full right-0 border border-stone-300 bg-white rounded z-10">
       <ul className="space-y-1">

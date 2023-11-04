@@ -2,6 +2,7 @@ import { useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/reac
 import { Underline } from '@tiptap/extension-underline'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import StarterKit from '@tiptap/starter-kit'
+import React from 'react'
 const extensions = [
    StarterKit,
    Placeholder.configure({
@@ -10,7 +11,8 @@ const extensions = [
    }),
    Underline,
 ]
-export default function() {
+
+const ChatBox = React.forwardRef((props, ref) => {
    const editor = useEditor({
       extensions: extensions,
       editorProps: {
@@ -20,7 +22,7 @@ export default function() {
       }
    })
    return (
-      <div className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2">
+      <div ref={ref} className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2">
          {/* Format bar */}
          <div className="flex">
             <button 
@@ -98,4 +100,6 @@ export default function() {
          </div>
       </div>
    )
-}
+});
+
+export default ChatBox;
