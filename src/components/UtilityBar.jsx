@@ -69,8 +69,7 @@ export default function (props) {
       <div className="user-menu hidden absolute bottom-4 left-[53px] border border-stone-300 bg-white rounded">
         <ul className="space-y-1">
           <li>
-            <a
-              href=""
+            <Link to="/usersetting"
               className="flex items-center gap-2 rounded-lg pl-2 pr-5 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
             >
               <svg
@@ -92,8 +91,8 @@ export default function (props) {
                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              <span className="text-sm font-medium"> User Setting </span>
-            </a>
+              <div className="text-sm font-medium"> User Setting </div>
+            </Link>
           </li>
           <li>
             <a

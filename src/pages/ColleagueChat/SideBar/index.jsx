@@ -7,7 +7,7 @@ export default function (props) {
   const [chatUserList, setChatUserList] = useState([]); // Danh sách user chat
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios("http://192.168.10.224:3000/users");
+      const result = await axios("http://localhost:3000/users");
       setChatUserList(result.data);
     };
     fetchData();
