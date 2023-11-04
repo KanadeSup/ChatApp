@@ -4,7 +4,7 @@ export default function ToolbarIconComponent(props) {
   const [isHoveredFilter, setIsHoveredFilter] = useState(false);
   const [isHoveredNewChat, setIsHoveredNewChat] = useState(false);
   return (
-    <div className="flex h-12 justify-end items-center">
+    <div className="flex h-12 justify-end items-center bg-gradient-to-l from-gray-100 to-gray-200">
       {/* Filter */}
       <div
         className="cursor-pointer relative"

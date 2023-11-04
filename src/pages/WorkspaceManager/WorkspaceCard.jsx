@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 function showIcon(event) {
    event.currentTarget.querySelector(".join-icon").classList.remove("hidden")
 }
@@ -7,7 +9,7 @@ function hideIcon(event) {
 export default function() {
 
    return(
-      <div className="px-2 py-3"
+      <Link to="/workspace" className="px-2 py-3"
          onMouseOver={showIcon}
          onMouseOut={hideIcon}
          >
@@ -29,6 +31,6 @@ export default function() {
                   </svg>
                </div>
             </div>
-         </div>
+         </Link>
    )
 }

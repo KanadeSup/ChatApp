@@ -9,6 +9,7 @@ import ForgetPassword from '/pages/Auth/ForgetPassword'
 import VerifyForgetPassword from '/pages/Auth/VerifyForgetPassword'
 import UserSetting from '/pages/UserSetting'
 import Notification from './pages/Notification'
+import Workspace from './pages/Workspace'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
    {
       path: "notification",
       element: <Notification />
+   },
+   {
+      path: "workspace",
+      element: <Workspace />
    }
 ])
 const App = function(){
