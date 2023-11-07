@@ -2,7 +2,7 @@ import { Outlet, Link } from 'react-router-dom'
 import WCard from './WorkspaceCard.jsx'
 export default function() {
    return (
-      <div className="px-10 flex-grow shadow-xl flex justify-center">
+      <div className="px-10 flex-grow shadow-xl flex justify-center overflow-y-scroll h-screen">
          <div className="w-full">
             {/* Top */}
             <div className="flex mt-10"> 
