@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { login } from "../../api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  function handleLogin(e) {
-    //Server kiểm tra email và password
-    setError("The password or email is incorrect.");
+  function handleLogin() {
+    const response = login(email, password);
+    console.log(response);
   }
 
   return (
@@ -56,14 +57,17 @@ export default function Login() {
               </div>
               <div className="text-red-500 text-xs italic">{error}</div>
               <div className="text-right my-1">
-                <Link to={"/forget-password"} className="text-xs font-semibold mt-1 block">
+                <Link
+                  to={"/forget-password"}
+                  className="text-xs font-semibold mt-1 block"
+                >
                   <span className="inline-block text-blue-600">
                     Forgot Password?
                   </span>
                 </Link>
               </div>
               <button
-                type="button"
+                onClick={() => handleLogin()}
                 className="transition duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 focus:shadow-sm focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block"
               >
                 <span className="inline-block mr-2">Login</span>
@@ -94,7 +98,10 @@ export default function Login() {
                 <span className="text-xs text-gray-400 font-semibold">
                   Don't have account?
                 </span>
-                <Link to={"/signup"} className="text-xs mx-1 font-semibold text-blue-600">
+                <Link
+                  to={"/signup"}
+                  className="text-xs mx-1 font-semibold text-blue-600"
+                >
                   Sign up
                 </Link>
               </div>
