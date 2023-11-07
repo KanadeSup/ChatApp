@@ -21,29 +21,6 @@ import WSetting from './pages/WorkspaceSetting'
 import Overview from './pages/WorkspaceSetting/Overview'
 import MemberManage from './pages/WorkspaceSetting/MemberManage'
 import InviteMember from './pages/WorkspaceSetting/InviteMember'
-
-
-
-
-import axios from "axios"
-
-console.log(axios({
-   method: "post",
-   url: "https://mv5bhgr5-5000.asse.devtunnels.ms/signin",
-   data: {
-      "username": "abc",
-      "password": "abc"
-   },
-   headers: {
-      "x-apikey": "5J0jCR1dAkvDt3YVoahpux0eawahkQB9",
-   }
-}))
-
-
-
-
-
-
 const router = createBrowserRouter([
    {
       path: "/",
