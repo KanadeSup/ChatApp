@@ -1,8 +1,8 @@
 import { Outlet, Link } from 'react-router-dom'
 import WCard from './WorkspaceCard.jsx'
 import { Button } from "@/components/ui/button"
-import {Plus} from 'lucide-react'
 import { Input } from "@/components/ui/input"
+import CreateDialog from "./CreateWorkspaceDialog"
 
 export default function() {
    return (
@@ -11,18 +11,11 @@ export default function() {
             {/* Top */}
             <div className="flex mt-10"> 
                <h1 className="text-2xl font-bold text-black">
-                  Your Workspace 
+                  Your Workspace (8)
                </h1>
                <div className="ml-auto flex gap-5">
                   <Input placeholder="Search ..."  className="w-60"/>
-                  <Link to={'CreateWorkspace'}> 
-                     <Button>
-                        <Plus className="w-[20px] h-[20px] fill-white mr-2" strokeWidth={3} /> 
-                        <span className="font-medium">
-                           Create
-                        </span> 
-                     </Button>
-                  </Link>
+                  <CreateDialog />
                </div>
             </div>
 

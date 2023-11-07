@@ -1,6 +1,4 @@
 import { createRoot } from 'react-dom/client'
-import CreateForm from './pages/WorkspaceManager/CreateForm'
-import WSection from './pages/WorkspaceManager/WorkspaceSection'
 import ChatBox from '/components/ChatBox'
 import ColleagueChat from '/pages/ColleagueChat'
 import Login from '/pages/Auth/Login'
@@ -25,13 +23,6 @@ const router = createBrowserRouter([
    {
       path: "/",
       element: <WManager />,
-      children: [
-         { index: true, element: <WSection /> },
-         {
-            path: "CreateWorkspace",
-            element: <CreateForm />
-         }
-      ]
    },
    {
       path: "/usersetting",
