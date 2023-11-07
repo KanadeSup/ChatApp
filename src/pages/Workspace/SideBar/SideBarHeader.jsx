@@ -3,14 +3,14 @@ import { Link } from "react-router-dom"
 export default function SideBarHeader() {
   return (
     <div className="flex py-3 px-3 items-center h-12 bg-gradient-to-l from-gray-100 to-gray-200 shadow">
-      <div className="flex flex-row justify-between font-semibold text-md text-neutral-700">
+      <div className="flex flex-grow flex-row justify-between font-semibold text-md text-neutral-700">
         <span className="">Workspace 1</span>
 
         <Link to="/WorkspaceSetting">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 1024 1024"
-            className="w-6 h-6 py-0.5 ml-36 text-gray-600 group-hover:text-white"
+            className="w-6 h-6 py-0.5 text-gray-600 block group-hover:text-white"
           >
             <path
               fill="currentColor"
