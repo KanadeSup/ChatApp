@@ -3,7 +3,7 @@ import WCard from './WorkspaceCard.jsx'
 export default function() {
    return (
       <div className="px-10 flex-grow shadow-xl flex justify-center">
-         <div className="w-2/3 min-w-[700px] max-w-[850px]">
+         <div className="w-full">
             {/* Top */}
             <div className="flex mt-10"> 
                <h1 className="text-2xl font-medium text-gray-700">
@@ -15,7 +15,12 @@ export default function() {
             </div>
 
             {/* Workspace list */}
-            <div className="flex mt-10 flex-col justify-stretch">
+            <div className="flex mt-10 flex-wrap gap-2">
+               <WCard />
+               <WCard />
+               <WCard />
+               <WCard />
+               <WCard />
                <WCard />
                <WCard />
                <WCard />

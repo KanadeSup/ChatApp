@@ -21,7 +21,6 @@ import WSetting from './pages/WorkspaceSetting'
 import Overview from './pages/WorkspaceSetting/Overview'
 import MemberManage from './pages/WorkspaceSetting/MemberManage'
 import InviteMember from './pages/WorkspaceSetting/InviteMember'
-
 const router = createBrowserRouter([
    {
       path: "/",
