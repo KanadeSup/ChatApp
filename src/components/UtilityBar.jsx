@@ -82,7 +82,7 @@ export default function (props) {
             <DropdownMenuContent className="absolute left-6 bottom-1 w-48">
                <DropdownMenuLabel> Putin lord </DropdownMenuLabel>
                <DropdownMenuSeparator />
-               <Link to="usersetting">
+               <Link to="/usersetting">
                   <DropdownMenuItem className="cursor-pointer">
                      <UserCog className="w-4 h-4 mr-2"/>
                      User Setting

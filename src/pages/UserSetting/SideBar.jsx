@@ -1,17 +1,28 @@
+import { NavLink } from 'react-router-dom'
 import { AccountSvg } from '/assets/img/SettingSvg'
-export default function() {
-   return(
-      <div className="flex-shrink-0 bg-gray-100 w-72 flex flex-col items-stretch gap-2 py-3 px-3 shadow-xl">
-         {/* header */}
-         <div className="font-bold text-center text-gray-600">
-            User Setting
-         </div>
+import { buttonVariants } from "@/components/ui/button"
 
-         {/* Settings */}
-         <div className="flex items-center gap-3 bg-gray-300 px-2 py-1 rounded-md cursor-pointer font-bold">
-            <AccountSvg />
-            <span className="text-md"> My Account </span>
-         </div>
-      </div>
+export default function({ items }) {
+   return(
+      <nav className="flex-shrink-0 w-full flex lg:flex-col lg:w-[13%] items-stretch gap-1">
+         {
+            items.map((item) => (
+               <NavLink 
+                  to={item.to}
+                  end
+                  className={
+                     ({isActive}) => 
+                        [
+                           isActive ? "bg-muted hover:bg-muted":"hover:bg-transparent hover:underline",
+                           buttonVariants({variant: "ghost"}).replace("justify-center",""),
+                           "justify-start"
+                        ].join(" ")
+                  }
+               >
+                  {item.title}
+               </NavLink>
+            ))
+         }
+      </nav>
    )
 }

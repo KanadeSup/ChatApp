@@ -14,7 +14,8 @@ import {
 } from "react-router-dom";
 import './index.css'
 import WManager from './pages/WorkspaceManager/'
-import SettingSection from './pages/UserSetting/SettingSection'
+import Account from './pages/UserSetting/Account'
+import Profile from './pages/UserSetting/Profile'
 import WSetting from './pages/WorkspaceSetting'
 import Overview from './pages/WorkspaceSetting/Overview'
 import MemberManage from './pages/WorkspaceSetting/MemberManage'
@@ -25,10 +26,14 @@ const router = createBrowserRouter([
       element: <WManager />,
    },
    {
-      path: "/usersetting",
+      path: "/userSetting",
       element: <UserSetting />,
       children: [
-         { index: true, element: <SettingSection />},
+         { index: true, element: <Account />},
+         {
+            path: "Profile",
+            element: <Profile />
+         },
       ]
    },
    {
