@@ -18,7 +18,7 @@ function showMenu(event) {
 export default function (props) {
    const utilites = Object.keys(props);
    return (
-      <div className="w-16 flex flex-col items-center flex-shrink-0 py-3 bg-gray-200 border-2 border-gray shadow-xl gap-2">
+      <div className="w-16 flex flex-col items-center flex-shrink-0 py-3 bg-gray-200 border-2 border-gray gap-2">
          {/* Logo */}
          <Link to="/">
             <Logo className="fill-gray-800 w-11 h-11"/>

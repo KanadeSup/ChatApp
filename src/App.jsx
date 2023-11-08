@@ -42,11 +42,11 @@ const router = createBrowserRouter([
       children: [
          { index: true, element: <Overview />},
          {
-            path: "MemberManage",
+            path: "Members",
             element: <MemberManage />
          },
          {
-            path: "InviteMember",
+            path: "Invites",
             element: <InviteMember />
          }
       ]
