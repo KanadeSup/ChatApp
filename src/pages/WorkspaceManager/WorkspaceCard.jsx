@@ -13,7 +13,7 @@ export default function() {
 
    return(
       <Link to="/workspace" className="w-full lg:w-[calc(100%/2-20px*1/2)] xl:w-[calc(100%/3-20px*2/3)] 2xl:w-[calc(25%-20px*3/4)] group">
-         <Card className="group-hover:bg-gray-100 transition-colors h-60">
+         <Card className="group-hover:border-black border-[2px] transition-colors h-60">
             <CardHeader className="flex">
                <Avatar className="rounded w-14 h-14 group-hover:border border-gray-300 transition-all">
                   <AvatarImage src="a" />
