@@ -15,7 +15,7 @@ export default function Message(props) {
       onMouseLeave={() => setShowEmoij(false)}
     >
       <div
-        className="flex w-full my-2 bg-gray-50 hover:bg-gray-100 rounded-md p-3 mb-4"
+        className="flex w-full my-2 hover:bg-gray-100 rounded-md p-3 mb-4"
         style={{ fontFamily: "'Roboto', Arial, sans-serif" }}
       >
         <div className="flex-shrink-0 mr-2">

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { login } from "../../api";
+import { Button } from "@/components/ui/button"
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -9,12 +10,12 @@ export default function Login() {
 
   function handleLogin() {
     const response = login(email, password);
-    console.log(response);
+    console.log("cnonsdvds", response);
   }
 
   return (
     <>
-      <div className="min-h-screen bg-gray-100 flex flex-col justify-start border-solid">
+      <div className="min-h-screen flex items-start bg-gradient-to-r from-gray-200 to-gray-400">
         <div className="p-10 xs:p-0 mx-auto w-full max-w-md">
           <h1 className="w-1/2 mx-auto mb-4">
             <img src="assets\img\logo-no-background.png" alt="" />
@@ -22,7 +23,7 @@ export default function Login() {
 
           <div className="bg-white shadow w-full rounded-lg divide-gray-200">
             <div className="text-center pt-6 pb-1">
-              <h1 className="font-bold text-2xl text-gray-900">Sign in</h1>
+              <h1 className="font-bold text-3xl text-gray-900">Sign in</h1>
             </div>
 
             <div className="px-5 py-1">
@@ -55,20 +56,20 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <div className="text-red-500 text-xs italic">{error}</div>
-              <div className="text-right my-1">
+              <div className="text-red-500 text-sm italic">{error}</div>
+              <div className="text-right my-3">
                 <Link
                   to={"/forget-password"}
-                  className="text-xs font-semibold mt-1 block"
+                  className="text-sm font-semibold mt-2 block"
                 >
-                  <span className="inline-block text-blue-600">
+                  <span className="inline-block text-black hover:underline">
                     Forgot Password?
                   </span>
                 </Link>
               </div>
               <button
                 onClick={() => handleLogin()}
-                className="transition duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 focus:shadow-sm focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block"
+                className="transition duration-200 bg-gray-800 hover:bg-black text-white w-full py-2.5 rounded-lg text-md shadow-sm hover:shadow-md font-semibold text-center inline-block"
               >
                 <span className="inline-block mr-2">Login</span>
                 <svg
@@ -86,7 +87,7 @@ export default function Login() {
                   />
                 </svg>
               </button>
-              <button className="flex flex-wrap justify-center mt-3 w-full border border-gray-300 hover:border-gray-500 py-1.5 rounded-md">
+              <button className="flex flex-wrap justify-center mt-4 w-full border border-gray-300 hover:border-gray-500 py-1.5 rounded-md">
                 <img
                   className="w-5 mr-2"
                   src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
@@ -95,12 +96,12 @@ export default function Login() {
               </button>
 
               <div className="flex justify-center my-5">
-                <span className="text-xs text-gray-400 font-semibold">
+                <span className="text-sm text-gray-400 font-semibold">
                   Don't have account?
                 </span>
                 <Link
                   to={"/signup"}
-                  className="text-xs mx-1 font-semibold text-blue-600"
+                  className="text-sm mx-1 font-semibold border-black hover:underline"
                 >
                   Sign up
                 </Link>

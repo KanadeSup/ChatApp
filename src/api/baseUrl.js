@@ -1,3 +1,3 @@
 export default function(source) {
-    return "https://mv5bhgr5-5000.asse.devtunnels.ms/" + source;
+    return "http://20.67.247.154:8080/api/Auth/" + source;
 }    

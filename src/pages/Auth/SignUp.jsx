@@ -14,7 +14,7 @@ function ValidateUsername(inputText) {
   return (
     String(inputText)
       .toLowerCase()
-      .match(/^[a-zA-Z0-9]+$/) && inputText.length >= 6
+      .match(/^[a-zA-Z0-9]+$/) && inputText.length >= 5
   );
 }
 
@@ -28,13 +28,11 @@ function ValidatePassword(inputText) {
 
 function ValidateSubmit(error) {
   return (
-    Object.keys(error).length === 6 &&
+    Object.keys(error).length === 4 &&
     error.email === "" &&
     error.username === "" &&
     error.password === "" &&
-    error.repassword === "" &&
-    error.firstname === "" &&
-    error.lastname === ""
+    error.repassword === ""
   );
 }
 
@@ -104,32 +102,32 @@ export default function SignUp() {
           });
         }
         break;
-      case "firstname":
-        if (e.target.value === "" || e.target.value.length < 2) {
-          setError({
-            ...error,
-            firstname: "First Name is invalid",
-          });
-        } else {
-          setError({
-            ...error,
-            firstname: "",
-          });
-        }
-        break;
-      case "lastname":
-        if (e.target.value === "" || e.target.value.length < 2) {
-          setError({
-            ...error,
-            lastname: "Last Name is invalid",
-          });
-        } else {
-          setError({
-            ...error,
-            lastname: "",
-          });
-        }
-        break;
+      // case "firstname":
+      //   if (e.target.value === "" || e.target.value.length < 2) {
+      //     setError({
+      //       ...error,
+      //       firstname: "First Name is invalid",
+      //     });
+      //   } else {
+      //     setError({
+      //       ...error,
+      //       firstname: "",
+      //     });
+      //   }
+      //   break;
+      // case "lastname":
+      //   if (e.target.value === "" || e.target.value.length < 2) {
+      //     setError({
+      //       ...error,
+      //       lastname: "Last Name is invalid",
+      //     });
+      //   } else {
+      //     setError({
+      //       ...error,
+      //       lastname: "",
+      //     });
+      //   }
+      //break;
     }
 
     setFormState({
@@ -139,12 +137,10 @@ export default function SignUp() {
   }
   useEffect(() => {
     setIsSubmit(ValidateSubmit(error));
-    console.log(ValidateSubmit(error));
-    console.log(formState);
   }, [error]);
   return (
     <>
-      <div className="min-h-screen bg-gray-100 flex flex-col justify-start">
+      <div className="min-h-screen flex justify-start items-center bg-gradient-to-r from-gray-200 to-gray-400">
         <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
           <h1 className="w-1/2 mx-auto mb-4">
             <img src="assets\img\logo-no-background.png" alt="" />
@@ -152,13 +148,13 @@ export default function SignUp() {
 
           <div className="bg-white shadow w-full rounded-lg divide-gray-200">
             <div className="text-center pt-6 pb-1">
-              <h1 className="font-bold text-2xl text-gray-900">Sign Up</h1>
+              <h1 className="font-bold text-3xl text-gray-900">Sign Up</h1>
             </div>
 
             {/* email */}
             <div className="px-5 pb-1">
               <div className="flex justify-between items-center">
-                <label className="font-semibold text-sm text-gray-600 my-1">
+                <label className="font-semibold text-sm text-black my-1">
                   E-mail
                 </label>
                 <div className="text-red-500 text-xs italic my-1">
@@ -179,7 +175,7 @@ export default function SignUp() {
               </div>
               {/* username */}
               <div className="flex justify-between items-center">
-                <label className="font-semibold text-sm text-gray-600 my-1">
+                <label className="font-semibold text-sm text-black my-1">
                   Username
                 </label>
                 <div className="text-red-500 text-xs italic my-1">
@@ -200,7 +196,7 @@ export default function SignUp() {
               </div>
               {/* password */}
               <div className="flex justify-between items-center">
-                <label className="font-semibold text-sm text-gray-600 my-1">
+                <label className="font-semibold text-sm text-black my-1">
                   Password
                 </label>
                 <div className="text-red-500 text-xs italic my-1">
@@ -221,8 +217,8 @@ export default function SignUp() {
               </div>
               {/* repassword */}
               <div className="flex justify-between items-center">
-                <label className="font-semibold text-sm text-gray-600 my-1">
-                  RePassword
+                <label className="font-semibold text-sm text-black my-1">
+                  Enter password again
                 </label>
                 <div className="text-red-500 text-xs italic my-1">
                   {error.repassword}
@@ -240,57 +236,15 @@ export default function SignUp() {
                   onChange={(e) => handleChange(e)}
                 />
               </div>
-              {/* firstname */}
-              <div className="flex justify-between items-center">
-                <label className="font-semibold text-sm text-gray-600 my-1">
-                  First Name
-                </label>
-                <div className="text-red-500 text-xs italic my-1">
-                  {error.firstname}
-                </div>
-              </div>
-              <div className="flex mb-2">
-                <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
-                  <i className="mdi mdi-lock-outline text-gray-400 text-lg" />
-                </div>
-                <input
-                  type="text"
-                  name="firstname"
-                  className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
-                  placeholder="John"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-              {/* lastname */}
-              <div className="flex justify-between items-center">
-                <label className="font-semibold text-sm text-gray-600 my-1">
-                  Last Name
-                </label>
-                <div className="text-red-500 text-xs italic my-1">
-                  {error.lastname}
-                </div>
-              </div>
-              <div className="flex mb-2">
-                <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
-                  <i className="mdi mdi-lock-outline text-gray-400 text-lg" />
-                </div>
-                <input
-                  type="text"
-                  name="lastname"
-                  className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
-                  placeholder="Tran"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
+              
 
               <button
-                type="button"
                 disabled={!isSubmit}
                 className={`transition duration-200 ${
                   isSubmit
-                    ? "bg-blue-500 hover:bg-blue-600 focus:bg-blue-700"
+                    ? "bg-gray-800 hover:bg-black"
                     : "bg-gray-500 cursor-not-allowed"
-                } focus:shadow-sm focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block`}
+                } focus:shadow-sm mt-2 focus:ring-4 focus:ring-black focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-md shadow-sm hover:shadow-md font-semibold text-center inline-block`}
               >
                 <span className="inline-block mr-2">Sign up</span>
                 <svg
@@ -310,10 +264,10 @@ export default function SignUp() {
               </button>
 
               <div className="flex justify-center my-5">
-                <span className="text-xs text-gray-400 font-semibold">
+                <span className="text-sm text-gray-400 font-semibold">
                   Have account?
                 </span>
-                <Link to={"/login"} className="text-xs mx-1 font-semibold">
+                <Link to={"/login"} className="text-sm mx-1 font-semibold hover:underline">
                   Sign in
                 </Link>
               </div>

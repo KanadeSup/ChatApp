@@ -40,8 +40,8 @@ export default function Media(props) {
 
       {/* Media */}
       <div
-        style={{ height: "calc(100vh - 8.5rem)" }}
-        className="flex flex-row flex-wrap overflow-y-scroll px-2"
+        style={{ height: "calc(100vh - 9.5rem)" }}
+        className="flex flex-row flex-wrap overflow-y-scroll px-2 mt-5"
       >
         <img className="w-1/3 h-1/4 p-1 object-cover"
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQImOo-yO0ONI3cXOq0ZPhQN5Bv8bceXZaK6Q&usqp=CAU"
