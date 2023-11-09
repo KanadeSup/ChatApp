@@ -1,6 +1,4 @@
 import { createRoot } from 'react-dom/client'
-import CreateForm from './pages/WorkspaceManager/CreateForm'
-import WSection from './pages/WorkspaceManager/WorkspaceSection'
 import ChatBox from '/components/ChatBox'
 import ColleagueChat from '/pages/ColleagueChat'
 import Login from '/pages/Auth/Login'
@@ -16,28 +14,27 @@ import {
 } from "react-router-dom";
 import './index.css'
 import WManager from './pages/WorkspaceManager/'
-import SettingSection from './pages/UserSetting/SettingSection'
+import Account from './pages/UserSetting/Account'
+import Profile from './pages/UserSetting/Profile'
 import WSetting from './pages/WorkspaceSetting'
 import Overview from './pages/WorkspaceSetting/Overview'
 import MemberManage from './pages/WorkspaceSetting/MemberManage'
 import InviteMember from './pages/WorkspaceSetting/InviteMember'
+
 const router = createBrowserRouter([
    {
       path: "/",
       element: <WManager />,
-      children: [
-         { index: true, element: <WSection /> },
-         {
-            path: "CreateWorkspace",
-            element: <CreateForm />
-         }
-      ]
    },
    {
-      path: "/usersetting",
+      path: "/userSetting",
       element: <UserSetting />,
       children: [
-         { index: true, element: <SettingSection />},
+         { index: true, element: <Account />},
+         {
+            path: "Profile",
+            element: <Profile />
+         },
       ]
    },
    {
@@ -46,11 +43,11 @@ const router = createBrowserRouter([
       children: [
          { index: true, element: <Overview />},
          {
-            path: "MemberManage",
+            path: "Members",
             element: <MemberManage />
          },
          {
-            path: "InviteMember",
+            path: "Invites",
             element: <InviteMember />
          }
       ]
