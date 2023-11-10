@@ -3,7 +3,8 @@ import ChatBox from '/components/ChatBox'
 import ColleagueChat from '/pages/ColleagueChat'
 import Login from '/pages/Auth/Login'
 import SignUp from '/pages/Auth/SignUp'
-import ForgetPassword from '/pages/Auth/ForgetPassword'
+import GetOTPForgotPassword from '/pages/Auth/GetOTPForgotPassword'
+import ForgotPassword from './pages/Auth/ForgotPassword'
 import VerifyForgetPassword from '/pages/Auth/VerifyForgetPassword'
 import UserSetting from '/pages/UserSetting'
 import Notification from './pages/Notification'
@@ -65,8 +66,12 @@ const router = createBrowserRouter([
       element: <SignUp />
    },
    {
-      path: "forget-password",
-      element: <ForgetPassword />
+      path: "get-otp-forget-password",
+      element: <GetOTPForgotPassword />
+   },
+   {
+      path: "forgot-password",
+      element: <ForgotPassword />
    },
    {
       path: "verify-forget-password",
