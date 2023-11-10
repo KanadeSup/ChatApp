@@ -1,86 +1,10 @@
 import { createRoot } from 'react-dom/client'
-import ChatBox from '/components/ChatBox'
-import ColleagueChat from '/pages/ColleagueChat'
-import Login from '/pages/Auth/Login'
-import SignUp from '/pages/Auth/SignUp'
-import ForgetPassword from '/pages/Auth/ForgetPassword'
-import VerifyForgetPassword from '/pages/Auth/VerifyForgetPassword'
-import UserSetting from '/pages/UserSetting'
-import Notification from './pages/Notification'
-import Workspace from './pages/Workspace'
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import './index.css'
-import WManager from './pages/WorkspaceManager/'
-import Account from './pages/UserSetting/Account'
-import Profile from './pages/UserSetting/Profile'
-import WSetting from './pages/WorkspaceSetting'
-import Overview from './pages/WorkspaceSetting/Overview'
-import MemberManage from './pages/WorkspaceSetting/MemberManage'
-import InviteMember from './pages/WorkspaceSetting/InviteMember'
+import router from './routers'
+import useTokenStore from "/storages/useTokenStore"
 
-const router = createBrowserRouter([
-   {
-      path: "/",
-      element: <WManager />,
-   },
-   {
-      path: "/userSetting",
-      element: <UserSetting />,
-      children: [
-         { index: true, element: <Account />},
-         {
-            path: "Profile",
-            element: <Profile />
-         },
-      ]
-   },
-   {
-      path: "/WorkspaceSetting",
-      element: <WSetting />,
-      children: [
-         { index: true, element: <Overview />},
-         {
-            path: "Members",
-            element: <MemberManage />
-         },
-         {
-            path: "Invites",
-            element: <InviteMember />
-         }
-      ]
-   },
-   {
-      path: "/colleague",
-      element: <ColleagueChat />
-   },
-   {
-      path: "login",
-      element: <Login />
-   },
-   {
-      path: "signup",
-      element: <SignUp />
-   },
-   {
-      path: "forget-password",
-      element: <ForgetPassword />
-   },
-   {
-      path: "verify-forget-password",
-      element: <VerifyForgetPassword />
-   },
-   {
-      path: "notification",
-      element: <Notification />
-   },
-   {
-      path: "workspace",
-      element: <Workspace />
-   }
-])
+localStorage.setItem("token", "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhNjk5YzVjZS05Zjg0LTQ4MjEtZGE0NC0wOGRiZTAxOTQzZmYiLCJFbWFpbCI6IlVzZXJAZ21haWwuY29tIiwiVXNlcm5hbWUiOiJVc2VyIiwiSXNBY3RpdmUiOiJUcnVlIiwibmJmIjoxNjk5NjI2MTU3LCJleHAiOjE2OTk2MzY5NTcsImlhdCI6MTY5OTYyNjE1NywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwLyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMC8ifQ.2aTbtg5ZjZhBi0Z4fi1fNDqLBfIUnL5xU3mgPsA0Lbo")
 const App = function(){
    return (
       <RouterProvider router={router} />

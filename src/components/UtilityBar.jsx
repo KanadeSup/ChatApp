@@ -31,10 +31,10 @@ export default function (props) {
             switch (utility) {
                case "colleague":
                   return (
-                     <div className="flex items-center group">
+                     <div key={utility} className="flex items-center group">
                         <div className="line h-0 bg-black w-[4px] rounded-r-full transition-all group-hover:h-5 absolute left-0"> </div>
                         <NavLink
-                           to="/colleague"
+                           to="/Colleague"
                            className= {
                               ({ isActive }) =>
                                  [
@@ -50,9 +50,9 @@ export default function (props) {
                   );
                case "notification":
                   return (
-                     <div className="flex items-center group">
+                     <div key={utility} className="flex items-center group">
                         <NavLink 
-                           to="/notification"
+                           to="/Notification"
                            className= {
                               ({ isActive }) =>
                                  [
@@ -63,6 +63,24 @@ export default function (props) {
                            }
                         >
                            <Bell className= "w-7 h-7" />
+                        </NavLink>
+                     </div>
+                  );
+               case "logo":
+                  return (
+                     <div key={utility} className="flex items-center group">
+                        <NavLink 
+                           to="/Notification"
+                           className= {
+                                 [
+                                    "before:block before:w-1 before:bg-black before:absolute before:left-0 before:rounded-r-full before:transition-all",
+                                    "flex w-12 h-12 items-center justify-center rounded",
+                                 ].join(" ")
+                           }
+                        >
+                           <div className="w-8 h-8">
+                              <img src={props.logo}/>
+                           </div>
                         </NavLink>
                      </div>
                   );
@@ -82,7 +100,7 @@ export default function (props) {
             <DropdownMenuContent className="absolute left-6 bottom-1 w-48">
                <DropdownMenuLabel> Putin lord </DropdownMenuLabel>
                <DropdownMenuSeparator />
-               <Link to="/usersetting">
+               <Link to="/UserSetting">
                   <DropdownMenuItem className="cursor-pointer">
                      <UserCog className="w-4 h-4 mr-2"/>
                      User Setting
