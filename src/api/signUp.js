@@ -1,9 +1,9 @@
 import baseUrl from "./baseUrl";
 import apikey from "./apiKey";
 
-export default async (username, password) => {
+export default async (email, username, password) => {
     try {
-        const response = await fetch(baseUrl("signin"), {
+        const response = await fetch(baseUrl("signup"), {
             method: "POST",
             headers: {
                 "x-apikey": apikey,
@@ -11,8 +11,14 @@ export default async (username, password) => {
                 "accept": "application/json"
             },
             body: JSON.stringify({
+                "Email": email,
                 "username": username,
-                "password": password
+                "password": password,
+                "FirstName": "string",
+                "LastName": "string",
+                "Phone": "6",
+                "Gender": true,
+                "BirthDay": "2023-11-09T09:04:28.587Z"
             })
         });
         return response.json();

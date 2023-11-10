@@ -1,23 +1,28 @@
 import Login from '/pages/Auth/Login'
 import SignUp from '/pages/Auth/SignUp'
-import ForgetPassword from '/pages/Auth/ForgetPassword'
+import GetOTPForgotPassword from '/pages/Auth/GetOTPForgotPassword'
+import ForgotPassword from '/pages/Auth/ForgotPassword'
 import VerifyForgetPassword from '/pages/Auth/VerifyForgetPassword'
 
 export default [
    {
-      path: "/Login",
+      path: "login",
       element: <Login />
    },
    {
-      path: "/Signup",
+      path: "signup",
       element: <SignUp />
    },
    {
-      path: "/ForgetPassword",
-      element: <ForgetPassword />
+      path: "get-otp-forget-password",
+      element: <GetOTPForgotPassword />
    },
    {
-      path: "/VerifyForgetPassword",
+      path: "forgot-password",
+      element: <ForgotPassword />
+   },
+   {
+      path: "verify-forget-password",
       element: <VerifyForgetPassword />
    },
 ]
