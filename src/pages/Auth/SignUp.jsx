@@ -151,13 +151,13 @@ export default function SignUp() {
 
   return (
     <div className="bg-gradient-to-r from-gray-200 to-gray-400 flex items-center flex-col h-screen">
-      <h1 className="mx-auto pt-4 w-44">
+      <h1 className="mx-auto pt-10 w-[184px]">
         <img src="assets\img\logo-no-background.png" alt="" />
       </h1>
 
       <div
-        className={`relative flex justify-start mt-8 items-center overflow-hidden shadow-xl rounded-md bg-white transition-all duration-500 w-[23rem] ${
-          showFormConfirmOTP ? "h-[324px]" : "h-[30rem]"
+        className={`relative flex justify-start mt-4 items-center overflow-hidden shadow-xl rounded-md bg-white transition-all duration-500 w-[23rem] ${
+          showFormConfirmOTP ? "h-[324px]" : "h-[32rem]"
         }`}
       >
         {/* sign up */}

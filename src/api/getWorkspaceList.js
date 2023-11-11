@@ -9,7 +9,7 @@ export default async function () {
          headers: {
             'accept': 'application/json',
             'x-apikey': apiKey,
-            'Authorization': token,
+            'Authorization': "Bearer " + token,
          }
       })
       const status = res.status

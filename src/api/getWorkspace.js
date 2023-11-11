@@ -9,7 +9,7 @@ export default async function (id) {
       headers: {
          'accept': 'application/json',
          'x-apikey': apiKey,
-         'Authorization': token,
+         'Authorization': "Bearer " + token,
       }
    })
    if (!res.ok) {

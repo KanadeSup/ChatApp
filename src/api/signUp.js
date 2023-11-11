@@ -3,7 +3,7 @@ import apikey from "./apiKey";
 
 export default async (email, username, password) => {
     try {
-        const response = await fetch(baseUrl("signup"), {
+        const response = await fetch(baseUrl("Auth/signup"), {
             method: "POST",
             headers: {
                 "x-apikey": apikey,

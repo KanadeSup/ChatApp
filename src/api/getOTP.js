@@ -3,7 +3,7 @@ import apikey from "./apiKey";
 
 export default async (otpType, email) => {
     try {
-        const response = await fetch(baseUrl("get-otp"), {
+        const response = await fetch(baseUrl("Auth/get-otp"), {
             method: "POST",
             headers: {
                 "x-apikey": apikey,

@@ -10,7 +10,7 @@ export default async (id) => {
       headers: {
          'accept': 'application/json',
          'x-apikey': apiKey,
-         'Authorization': token,
+         'Authorization': "Bearer " + token,
       },
    })
 };

@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { LogOut, UserCog, User2, Users, Bell } from 'lucide-react';
 import { Logo } from '/assets/img/MySvg'
 import { Separator } from "@/components/ui/separator"
@@ -17,6 +17,14 @@ function showMenu(event) {
 }
 export default function (props) {
    const utilites = Object.keys(props);
+   const navigate = useNavigate();
+
+   function handleLogout() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      navigate("/login");
+   }
+
    return (
       <div className="w-16 flex flex-col items-center flex-shrink-0 py-3 bg-gray-200 border-2 border-gray gap-2">
          {/* Logo */}
@@ -106,7 +114,7 @@ export default function (props) {
                      User Setting
                   </DropdownMenuItem>
                </Link>
-               <DropdownMenuItem className="cursor-pointer">
+               <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
                   <LogOut className="w-4 h-4 mr-2"/>
                   Log out
                </DropdownMenuItem>

@@ -27,13 +27,13 @@ export default function Message(props) {
 
         <div className="">
           <div className="flex relative bottom-1">
-            <span className="font-bold text-sm">username</span>
+            <span className="font-bold text-[15px]">username</span>
             <span className="text-gray-500 text-xs ml-2 flex items-center">
               28/08/2023 1:50 AM
             </span>
           </div>
 
-          <div className="text-sm">
+          <div className="text-[15px]">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit, quae
             incidunt officiis distinctio veniam error maiores sit accusamus
             facere tenetur laudantium at excepturi voluptates nostrum commodi

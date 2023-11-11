@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { login } from "../../api";
+import { login } from "/api";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -81,7 +81,6 @@ export default function Login() {
                   type="password"
                   name="password"
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
-                  placeholder="************"
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>

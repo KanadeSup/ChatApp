@@ -3,7 +3,7 @@ import apikey from "./apiKey";
 
 export default async (email, newPassword, otp) => {
     try {
-        const response = await fetch(baseUrl("forgot-password"), {
+        const response = await fetch(baseUrl("Auth/forgot-password"), {
             method: "POST",
             headers: {
                 "x-apikey": apikey,

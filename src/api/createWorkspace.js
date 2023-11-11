@@ -11,7 +11,7 @@ export default async (name, avatar) => {
       headers: {
          'accept': 'application/json',
          'x-apikey': apiKey,
-         'Authorization': token,
+         'Authorization': "Bearer " + token,
       },
       body: formData,
    })

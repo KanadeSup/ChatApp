@@ -1,7 +1,7 @@
 export default function ReplyHeader(props) {
   return (
     <div className="flex flex-col">
-      <div className="text-xs font-semibold h-8 flex justify-between items-center px-4 bg-gray-100 border-b shadow">
+      <div className="text-[13px] font-semibold h-8 flex justify-between items-center px-4 bg-gray-100 border-b shadow">
         View Reply
         <svg
           viewBox="0 0 24 24"
