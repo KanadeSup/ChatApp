@@ -5,7 +5,7 @@ export default function ChatOption() {
         <li>
           <a
             href=""
-            className="flex items-center gap-2 rounded-lg pl-2 pr-5 py-2 text-gray-500 hover:bg-bold-blue hover:text-white"
+            className="flex items-center gap-2 rounded-lg pl-2 pr-5 py-2 text-gray-500 hover:bg-black hover:text-white"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -29,7 +29,7 @@ export default function ChatOption() {
         <li>
           <a
             href=""
-            className="flex items-center gap-2 rounded-lg pl-2 pr-5 py-2 text-gray-500 hover:bg-bold-blue hover:text-white"
+            className="flex items-center gap-2 rounded-lg pl-2 pr-5 py-2 text-gray-500 hover:bg-black hover:text-white"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +53,7 @@ export default function ChatOption() {
         <li>
           <a
             href=""
-            className="flex items-center gap-2 rounded-lg pl-2 pr-5 py-2 text-gray-500 hover:bg-bold-blue hover:text-white"
+            className="flex items-center gap-2 rounded-lg pl-2 pr-5 py-2 text-gray-500 hover:bg-black hover:text-white"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

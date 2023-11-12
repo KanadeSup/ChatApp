@@ -8,7 +8,7 @@ import Links from "./Links";
 export default function (props) {
   const [selectedOption, setSelectedOption] = useState("");
   return (
-    <div className="flex flex-col w-1/3 flex-shrink-0 shadow">
+    <div className="flex flex-col w-1/3 flex-shrink-0 border shadow">
       {selectedOption === "" && <ChannelOption setSelectedOption={setSelectedOption} />}
       {selectedOption === "pinnedMessageList" && <PinnedMessageList setSelectedOption={setSelectedOption}/>}
       {selectedOption === "allMember" && <AllMember setSelectedOption={setSelectedOption}/>}

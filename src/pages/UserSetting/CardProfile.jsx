@@ -15,7 +15,7 @@ import EditProfile from "./EditCardProfile"
 
 export default function() {
    return (
-      <Card className="relative">
+      <Card className="relative shadow">
          <CardHeader>
             <div className="flex items-center gap-5">
                <Avatar className="rounded-lg h-20 w-20">

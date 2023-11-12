@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export default function VerifyForgetPassword() {
     return (
       <>
-        <div className="min-h-screen bg-gray-100 flex flex-col justify-start">
+        <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-300 flex flex-col justify-start">
           <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
             <h1 className="w-1/2 mx-auto mb-4">
               <img src="assets\img\logo-no-background.png" alt="" />
