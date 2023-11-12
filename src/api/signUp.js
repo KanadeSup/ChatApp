@@ -12,8 +12,8 @@ export default async (email, username, password) => {
             },
             body: JSON.stringify({
                 "Email": email,
-                "username": username,
-                "password": password,
+                "Username": username,
+                "Password": password,
                 "FirstName": "string",
                 "LastName": "string",
                 "Phone": "6",

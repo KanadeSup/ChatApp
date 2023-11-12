@@ -19,6 +19,7 @@ export default async (email, newPassword, otp) => {
         console.log(response);
         if (response.status === 200) {
             console.log('Phản hồi từ máy chủ là 200.');
+            return;
         } else {
             console.log('Phản hồi từ máy chủ là 400: ');
         }

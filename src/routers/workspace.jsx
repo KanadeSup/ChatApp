@@ -13,6 +13,9 @@ const workspaceListLoader = async function() {
       return redirect("/login")
    }
    const [status, wlist] = await getWorkspaceList()
+   if (status === 401) {
+      return redirect("/login")
+   }
    return wlist
 }
 const workspaceLoader = async function({ params }) {

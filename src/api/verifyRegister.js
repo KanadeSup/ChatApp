@@ -12,7 +12,7 @@ export default async (token, otp) => {
                 "authorization": "Bearer " + token
             },
             body: JSON.stringify({
-                "Otp": otp
+                "otp": otp
             })
         });
         console.log(response);
@@ -20,7 +20,7 @@ export default async (token, otp) => {
             console.log('Phản hồi từ máy chủ là 200 nhưng không có nội dung.');
             return;
         } else {
-            console.log('Phản hồi từ máy chủ là 400 nhưng không có nội dung.');
+            console.log('Phản hồi từ máy chủ là 400.');
             return response.json();
         }
 
