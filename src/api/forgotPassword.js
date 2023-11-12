@@ -16,13 +16,14 @@ export default async (email, newPassword, otp) => {
                 "otp": otp
             })
         });
-        console.log(response);
+        console.log("apiforgot/ ", response);
         if (response.status === 200) {
             console.log('Phản hồi từ máy chủ là 200.');
+            return;
         } else {
             console.log('Phản hồi từ máy chủ là 400: ');
+            return response.json();
         }
-        return await response.json();
 
     } catch (error) {
         return error;

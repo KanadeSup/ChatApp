@@ -23,6 +23,10 @@ export default async (email, username, password) => {
         });
         return response.json();
     } catch (error) {
-        return error;
+        if (error.name === 'AbortError') {
+            throw new Error('Request timed out');
+        }
+        throw error;
     }
 };
+

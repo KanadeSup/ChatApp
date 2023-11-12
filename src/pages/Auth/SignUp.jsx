@@ -125,9 +125,14 @@ export default function SignUp() {
       setNotificationServer("");
       setShowFormConfirmOTP(true);
     } catch (error) {
-      setNotificationServer("An error occurred while signing up.");
+      if (error.message === 'Request timed out') {
+        setNotificationServer("Connection timed out. Please try again.");
+      } else {
+        setNotificationServer("An error occurred while signing up.");
+      }
     }
   }
+
 
   async function handleVerifyOTP() {
     try {

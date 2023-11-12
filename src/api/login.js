@@ -17,7 +17,6 @@ export default async (username, password) => {
                 "password": password
             })
         });
-        console.log("djksdjds", response);
         return response.json();
     } catch (error) {
         return error;

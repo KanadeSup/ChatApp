@@ -2,7 +2,7 @@ import baseUrl from "./baseUrl";
 import apiKey from "./apiKey";
 
 export default async (id, logo, name, description) => {
-   const token = localStorage.getItem('token')
+   const token = 'bearer ' + localStorage.getItem('token')
    await fetch(`https://api.firar.live/api/Workspace/${id}/?Name=${name}&Description=${description}`, {
       method: "PUT",
       headers: {
