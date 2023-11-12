@@ -1,28 +1,29 @@
 import UtilityBar from "/components/UtilityBar"
 import SideBar from "./SideBar"
-import { Outlet } from "react-router-dom"
+import { Outlet, useLoaderData, useMatch } from "react-router-dom"
 import { Separator } from "@/components/ui/separator"
 
-const sidebarItems = [
-   {
-      title: "Overview",
-      to: "/WorkspaceSetting",
-   },
-   {
-      title: "Members",
-      to: "Members",
-   },
-   {
-      title: "Invites",
-      to: "Invites",
-   },
-   {
-      title: "Permisson & Role",
-      to: "Role",
-   },
-]
 
 export default function() {
+   const workspace = useLoaderData();
+   const sidebarItems = [
+      {
+         title: "Overview",
+         to: `/Workspace/${workspace.id}/WorkspaceSetting`,
+      },
+      {
+         title: "Members",
+         to: `/Workspace/${workspace.id}/WorkspaceSetting/Members`,
+      },
+      {
+         title: "Invites",
+         to: `/Workspace/${workspace.id}/WorkspaceSetting/Invites`,
+      },
+      {
+         title: "Permisson & Role",
+         to: `/Workspace/${workspace.id}/WorkspaceSetting/Role`,
+      },
+   ]
    return (
       <div className="flex flex-row min-h-screen items-stretch">
          <UtilityBar colleague notification/>
@@ -37,8 +38,8 @@ export default function() {
                <Separator className="my-6"/>
             </div>
             <div className="flex gap-10 flex-wrap">
-               <SideBar items={sidebarItems}/>
-               <Outlet />
+               <SideBar items={sidebarItems} workspaceId={workspace.id}/>
+               <Outlet context={workspace}/>
             </div>
          </div>
       </div>

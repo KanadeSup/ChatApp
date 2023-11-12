@@ -8,18 +8,19 @@ import {
    CardTitle,
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { toCharacters } from '/utils/ParseName'
 
-export default function() {
-
+export default function({ workspace }) {
+   const { name ,avatarUrl } = workspace
    return(
-      <Link to="/workspace" className="w-full lg:w-[calc(100%/2-20px*1/2)] xl:w-[calc(100%/3-20px*2/3)] 2xl:w-[calc(25%-20px*3/4)] group">
+      <Link to={`/Workspace/${workspace.id}`} className="w-full lg:w-[calc(100%/2-20px*1/2)] xl:w-[calc(100%/3-20px*2/3)] 2xl:w-[calc(25%-20px*3/4)] group">
          <Card className="group-hover:border-black border-[2px] transition-colors h-60">
             <CardHeader className="flex">
-               <Avatar className="rounded w-14 h-14 group-hover:border border-gray-300 transition-all">
-                  <AvatarImage src="a" />
-                  <AvatarFallback className="rounded font-medium"> SW </AvatarFallback>
+               <Avatar className="rounded w-16 h-16 group-hover:border border-gray-300 transition-all">
+                  <AvatarImage src={avatarUrl} />
+                  <AvatarFallback className="rounded font-medium"> {toCharacters(name).toUpperCase()} </AvatarFallback>
                </Avatar>
-               <CardTitle className="font-medium text-xl"> Secret Workspace </CardTitle>
+               <CardTitle className="font-medium text-xl"> {name} </CardTitle>
                <CardDescription>
                   10 members
                </CardDescription>
@@ -40,7 +41,7 @@ export default function() {
                         <AvatarFallback className="rounded font-medium border border-gray-300"> S </AvatarFallback>
                      </Avatar>
                   </div>
-                  <span className="text-gray-500"> +2 </span>
+                  <span className="text-gray-500"> +7 </span>
                </div>
             </CardContent>
          </Card>

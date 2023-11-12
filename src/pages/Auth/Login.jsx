@@ -1,16 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { login } from "../../api";
-import { Button } from "@/components/ui/button"
+import { login } from "/api";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  function handleLogin() {
-    const response = login(email, password);
-    console.log("cnonsdvds", response);
+  let navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     navigate("/");
+  //   }
+  // }, []);
+
+  async function handleLogin() {
+    try {
+      setIsLoading(true);
+      const response = await login(email, password);
+
+      if (response.status === 400) {
+        setError(response.title);
+        setIsLoading(false);
+        return;
+      }
+
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("refreshToken", response.refreshToken);
+
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      setError("An error occurred while logging in.");
+    }
   }
 
   return (
@@ -21,23 +50,23 @@ export default function Login() {
             <img src="assets\img\logo-no-background.png" alt="" />
           </h1>
 
-          <div className="bg-white shadow w-full rounded-lg divide-gray-200">
+          <div className="bg-white shadow-2xl w-full rounded-md divide-gray-200">
             <div className="text-center pt-6 pb-1">
               <h1 className="font-bold text-3xl text-gray-900">Sign in</h1>
             </div>
 
             <div className="px-5 py-1">
               <label className="font-semibold text-sm text-gray-600 pb-1 block">
-                E-mail
+                Username
               </label>
               <div className="flex mb-2">
                 <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
                   <i className="mdi mdi-email-outline text-gray-400 text-lg" />
                 </div>
                 <input
-                  type="email"
-                  className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
-                  placeholder="123@gmail.com"
+                  type="text"
+                  className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
+                  placeholder=""
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
@@ -51,15 +80,13 @@ export default function Login() {
                 <input
                   type="password"
                   name="password"
-                  className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
-                  placeholder="************"
+                  className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <div className="text-red-500 text-sm italic">{error}</div>
-              <div className="text-right my-3">
+              <div className="text-right">
                 <Link
-                  to={"/forget-password"}
+                  to={"/get-otp-forget-password"}
                   className="text-sm font-semibold mt-2 block"
                 >
                   <span className="inline-block text-black hover:underline">
@@ -67,26 +94,20 @@ export default function Login() {
                   </span>
                 </Link>
               </div>
-              <button
-                onClick={() => handleLogin()}
-                className="transition duration-200 bg-gray-800 hover:bg-black text-white w-full py-2.5 rounded-lg text-md shadow-sm hover:shadow-md font-semibold text-center inline-block"
-              >
-                <span className="inline-block mr-2">Login</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="w-4 h-4 inline-block"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
-              </button>
+
+              <div className="text-red-500 font-medium text-sm h-6">{error}</div>
+
+              {isLoading ? (
+                <Button disabled className="w-full">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button className="w-full" onClick={() => handleLogin()}>
+                  Login
+                </Button>
+              )}
+
               <button className="flex flex-wrap justify-center mt-4 w-full border border-gray-300 hover:border-gray-500 py-1.5 rounded-md">
                 <img
                   className="w-5 mr-2"

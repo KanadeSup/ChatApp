@@ -6,7 +6,7 @@ export default function SideBarHeader() {
       <div className="flex flex-grow flex-row justify-between font-semibold text-md text-neutral-700">
         <span className="">Workspace 1</span>
 
-        <Link to="/WorkspaceSetting">
+        <Link to="WorkspaceSetting">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 1024 1024"
