@@ -110,6 +110,7 @@ export default function SignUp() {
   async function handleSubmit(e) {
     try {
       setIsLoading(true);
+      console.log(formState);
       const response = await signUp(
         formState.email,
         formState.username,
@@ -120,7 +121,7 @@ export default function SignUp() {
         setNotificationServer(response.title);
         return;
       }
-      localStorage.setItem("token", response.Token);
+      localStorage.setItem("token", response.token);
 
       setNotificationServer("");
       setShowFormConfirmOTP(true);

@@ -14,13 +14,6 @@ export default function Login() {
 
   let navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     navigate("/");
-  //   }
-  // }, []);
-
   async function handleLogin() {
     try {
       setIsLoading(true);
@@ -33,6 +26,7 @@ export default function Login() {
       }
 
       localStorage.setItem("token", response.token);
+      localStorage.setItem("tokenTimeOut", response.tokenTimeOut);
       localStorage.setItem("refreshToken", response.refreshToken);
 
       navigate("/");

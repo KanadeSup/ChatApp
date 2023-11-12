@@ -28,12 +28,10 @@ export default function ForgotPassword() {
       setIsSuccess(true);
       setIsLoading(false);
       setNotification("Change password successfully!");
-      console.log("ddvfjdi: ---", response);
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("refreshToken", response.refreshToken);
+      console.log("forgot password: ---", response);
       setTimeout(() => {
-        navigate("/");
-      }, 2000);
+        navigate("/login");
+      }, 1000);
     } catch (error) {
       console.error(error);
       setNotification("An error occurred while sending email.");
