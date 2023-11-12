@@ -2,7 +2,11 @@ name: Build and deploy
 
 on:
   push:
+<<<<<<< HEAD
+    branches: [ "main" ]
+=======
     branches: [ "*" ]
+>>>>>>> refs/remotes/origin/main
   pull_request:
     branches: [ "main" ]
 
@@ -57,7 +61,11 @@ jobs:
       
       - name: Deploy to Server
         run: |
+<<<<<<< HEAD
+          scp -r dist/* ${{ env.SERVER_USER }}@${{ env.SERVER_IP }}:${{ env.DEPLOYMENT_PATH }}/src
+=======
           cd src
           tar -czvf dist.tar.gz ./dist/*
           scp dist.tar.gz ${{ env.SERVER_USER }}@${{ env.SERVER_IP }}:${{ env.DEPLOYMENT_PATH }}/src/
+>>>>>>> refs/remotes/origin/main
           sshpass -p ${{ env.SERVER_PASSWORD }} ssh fira@firar.live 'echo "${{ env.SERVER_PASSWORD }}" | sudo -S bash ${{ env.DEPLOYMENT_PATH }}/restart.sh'
