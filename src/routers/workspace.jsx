@@ -8,6 +8,10 @@ import { getWorkspaceList, createWorkspace, getWorkspace, deleteWorkspace, updat
 import { redirect } from 'react-router-dom'
 
 const workspaceListLoader = async function() {
+   const token = localStorage.getItem("token");
+   if (!token) {
+      return redirect("/login")
+   }
    const [status, wlist] = await getWorkspaceList()
    return wlist
 }
