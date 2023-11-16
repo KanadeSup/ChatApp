@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { login } from "/api";
+import { login, loginGoogle } from "/api";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -28,6 +27,7 @@ export default function Login() {
       localStorage.setItem("token", response.token);
       localStorage.setItem("tokenTimeOut", response.tokenTimeOut);
       localStorage.setItem("refreshToken", response.refreshToken);
+      localStorage.setItem("refreshTokenTimeout", response.refreshTokenTimeout);
 
       navigate("/");
     } catch (error) {
@@ -35,6 +35,25 @@ export default function Login() {
       setError("An error occurred while logging in.");
     }
   }
+
+  // Google login
+  useEffect(() => {
+    const client_popup = window.google.accounts.oauth2.initCodeClient({
+      client_id:
+        "945996023510-0j32cbj68e6ftd38sampakldkhok571m.apps.googleusercontent.com",
+      scope: "profile email",
+      callback: async (response) => {
+        const data = await loginGoogle(response.code);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("tokenTimeOut", data.tokenTimeOut);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("refreshTokenTimeout", data.refreshTokenTimeout);
+        navigate("/");
+      },
+    });
+
+    window.client_popup = client_popup;
+  }, []);
 
   return (
     <>
@@ -89,7 +108,9 @@ export default function Login() {
                 </Link>
               </div>
 
-              <div className="text-red-500 font-medium text-sm h-6">{error}</div>
+              <div className="text-red-500 font-medium text-sm h-6">
+                {error}
+              </div>
 
               {isLoading ? (
                 <Button disabled className="w-full">
@@ -102,7 +123,10 @@ export default function Login() {
                 </Button>
               )}
 
-              <button className="flex flex-wrap justify-center mt-4 w-full border border-gray-300 hover:border-gray-500 py-1.5 rounded-md">
+              <button
+                onClick={() => window.client_popup.requestCode()}
+                className="flex flex-wrap justify-center mt-4 w-full border border-gray-300 hover:border-gray-500 py-1.5 rounded-md"
+              >
                 <img
                   className="w-5 mr-2"
                   src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"

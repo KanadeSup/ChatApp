@@ -28,7 +28,6 @@ export default function ForgotPassword() {
       setIsSuccess(true);
       setIsLoading(false);
       setNotification("Change password successfully!");
-      console.log("forgot password: ---", response);
       setTimeout(() => {
         navigate("/login");
       }, 1000);

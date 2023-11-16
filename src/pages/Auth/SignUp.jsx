@@ -110,7 +110,6 @@ export default function SignUp() {
   async function handleSubmit(e) {
     try {
       setIsLoading(true);
-      console.log(formState);
       const response = await signUp(
         formState.email,
         formState.username,
