@@ -1,4 +1,4 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Await, Link, NavLink, useNavigate } from "react-router-dom";
 import { LogOut, UserCog, User2, Users, Bell } from 'lucide-react';
 import { Logo } from '/assets/img/MySvg'
 import { Separator } from "@/components/ui/separator"
@@ -11,6 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Suspense } from "react";
+import workspace from "../routers/workspace";
 
 function showMenu(event) {
    document.querySelector(".user-menu").classList.toggle("hidden");
@@ -26,14 +28,7 @@ export default function (props) {
    }
 
    return (
-      <div className="w-16 flex flex-col items-center flex-shrink-0 py-3 bg-gray-200 border-2 border-gray gap-2">
-         {/* Logo */}
-         <Link to="/">
-            <Logo className="fill-gray-800 w-11 h-11"/>
-         </Link>
-
-         <Separator className="w-9 bg-gray-400"/>
-
+      <div className="w-16 flex flex-col items-center flex-shrink-0 py-[1px] bg-white border-2 border-gray gap-2">
          {/* Utilites */}
          {utilites.map((utility) => {
             switch (utility) {
@@ -74,22 +69,29 @@ export default function (props) {
                         </NavLink>
                      </div>
                   );
+               case "workspace":
+                  return (
+                     <div key={utility} className="w-12 h-12 bg-gray-200 rounded border border-gray-300 cursor-pointer overflow-hidden">
+                        <Suspense>
+                           <Await resolve={props.workspace}>
+                              {
+                                 (workspace) => (
+                                    <NavLink to={`/Workspace/${workspace.id}`}>
+                                       <img src={workspace.avatarUrl} className="w-12 h-12 rounded" />
+                                    </NavLink>
+                                 )
+                              }
+                           </Await>
+                        </Suspense>
+                     </div>
+                  );
                case "logo":
                   return (
-                     <div key={utility} className="flex items-center group">
-                        <NavLink 
-                           to="/Notification"
-                           className= {
-                                 [
-                                    "before:block before:w-1 before:bg-black before:absolute before:left-0 before:rounded-r-full before:transition-all",
-                                    "flex w-12 h-12 items-center justify-center rounded",
-                                 ].join(" ")
-                           }
-                        >
-                           <div className="w-8 h-8">
-                              <img src={props.logo}/>
-                           </div>
-                        </NavLink>
+                     <div key={utility} className="w-full flex flex-col items-center gap-2 mt-2">
+                        <Link to="/Workspace">
+                           <Logo className="fill-gray-800 w-11 h-11"/>
+                        </Link>
+                        <Separator className="w-9 bg-gray-400"/>
                      </div>
                   );
             }
@@ -97,7 +99,7 @@ export default function (props) {
 
          {/* Avatar */}
          <DropdownMenu>
-            <DropdownMenuTrigger className="mt-auto outline-none">
+            <DropdownMenuTrigger className="mt-auto outline-none mb-3">
                <Avatar className="rounded w-12 h-12">
                   <AvatarImage className="rounded" src="https://igithub.com/shadcn.png" />
                   <AvatarFallback className="rounded-lg border border-gray-500 bg-gray-200">

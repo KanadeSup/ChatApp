@@ -20,7 +20,7 @@ export default function({ workspace }) {
                   <AvatarImage src={avatarUrl} />
                   <AvatarFallback className="rounded font-medium"> {toCharacters(name).toUpperCase()} </AvatarFallback>
                </Avatar>
-               <CardTitle className="font-medium text-xl"> {name} </CardTitle>
+               <CardTitle className="font-medium text-xl text-ellipsis truncate"> {name} </CardTitle>
                <CardDescription>
                   10 members
                </CardDescription>

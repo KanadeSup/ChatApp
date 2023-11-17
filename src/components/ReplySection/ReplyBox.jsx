@@ -12,7 +12,7 @@ export default function ReplyBox() {
 
   return (
     <div
-      style={{ height: "calc(100vh - 5rem)"}}
+      style={{ height: "calc(100vh - 6rem)"}}
       className="flex flex-col overflow-y-scroll"
     >
       <MessageReply />

@@ -1,5 +1,4 @@
-import UtilityBar from "/components/UtilityBar"
-import SideBar from "./SideBar"
+import SideBar from "./Sidebar"
 import { Link, Outlet, useLoaderData, useMatch, useParams } from "react-router-dom"
 import { Separator } from "@/components/ui/separator"
 import { Suspense } from "react"
@@ -7,23 +6,19 @@ import {  XCircle } from "lucide-react"
 
 
 export default function() {
-   const { workspaceId } = useParams()
+   const { workspaceId, channelId } = useParams()
    const sidebarItems = [
       {
          title: "Overview",
-         to: `/Workspace/${workspaceId}/WorkspaceSetting`,
+         to: `/Workspace/${workspaceId}/${channelId}/ChannelSetting`,
       },
       {
-         title: "Members",
+         title: "Privacy",
+         to: `/Workspace/${workspaceId}/${channelId}/ChannelSetting/Privacy`,
+      },
+      {
+         title: "Permisson",
          to: `/Workspace/${workspaceId}/WorkspaceSetting/Members`,
-      },
-      {
-         title: "Invites",
-         to: `/Workspace/${workspaceId}/WorkspaceSetting/Invites`,
-      },
-      {
-         title: "Permisson & Role",
-         to: `/Workspace/${workspaceId}/WorkspaceSetting/Role`,
       },
    ]
    return (
@@ -32,9 +27,9 @@ export default function() {
             <div className="w-full">
                <div className="flex justify-between">
                   <div className="space-y-0.5">
-                     <h2 className="text-2xl font-bold"> Workspace Settings </h2>
+                     <h2 className="text-2xl font-bold"> Channel Settings </h2>
                      <p className="text-muted-foreground">
-                        Manage your workspace settings and invite member
+                        Manage your channel settings and invite member
                      </p>
                   </div>
                   <Link 
@@ -47,7 +42,9 @@ export default function() {
             </div>
             <div className="flex gap-10 flex-wrap">
                <SideBar items={sidebarItems} />
-               <Outlet />
+               <Suspense>
+                  <Outlet />
+               </Suspense>
             </div>
          </div>
       </div>
