@@ -9,6 +9,7 @@ import signUp from "./signUp"
 import verifyRegister from "./verifyRegister"
 import getOTP from "./getOTP"
 import forgotPassword from "./forgotPassword"
+import loginGoogle from "./loginGoogle"
 import getChannelList from "./getChannelList"
 import deleteChannel from "./deleteChannel"
 import getChannel from "./getChannel"
@@ -28,5 +29,6 @@ export {
    forgotPassword, 
    createChannel, 
    getChannelList, 
-   deleteChannel 
+   deleteChannel , 
+   loginGoogle,
 }
