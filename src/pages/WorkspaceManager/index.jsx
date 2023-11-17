@@ -5,7 +5,7 @@ import WSection from './WorkspaceSection'
 export default function() {
    return (
       <div className="flex flex-row min-h-screen items-stretch">
-         <UtilityBar colleague notification/>
+         <UtilityBar logo colleague notification/>
          <WSection />
       </div>
    )

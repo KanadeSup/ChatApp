@@ -4,29 +4,29 @@ import { AccountSvg } from '/assets/img/SettingSvg'
 import { buttonVariants, Button } from "@/components/ui/button"
 import { Form } from "react-router-dom"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+   AlertDialog,
+   AlertDialogAction,
+   AlertDialogCancel,
+   AlertDialogContent,
+   AlertDialogDescription,
+   AlertDialogFooter,
+   AlertDialogHeader,
+   AlertDialogTitle,
+   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
 function AcceptButton({ state }) {
    if (state !== "idle") return (
       <AlertDialogAction type="submit" disabled> 
          <Loader2 className="animate-spin mr-2 h-4 w-4"/>
-         Continue
+         Delete
       </AlertDialogAction>
    )
    else return (
-         <Button type="submit" name="type" value="delete">
-            Continue
-         </Button>
-      )
+      <Button type="submit" name="type" value="delete">
+         Delete
+      </Button>
+   )
 }
 function CancelButton({ state }) {
    if (state !== "idle") return <AlertDialogCancel disabled className="mr-2"> Cancel </AlertDialogCancel>
@@ -34,7 +34,7 @@ function CancelButton({ state }) {
 }
 export default function({ items }) {
    const navigation = useNavigation()
-   const { workspaceId } = useParams()
+   const { workspaceId, channelId } = useParams()
    return(
       <nav className="flex-shrink-0 w-full flex lg:flex-col lg:w-[13%] items-stretch gap-1">
          {
@@ -65,7 +65,7 @@ export default function({ items }) {
                      "justify-start hover:bg-transparent hover:underline text-red-500 hover:text-red-500 cursor-pointer font-extrabold text-lg"
                   ].join(" ")
                }>
-                  Delete Workspace
+                  Delete Channel
                </span>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -73,12 +73,12 @@ export default function({ items }) {
                   <AlertDialogTitle> Are you absolutely sure? </AlertDialogTitle>
                   <AlertDialogDescription>
                      This action cannot be undone. This will permanently delete your
-                     workspace and cannot be reverted
+                     channel and cannot be reverted
                   </AlertDialogDescription>
                </AlertDialogHeader>
                <AlertDialogFooter>
-                  <Form method="POST">
-                     <input type="hidden" value={workspaceId} name="workspaceid"/>
+                  <Form method="POST" action={`/Workspace/${workspaceId}/${channelId}/ChannelSetting`}>
+                     <input type="hidden" value={workspaceId} name="cid"/>
                      <CancelButton state={navigation.state}/>
                      <AcceptButton state={navigation.state}/>
                   </Form>

@@ -1,19 +1,16 @@
 import baseUrl from './baseUrl'
 import apiKey from './apiKey'
 import useTokenStore from '/storages/useTokenStore'
+import myFetch from './myFetch'
 
 export default async function (id) {
    const token = localStorage.getItem('token')
-   const res = await fetch(baseUrl(`Workspace/${id}`), {
-      method: "GET",
-      headers: {
-         'accept': 'application/json',
-         'x-apikey': apiKey,
-         'Authorization': "Bearer " + token,
-      }
+   const res = await myFetch({
+      path: `Workspace/${id}`,
+      method:"GET",
    })
    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${res.status}`);
    }
    const workspace = await res.json()
    return workspace

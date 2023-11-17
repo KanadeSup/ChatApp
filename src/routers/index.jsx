@@ -4,6 +4,7 @@ import workspace from './workspace.jsx'
 import colleagueChat from './colleagueChat.jsx'
 import userSetting from './userSetting.jsx'
 import notification from './notification.jsx'
+import channel from './channel.jsx'
 
 export default createBrowserRouter([
    ...auth,
@@ -11,4 +12,5 @@ export default createBrowserRouter([
    ...colleagueChat,
    ...userSetting,
    ...notification,
+   ...channel,
 ])

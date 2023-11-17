@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator"
-import { Form, Link } from 'react-router-dom'
+import { Await, Form, Link, useLoaderData, useParams } from 'react-router-dom'
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,17 +8,74 @@ import { Switch } from "@/components/ui/switch"
 import { Avatar } from "@/components/ui/avatar"
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
 import { toCharacters } from '/utils/ParseName'
-import { useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useOutletContext } from "react-router-dom"
+import { getWorkspace, updateWorkspace } from '/api'
+import { Check, Loader2 } from "lucide-react"
+import { useToast } from "@/components/ui/use-toast"
+import { Toaster } from "@/components/ui/toaster"
 
 export default function() {
-   const workspace = useOutletContext()
-   const [ name, setName ] = useState(workspace.name)
-   const [ description, setDescription ] = useState(workspace.description)
-   const [logo, setLogo] = useState(workspace.avatarUrl)
+   const { toast } = useToast()
+   const [workspace, setWorkspace] = useState(null)
+   const [name, setName] = useState("")
+   const [description, setDescription] = useState("")
+   const [logo, setLogo] = useState("")
+   const { workspaceId } = useParams()
+   const [defaultValue, setDefaultValue] = useState({
+      name: "",
+      description: "",
+      logo: "",
+   })
 
+   useEffect(()=> {
+      const fetchData = async() => {
+         const data = await getWorkspace(workspaceId)
+         setWorkspace(data)
+         setName(data.name)
+         setDescription(data.description)
+         setLogo(data.avatarUrl)
+         setDefaultValue({
+            name: data.name,
+            description: data.description,
+            logo: data.avatarUrl
+         })
+      }
+      fetchData()
+   },[])
+
+   if(workspace === null) return (
+      <div className="flex-grow self-stretch flex justify-center items-center">
+         <Loader2 className="w-14 h-14 animate-spin stroke-gray-400"/>        
+      </div>
+   )
    return (
-      <Form method="POST" encType="multipart/form-data">
+      <form method="POST" encType="multipart/form-data"
+         onSubmit={async (e)=>{
+            e.preventDefault()
+            document.querySelector(".loader").classList.remove("hidden")
+            document.querySelector(".submit-but").setAttribute("disabled","")
+            document.querySelector(".reset-but").setAttribute("disabled","")
+            const logoObj = document.querySelector(".workspace-logo").files[0]
+            await updateWorkspace(workspaceId, logoObj, name, description)
+            document.querySelector(".loader").classList.add("hidden")
+            document.querySelector(".submit-but").removeAttribute("disabled")
+            document.querySelector(".reset-but").removeAttribute("disabled")
+            setDefaultValue({
+               name: name.trim(),
+               description: description.trim()
+            })
+            toast({
+               duration: 1000,
+               title: (
+                  <p className="text-green-600 flex items-center">
+                     <Check className="w-6 h-6 stroke-green-600 mr-2"/>
+                     Update successfully!
+                  </p>
+               )
+            })
+         }}
+      >
          <div className="space-y-5 w-[800px]">
             <div>
                <h1 className="text-lg font-medium"> Overview </h1>
@@ -31,10 +88,10 @@ export default function() {
                      <div className="w-20 h-20 border border-gray-500 rounded-lg">
                         <label className="cursor-pointer">
                            <Avatar className="w-20 h-20 border border-gray-500 rounded-lg">
-                              <AvatarImage src={logo}/>
+                              <AvatarImage src={logo} />
                               <AvatarFallback className="w-20 h-20"> {toCharacters(name).trim().toUpperCase()} </AvatarFallback>
                            </Avatar>
-                           <input type="file" className="hidden" name="logo"
+                           <input type="file" className="hidden workspace-logo" name="logo"
                               onChange={(e) => {
                                  e.target.files[0] && setLogo(URL.createObjectURL(e.target.files[0]))
                               }}
@@ -43,11 +100,11 @@ export default function() {
                      </div>
                      {
                         logo !== workspace.avatarUrl && 
-                        <span className="font-bold text-sm cursor-pointer"
-                           onClick={()=>setLogo(workspace.avatarUrl)}
-                        > 
-                           remove 
-                        </span>
+                           <span className="font-bold text-sm cursor-pointer"
+                              onClick={()=>setLogo(workspace.avatarUrl)}
+                           > 
+                              remove 
+                           </span>
                      }
                   </div>
                   <p className="text-muted-foreground text-sm italic"> We recommend an image of at least 512x512 for the server. </p>
@@ -79,22 +136,36 @@ export default function() {
             </div>
             {/* Footer */}
             <div className="flex justify-end gap-5 pt-10">
-               <Button variant="ghost" disabled> Reset </Button>
+               <Button variant="ghost"
+                  className="reset-but"
+                  onClick={(e)=>{
+                     setLogo(defaultValue.logo)
+                     setName(defaultValue.name)
+                     setDescription(defaultValue.description)
+                     e.preventDefault()
+                  }}
+               > 
+                  Reset
+               </Button>
                <Button 
+                  className="submit-but"
                   type="submit"
                   disabled={ 
+                     workspace !== null &&
                      (name.trim().length <= 5
-                     || name.trim() === workspace.name)
-                     && description === workspace.description
-                     && (logo === workspace.avatarUrl)
+                        || name.trim() === workspace.name)
+                        && description === workspace.description
+                        && (logo === workspace.avatarUrl)
                   }
                   name="workspaceid"
                   value={workspace.id}
                > 
+                  <Loader2 className="loader mr-2 h-4 w-4 animate-spin hidden" />
                   Save change 
                </Button>
             </div>
+            <Toaster />
          </div>
-      </Form>
+      </form>
    )
 }

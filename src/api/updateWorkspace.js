@@ -1,26 +1,24 @@
-import baseUrl from "./baseUrl";
-import apiKey from "./apiKey";
+import myFetch from "./myFetch"
 
 export default async (id, logo, name, description) => {
-   const token = localStorage.getItem('token')
-   await fetch(`https://api.firar.live/api/Workspace/${id}/?Name=${name}&Description=${description}`, {
+   const res = await myFetch({
+      path: `Workspace/${id}`,
       method: "PUT",
       headers: {
-         'accept': 'application/json',
-         'x-apikey': apiKey,
-         'Authorization': token,
+         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+         "name": name.trim(),
+         "description": description.trim()
+      })
    })
    if(logo.size === 0) return
+   console.log("done")
    const formData = new FormData()
    formData.append("Avatar", logo, "image")
-   await fetch(`https://api.firar.live/api/Workspace/avatar?id=${id}`, {
+   await myFetch({
+      path: `Workspace/${id}/avatar`,
       method: "PUT",
-      headers: {
-         'accept': 'application/json',
-         'x-apikey': apiKey,
-         'Authorization': token,
-      },
       body: formData
    })
 };

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Emoji from "/components/Emoij";
+import { ChevronRight } from "lucide-react";
 
 export default function Message(props) {
   const [showEmoij, setShowEmoij] = useState(false);
@@ -11,11 +12,11 @@ export default function Message(props) {
 
   return (
     <div
-      className="mx-2 border-b border-gray-300 relative group"
+      className="mx-2 relative group"
       onMouseLeave={() => setShowEmoij(false)}
     >
       <div
-        className="flex w-full my-2 hover:bg-gray-100 rounded-md p-3 mb-4"
+        className="flex w-full hover:bg-gray-100 rounded-md p-1"
         style={{ fontFamily: "'Roboto', Arial, sans-serif" }}
       >
         <div className="flex-shrink-0 mr-2">
@@ -25,10 +26,10 @@ export default function Message(props) {
           />
         </div>
 
-        <div className="">
-          <div className="flex relative bottom-1">
-            <span className="font-bold text-[15px]">username</span>
-            <span className="text-gray-500 text-xs ml-2 flex items-center">
+        <div className="relative bottom-1">
+          <div className="flex items-baseline">
+            <span className="font-bold text-sm cursor-pointer"> Username </span>
+            <span className="text-gray-500 font-medium text-sm ml-2 cursor-default">
               28/08/2023 1:50 AM
             </span>
           </div>
@@ -42,7 +43,7 @@ export default function Message(props) {
 
           {/*-- Reply --*/}
           <div
-            className="flex relative select-none -left-1 flex-row mt-1 w-1/2 min-w-[240px] py-1 rounded-md cursor-pointer border border-transparent hover:border-gray-400 transition-all duration-200"
+            className="flex relative select-none -left-1 flex-row mt-1 w-1/2 min-w-[240px] max-w-[300px] py-[5px] rounded-md cursor-pointer border border-transparent hover:border-gray-400 transition-all duration-200 hover:bg-white"
             onMouseEnter={() => setIsHoverViewReply(true)}
             onMouseLeave={() => setIsHoverViewReply(false)}
             onClick={() => {
@@ -52,7 +53,7 @@ export default function Message(props) {
               }
             }}
           >
-            <div className="text-xs text-bold-blue ml-1 mr-2 hover:underline">
+            <div className="text-xs font-bold text-bold-blue ml-1 mr-2 hover:underline">
               1 replies
             </div>
             {isHoverViewReply ? (
@@ -60,14 +61,7 @@ export default function Message(props) {
                 <div className="text-xs text-gray-500 flex-grow">
                   View reply
                 </div>
-                <svg
-                  className="w-3 h-3 mt-0.5 mr-3"
-                  viewBox="0 0 512 512"
-                  fill="#000000"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M214.78,478l-20.67-21.57L403.27,256,194.11,55.57,214.78,34,446.46,256ZM317.89,256,86.22,34,65.54,55.57,274.7,256,65.54,456.43,86.22,478Z" />
-                </svg>
+               <ChevronRight className="w-4 h-4"/>
               </>
             ) : (
               <div className="text-xs text-gray-500">
@@ -139,7 +133,7 @@ export default function Message(props) {
 
         {/* Reply */}
         <div
-          className="hover:bg-gray-200 p-1"
+          className="hover:bg-gray-100 p-1"
           onMouseEnter={() => setIsHoveredReply(true)}
           onMouseLeave={() => setIsHoveredReply(false)}
         >
@@ -214,7 +208,6 @@ export default function Message(props) {
           {isHoveredDelete && (
             <>
               <div className="absolute z-20 w-2 h-2 right-3 bottom-9 bg-black transform rotate-45"></div>
-
               <div className="absolute flex justify-center items-center w-28 h-6 z-20 bottom-10 right-0 bg-black text-white text-xs rounded-md">
                 <span>Delete this message</span>
               </div>

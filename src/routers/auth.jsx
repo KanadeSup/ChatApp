@@ -29,7 +29,7 @@ const loginLoader = async function() {
          if (status === 401) {
             return null
          }
-         return redirect("/");
+         return redirect("/Workspace");
       }
    }
 

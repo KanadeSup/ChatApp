@@ -5,7 +5,6 @@ export default async (username, password) => {
     try {
         console.log(username);
         const response = await fetch(baseUrl("Auth/signin"), {
-            
             method: "POST",
             headers: {
                 "x-apikey": apikey,
@@ -17,7 +16,6 @@ export default async (username, password) => {
                 "password": password
             })
         });
-        console.log("djksdjds", response);
         return response.json();
     } catch (error) {
         return error;

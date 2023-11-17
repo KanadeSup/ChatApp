@@ -29,7 +29,7 @@ export default function Login() {
       localStorage.setItem("tokenTimeOut", response.tokenTimeOut);
       localStorage.setItem("refreshToken", response.refreshToken);
 
-      navigate("/");
+      navigate("/Workspace");
     } catch (error) {
       console.error(error);
       setError("An error occurred while logging in.");
@@ -60,7 +60,7 @@ export default function Login() {
                 <input
                   type="text"
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
-                  placeholder=""
+                  placeholder="putinlord123"
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
@@ -74,6 +74,7 @@ export default function Login() {
                 <input
                   type="password"
                   name="password"
+                  placeholder="***************"
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
                   onChange={(e) => setPassword(e.target.value)}
                 />
