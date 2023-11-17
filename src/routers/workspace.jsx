@@ -24,7 +24,7 @@ async function createWorkspaceAction({ request, params }) {
 async function deleteWorkspaceAction({ request, params }) {
    const formData = await request.formData();
    await deleteWorkspace(formData.get("workspaceid"))
-   return redirect("./")
+   return redirect("/Workspace")
 }
 async function updateWorkspaceAction({ request, params }) {
    const formData = await request.formData();

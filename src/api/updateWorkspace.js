@@ -12,7 +12,7 @@ export default async (id, logo, name, description) => {
          "description": description.trim()
       })
    })
-   if(logo.size === 0) return
+   if(!logo || logo.size === 0) return
    console.log("done")
    const formData = new FormData()
    formData.append("Avatar", logo, "image")

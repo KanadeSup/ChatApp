@@ -63,7 +63,8 @@ export default function() {
             document.querySelector(".reset-but").removeAttribute("disabled")
             setDefaultValue({
                name: name.trim(),
-               description: description.trim()
+               description: description.trim(),
+               logo: logo,
             })
             toast({
                duration: 1000,
@@ -153,9 +154,9 @@ export default function() {
                   disabled={ 
                      workspace !== null &&
                      (name.trim().length <= 5
-                        || name.trim() === workspace.name)
-                        && description === workspace.description
-                        && (logo === workspace.avatarUrl)
+                        || name.trim() === defaultValue.name)
+                        && description === defaultValue.description
+                        && (logo === defaultValue.logo)
                   }
                   name="workspaceid"
                   value={workspace.id}

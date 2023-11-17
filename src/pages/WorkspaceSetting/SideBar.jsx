@@ -19,12 +19,12 @@ function AcceptButton({ state }) {
    if (state !== "idle") return (
       <AlertDialogAction type="submit" disabled> 
          <Loader2 className="animate-spin mr-2 h-4 w-4"/>
-         Continue
+         Delete
       </AlertDialogAction>
    )
    else return (
          <Button type="submit" name="type" value="delete">
-            Continue
+            Delete
          </Button>
       )
 }

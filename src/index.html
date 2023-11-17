@@ -9,11 +9,34 @@
             margin: 0;
             box-sizing: border-box;
          }
-      </style>
+         .loader-root-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+         }
+         .loader-root {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid black;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spinroot 2s linear infinite;
+         }
+         @keyframes spinroot {
+            0%  { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+         }
+         </style>
       <script src="https://accounts.google.com/gsi/client"></script>
    </head>
    <body>
-      <div id="root"> Web is rendering </div>
+      <div id="root">
+         <div class="loader-root-container">
+            <div class="loader-root"></div>
+         </div>
+      </div>
    </body>
    <script type="module" src="./App.jsx"></script>
 </html>
