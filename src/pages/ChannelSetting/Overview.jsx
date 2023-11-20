@@ -15,7 +15,7 @@ import { Toaster } from "@/components/ui/toaster"
 
 export default function() {
    const { toast } = useToast()
-   const { channelId } = useParams()
+   const { channelId, workspaceId } = useParams()
    const [channel, setChannel] = useState(null)
    const [name, setName] = useState("")
    const [description, setDescription] = useState("")
@@ -50,7 +50,7 @@ export default function() {
                document.querySelector(".loader").classList.remove("hidden")
                document.querySelector(".submit-but").setAttribute("disabled","")
                document.querySelector(".reset-but").setAttribute("disabled","")
-               await updateChannel(channelId,name,description)
+               await updateChannel(workspaceId,channelId,name,description)
                document.querySelector(".loader").classList.add("hidden")
                document.querySelector(".submit-but").removeAttribute("disabled")
                document.querySelector(".reset-but").removeAttribute("disabled")

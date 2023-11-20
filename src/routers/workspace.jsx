@@ -41,7 +41,7 @@ async function channelAction({ request, params }) {
       return "create " + id
    }
    if(formType === "delete") {
-      const { id } = await deleteChannel(formData.get("cid"))
+      const { id } = await deleteChannel(workspaceId, formData.get("cid"))
       return "delete " + id
    }
 }

@@ -46,7 +46,7 @@ export default function({ children, cid }) {
                </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-               <Form method="POST" action="">
+               <Form method="DELETE">
                   <input type="hidden" name="cid" value={cid} />
                   <CancelButton state={navigation.state} />
                   <AcceptButton state={navigation.state} />

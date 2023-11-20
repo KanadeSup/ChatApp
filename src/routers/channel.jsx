@@ -7,8 +7,8 @@ import { redirect } from "react-router-dom"
 const deleteChannelAction = async function({ request, params }) {
    const { workspaceId, channelId } = params
    const formData = await request.formData();
-
-   await deleteChannel(formData.get("cid"))
+   console.log(workspaceId, formData.get("cid"))
+   await deleteChannel(workspaceId, channelId)
    return redirect(`/Workspace/${workspaceId}`)
 }
 
