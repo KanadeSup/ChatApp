@@ -1,6 +1,3 @@
-import baseUrl from "./baseUrl";
-import apiKey from "./apiKey";
-import useTokenStore from "/storages/useTokenStore"
 import myFetch from './myFetch'
 
 export default async (name, avatar) => {

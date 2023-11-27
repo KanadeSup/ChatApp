@@ -16,3 +16,4 @@ export default async function({ path, params="", method="GET", headers={}, auth=
    }
    return res
 }
+

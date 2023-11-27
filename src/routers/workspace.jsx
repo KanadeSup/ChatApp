@@ -4,8 +4,12 @@ import WSetting from '/pages/WorkspaceSetting'
 import Overview from '/pages/WorkspaceSetting/Overview'
 import MemberManage from '/pages/WorkspaceSetting/MemberManage'
 import InviteMember from '/pages/WorkspaceSetting/InviteMember'
+import Roles from '/pages/WorkspaceSetting/Roles'
+import RoleCreator from '/pages/WorkspaceSetting/RoleCreator'
+import RoleEditor from '/pages/WorkspaceSetting/RoleEditor'
 import Homepage from '/pages/Homepage'
-import { getWorkspaceList, createWorkspace, getWorkspace, deleteWorkspace, updateWorkspace, createChannel,getChannelList, deleteChannel} from '/api'
+import { getWorkspaceList, createWorkspace, getWorkspace, deleteWorkspace, updateWorkspace, createChannel,getChannelList, deleteChannel, deleteWorkspaceRole, getWorkspaceRoleById} from '/api'
+import { getWorkspaceRoleList} from "/api"
 import { defer, redirect, useNavigate, useParams } from 'react-router-dom'
 
 const workspaceListLoader = async function() {
@@ -45,6 +49,17 @@ async function channelAction({ request, params }) {
       return "delete " + id
    }
 }
+async function deleteRoleAction({request,params}) {
+   const formData = await request.formData();
+   const roleId = formData.get("roleid")
+   const { workspaceId } = params
+   await deleteWorkspaceRole(workspaceId, roleId)
+   return roleId
+}
+async function workspaceRolesLoader({params}) {
+   const { workspaceId } = params
+   return defer({roleList: getWorkspaceRoleList(workspaceId)})
+}
 
 export default [
    {
@@ -80,6 +95,20 @@ export default [
          {
             path: "Invites",
             element: <InviteMember />
+         },
+         {
+            path: "Role",
+            element: <Roles />,
+            action: deleteRoleAction,
+            loader: workspaceRolesLoader,
+         },
+         {
+            path: "/Workspace/:workspaceId/WorkspaceSetting/Role/CreateRole",
+            element: <RoleCreator />,
+         },
+         {
+            path: "/Workspace/:workspaceId/WorkspaceSetting/Role/:roleId",
+            element: <RoleEditor />,
          }
       ]
    },

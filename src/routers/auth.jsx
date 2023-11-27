@@ -25,14 +25,9 @@ const loginLoader = async function() {
       }
 
       if (currentTime < expiryTime) {
-         const [status, wlist] = await getWorkspaceList()
-         if (status === 401) {
-            return null
-         }
          return redirect("/Workspace");
       }
    }
-
    return null;
 }
 
