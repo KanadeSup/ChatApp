@@ -6,6 +6,9 @@ export default async (id) => {
    const formData = new FormData()
    const res = await myFetch({
       path:`Workspace/${id}`,
-      method: "DELETE"
+      method: "DELETE",
+      headers: {
+         "workspace-id": id,
+      },
    })
 };

@@ -18,7 +18,7 @@ export default function() {
       },
       {
          title: "Permisson",
-         to: `/Workspace/${workspaceId}/WorkspaceSetting/Members`,
+         to: `/Workspace/${workspaceId}/${channelId}/ChannelSetting/Role`,
       },
    ]
    return (

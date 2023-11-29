@@ -6,6 +6,7 @@ export default async (id, logo, name, description) => {
       method: "PUT",
       headers: {
          "Content-Type": "application/json",
+         "workspace-id": id,
       },
       body: JSON.stringify({
          "name": name.trim(),

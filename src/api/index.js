@@ -14,7 +14,20 @@ import getChannelList from "./getChannelList"
 import deleteChannel from "./deleteChannel"
 import getChannel from "./getChannel"
 import updateChannel from "./updateChannel"
+import getWorkspaceRoleList from "./getWorkspaceRoleList"
+import getWorkspacePermissions from "./getWorkspacePermissions"
+import createWorkspaceRole from "./createWorkspaceRole"
+import deleteWorkspaceRole from "./deleteWorkspaceRole"
+import getWorkspaceRoleById from "./getWorkspaceRoleById"
+import updateWorkspaceRole from "./updateWorkspaceRole"
+
 export { 
+   updateWorkspaceRole,
+   getWorkspaceRoleById,
+   deleteWorkspaceRole,
+   createWorkspaceRole,
+   getWorkspacePermissions,
+   getWorkspaceRoleList,
    updateChannel,
    getChannel,
    login, 
