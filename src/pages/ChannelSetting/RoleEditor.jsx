@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem, } from "@/components/ui/radio-group"
 import { useEffect, useState } from "react";
-import { getWorkspacePermissions, updateWorkspaceRole, getWorkspaceRoleById } from "/api"
+import { getChannelPermissions, updateChannelRole, getChannelRole } from "/api/channel"
 import { useToast } from "@/components/ui/use-toast"
 
 const roleColors = [
@@ -23,13 +23,13 @@ export default function() {
    const [arePermissionEnable, setArePermissionEnable] = useState({})
    const [defaultValue, setDefaultValue] = useState({})
    const [color, setColor] = useState(roleColors[0])
-   const { workspaceId, roleId } = useParams()
+   const { channelId, roleId } = useParams()
    const navigate = useNavigate()
    const { toast } = useToast()
 
    useEffect(()=>{
       async function fetchData() {
-         const data = await getWorkspaceRoleById(workspaceId,roleId)
+         const data = await getChannelRole(channelId,roleId)
          const areEnable = {}
          data.permissions.map(p => areEnable[p.id] = p.isEnabled)
          setRole(data)
@@ -70,7 +70,7 @@ export default function() {
             }
             document.querySelector(".loader").classList.toggle("hidden")
             document.querySelector(".submit").disabled = true
-            const res = await updateWorkspaceRole(workspaceId, roleId, roleData)
+            const res = await updateChannelRole(channelId, roleId, roleData)
             toast({
                title: <p className="text-green-500">Successfully update role</p>,
                duration: 1500,

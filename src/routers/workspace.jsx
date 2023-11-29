@@ -103,11 +103,11 @@ export default [
             loader: workspaceRolesLoader,
          },
          {
-            path: "/Workspace/:workspaceId/WorkspaceSetting/Role/CreateRole",
+            path: "Role/CreateRole",
             element: <RoleCreator />,
          },
          {
-            path: "/Workspace/:workspaceId/WorkspaceSetting/Role/:roleId",
+            path: "Role/:roleId",
             element: <RoleEditor />,
          }
       ]

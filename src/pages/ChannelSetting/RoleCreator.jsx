@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Loader, Loader2, Search, Users } from "lucide-react";
+import { ArrowLeft, Check, Loader2, Search, Users } from "lucide-react";
 import { Form, Link, useNavigate, useParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
@@ -9,57 +9,39 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem, } from "@/components/ui/radio-group"
 import { useEffect, useState } from "react";
-import { getWorkspacePermissions, updateWorkspaceRole, getWorkspaceRoleById } from "/api"
+import { getChannelPermissions, createChannelRole } from "/api/channel"
 import { useToast } from "@/components/ui/use-toast"
 
 const roleColors = [
    "#1ABC9C", "#2ECC71", "#3498DB", "#9B59B6", "#E91E63", "#F1C40F", "#E67E22", "#E74C3C", "#95A5A6", "#607D8B", "#11806A", "#1F8B4C", "#206694", "#71368A", "#AD1457", "#C27C0E", "#A84300", "#992D22", "#979C9F", "#546E7A"
 ]
 export default function() {
-   const [name, setName] = useState("")
+   const [name, setName] = useState("New role")
    const [description, setDescription] = useState("")
-   const [role, setRole] = useState(null)
-   const [permissionList, setPermissionList] = useState([])
-   const [arePermissionEnable, setArePermissionEnable] = useState({})
-   const [defaultValue, setDefaultValue] = useState({})
+   const [permissionList, setPermissionList] = useState(null)
+   const [enablePermissionList,setEnablePermissionList] = useState({})
    const [color, setColor] = useState(roleColors[0])
-   const { workspaceId, roleId } = useParams()
+   const { channelId } = useParams()
    const navigate = useNavigate()
    const { toast } = useToast()
 
    useEffect(()=>{
       async function fetchData() {
-         const data = await getWorkspaceRoleById(workspaceId,roleId)
-         const areEnable = {}
-         data.permissions.map(p => areEnable[p.id] = p.isEnabled)
-         setRole(data)
-         setName(data.name)
-         setColor(data.color)
-         setDescription(data.description)
-         setPermissionList(data.permissions)
-         setArePermissionEnable(areEnable)
-         setDefaultValue({
-            name: data.name,
-            description: data.description,
-            color: data.color,
-            permissions: {...areEnable},
-         })
+         const data = await getChannelPermissions()
+         setPermissionList(data)
+         data.map(p=>enablePermissionList[p.id]=p.isEnabled)
+         setEnablePermissionList(enablePermissionList)
       }
       fetchData()
    }, [])
 
-   if(!role) {
-      return (
-         <Loader2 className="animate-spin"/>
-      )
-   }
    return (
       <Form method="post"
          onSubmit={async (e)=>{
             e.preventDefault()
             const enableList = []
-            Object.keys(arePermissionEnable).forEach(key =>{
-               if(arePermissionEnable[key])
+            Object.keys(enablePermissionList).forEach(key =>{
+               if(enablePermissionList[key])
                   enableList.push({id: key})
             })
             const roleData = {
@@ -70,9 +52,9 @@ export default function() {
             }
             document.querySelector(".loader").classList.toggle("hidden")
             document.querySelector(".submit").disabled = true
-            const res = await updateWorkspaceRole(workspaceId, roleId, roleData)
+            const res = await createChannelRole(channelId, roleData)
             toast({
-               title: <p className="text-green-500">Successfully update role</p>,
+               title: <p className="text-green-500">Successfully Create new role</p>,
                duration: 1500,
             })
             navigate("..", {relative:"path"})
@@ -125,48 +107,28 @@ export default function() {
                      }
                   </RadioGroup>
                </div>
-               <div className="flex justify-end pt-10 gap-3">
-                  <Button type="button" variant="ghost"
-                     onClick={()=> {
-                        setName(defaultValue["name"])
-                        setDescription(defaultValue["description"])
-                        setColor(defaultValue["color"])
-                        setArePermissionEnable(defaultValue["permissions"])
-                     }}
-                  >
-                     Reset
-                  </Button>
+               <div className="flex justify-end pt-10 gap-5">
                   <Button type="submit" name="type" value="create" className="submit"
-                     disabled={
-                        name.trim().length === 0
-                           || (
-                              name.trim() === defaultValue["name"]
-                              && description === defaultValue["description"]
-                              && color === defaultValue["color"]
-                              && JSON.stringify(arePermissionEnable) === JSON.stringify(defaultValue["permissions"])
-                           )
-                     }
+                     disabled={name.trim().length === 0}
                   > 
                      <Loader2 className="loader w-4 h-4 animate-spin mr-3 hidden"/>
-                     Save Change
+                     Create Role
                   </Button>
                </div>
             </TabsContent>
             <TabsContent value="permissions" className="space-y-5">
                {
                   permissionList ?
-                     permissionList
-                     .sort((a,b)=>a.name > b.name)
-                     .map((permission) => {
+                     permissionList.map((permission) => {
                         return (
                            <div className="" key={permission.id}>
                               <div className="flex justify-between items-center">
                                  <h1 className="text-lg font-medium"> {permission.name} </h1>
                                  <Switch name="permissiond" 
-                                    checked={arePermissionEnable[permission.id]}
+                                    checked={enablePermissionList[permission.id]}
                                     onCheckedChange={(checked) => {
-                                       arePermissionEnable[permission.id] = checked
-                                       setArePermissionEnable({...arePermissionEnable})
+                                       enablePermissionList[permission.id] = checked 
+                                       setEnablePermissionList({...enablePermissionList})
                                     }}
                                  />
                               </div>

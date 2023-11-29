@@ -19,8 +19,10 @@ import getWorkspacePermissions from "./getWorkspacePermissions"
 import createWorkspaceRole from "./createWorkspaceRole"
 import deleteWorkspaceRole from "./deleteWorkspaceRole"
 import getWorkspaceRoleById from "./getWorkspaceRoleById"
+import updateWorkspaceRole from "./updateWorkspaceRole"
 
 export { 
+   updateWorkspaceRole,
    getWorkspaceRoleById,
    deleteWorkspaceRole,
    createWorkspaceRole,
