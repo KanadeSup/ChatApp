@@ -64,7 +64,7 @@ export default function() {
             <Link to=".." relative="path">
                <ArrowLeft className="w-6 h-6 cursor-pointer"/>
             </Link>
-            <h1 className="font-medium text-lg"> Edit Role - NEW ROLE </h1>
+            <h1 className="font-medium text-lg"> Create new role </h1>
          </div>
          <Tabs defaultValue="display" className="w-[600px] mt-5" activationMode="manual">
             <TabsList className="w-full grid grid-cols-3 mb-7">
@@ -119,7 +119,9 @@ export default function() {
             <TabsContent value="permissions" className="space-y-5">
                {
                   permissionList ?
-                     permissionList.map((permission) => {
+                     permissionList
+                     .sort((a,b)=> a.name > b.name)
+                     .map((permission) => {
                         return (
                            <div className="" key={permission.id}>
                               <div className="flex justify-between items-center">

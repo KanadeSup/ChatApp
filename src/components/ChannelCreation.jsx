@@ -16,7 +16,7 @@ import { Hash, Loader2 } from "lucide-react"
 import { Form, useFetcher, useNavigation, useParams, useSubmit } from "react-router-dom"
 import { useEffect, useState } from "react"
 
-export default function({ children, fetcher }) {
+export default function({ children, fetcher, open, onOpenChange }) {
    const { workspaceId } = useParams()
    const [ name, setName ] = useState("")
    const [ isOpen, setIsOpen ] = useState(false)
@@ -28,7 +28,8 @@ export default function({ children, fetcher }) {
 
    return (
       <Dialog
-         onOpenChange={(open) => setIsOpen(open)}
+         open={open}
+         onOpenChange={onOpenChange}
       >
          <DialogTrigger asChild>
             {children}

@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { toCharacters } from '/utils/ParseName'
 
 export default function({ workspace }) {
-   const { name ,avatarUrl } = workspace
+   const { name ,avatarUrl, members } = workspace
    return(
       <Link to={`/Workspace/${workspace.id}`} className="w-full lg:w-[calc(100%/2-20px*1/2)] xl:w-[calc(100%/3-20px*2/3)] 2xl:w-[calc(25%-20px*3/4)] group">
          <Card className="group-hover:border-black border-[2px] transition-colors h-60">
@@ -22,26 +22,26 @@ export default function({ workspace }) {
                </Avatar>
                <CardTitle className="font-medium text-xl text-ellipsis truncate"> {name} </CardTitle>
                <CardDescription>
-                  10 members
+                  {members.length} members
                </CardDescription>
             </CardHeader>
             <CardContent>
                <div className="flex items-center gap-5">
                   <div className="grid grid-cols-3 w-20">
-                     <Avatar className="rounded">
-                        <AvatarImage src="a" />
-                        <AvatarFallback className="rounded font-medium border border-gray-300"> S </AvatarFallback>
-                     </Avatar>
-                     <Avatar className="rounded">
-                        <AvatarImage src="a" />
-                        <AvatarFallback className="rounded font-medium border border-gray-300"> S </AvatarFallback>
-                     </Avatar>
-                     <Avatar className="rounded">
-                        <AvatarImage src="a" />
-                        <AvatarFallback className="rounded font-medium border border-gray-300"> S </AvatarFallback>
-                     </Avatar>
+                     {
+                        members.map(member=>(
+                           <Avatar key={member.id} className="rounded">
+                              <AvatarImage src={member.picture} />
+                              <AvatarFallback className="rounded font-medium border border-gray-300"> {member.firstName[0].toUpperCase()} </AvatarFallback>
+                           </Avatar>
+                        ))
+                     }
                   </div>
-                  <span className="text-gray-500"> +7 </span>
+                  {
+                     members.length > 3?
+                     <span className="text-gray-500"> +{members.length - 3} </span>
+                     : ""
+                  }
                </div>
             </CardContent>
          </Card>
