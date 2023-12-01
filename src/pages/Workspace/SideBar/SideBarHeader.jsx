@@ -12,8 +12,11 @@ import {
 import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
 import ChannelCreation from "/components/ChannelCreation"
 import { Suspense, useState } from "react";
+import InviteUserDialog  from "/components/InviteUserDialog"
 
 export default function SideBarHeader({ fetcher, workspace }) {
+   const [openCreate, setOpenCreate] = useState(false)
+   const [openInvite, setOpenInvite] = useState(false)
    return (
       <DropdownMenu>
          <DropdownMenuTrigger asChild>
@@ -44,22 +47,22 @@ export default function SideBarHeader({ fetcher, workspace }) {
                      <span className="font-medium"> Change Workspace </span>
                   </DropdownMenuItem>
                </Link>
-               <DropdownMenuItem className="cursor-pointer h-9" onClick={()=>{}}>
+               <DropdownMenuItem className="cursor-pointer h-9" onSelect={()=>setOpenInvite(true)}>
                   <UserPlus className="w-4 h-4 mr-3"/>
                   <span className="font-medium"> Invite People to Workspace </span>
                </DropdownMenuItem>
-               <ChannelCreation fetcher={fetcher}>
                   <DropdownMenuItem className="cursor-pointer h-9" 
                      onSelect={(e)=>{
-                        e.preventDefault()
+                        setOpenCreate(true)
                      }}
                   >
                      <Hash className="w-4 h-4 mr-3"/>
                      <span className="font-medium"> Create Channel </span>
                   </DropdownMenuItem>
-               </ChannelCreation>
             </DropdownMenuGroup>
          </DropdownMenuContent>
+         <ChannelCreation fetcher={fetcher} open={openCreate} onOpenChange={setOpenCreate}> </ChannelCreation>
+         <InviteUserDialog open={openInvite} onOpenChange={setOpenInvite}></InviteUserDialog>
       </DropdownMenu>
    );
 }

@@ -113,6 +113,7 @@ export default function() {
                <div className="space-y-1">
                   <Label className="text-md"> Workspace Name </Label>
                   <Input value={name} name="name"
+                     maxLength={50}
                      onChange={(e)=>setName(e.target.value)}
                   />
                   <p className="text-muted-foreground text-sm italic"> Workspace name length must be shorter than 50 character. </p>
