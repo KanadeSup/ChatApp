@@ -10,15 +10,7 @@ export default function ChannelChatBoxContent(props) {
         style={{ height: "calc(100vh - 4rem)" }}
         className="flex flex-col flex-grow"
       >
-        <div className="flex flex-col justify-start overflow-y-scroll min-w-[480px]" >
-          <Message setIsClickedReply={props.setIsClickedReply} setIsClickedChannelUtility={props.setIsClickedChannelUtility}/>
-          <Message setIsClickedReply={props.setIsClickedReply} setIsClickedChannelUtility={props.setIsClickedChannelUtility}/>
-          <Message setIsClickedReply={props.setIsClickedReply} setIsClickedChannelUtility={props.setIsClickedChannelUtility}/>
-          <Message setIsClickedReply={props.setIsClickedReply} setIsClickedChannelUtility={props.setIsClickedChannelUtility}/>
-          <Message setIsClickedReply={props.setIsClickedReply} setIsClickedChannelUtility={props.setIsClickedChannelUtility}/>
-          <Message setIsClickedReply={props.setIsClickedReply} setIsClickedChannelUtility={props.setIsClickedChannelUtility}/>
-          <Message setIsClickedReply={props.setIsClickedReply} setIsClickedChannelUtility={props.setIsClickedChannelUtility}/>
-          <Message setIsClickedReply={props.setIsClickedReply} setIsClickedChannelUtility={props.setIsClickedChannelUtility}/>
+        <div className="flex flex-col justify-start overflow-y-scroll min-w-[480px] h-full" >
           <Message setIsClickedReply={props.setIsClickedReply} setIsClickedChannelUtility={props.setIsClickedChannelUtility}/>
           <Message setIsClickedReply={props.setIsClickedReply} setIsClickedChannelUtility={props.setIsClickedChannelUtility}/>
         </div>
