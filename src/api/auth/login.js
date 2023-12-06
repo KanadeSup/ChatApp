@@ -1,5 +1,5 @@
-import baseUrl from "./baseUrl";
-import apikey from "./apiKey";
+import baseUrl from "../baseUrl";
+import apikey from "../apiKey";
 
 export default async (username, password) => {
     try {

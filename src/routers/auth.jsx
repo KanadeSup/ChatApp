@@ -4,9 +4,8 @@ import GetOTPForgotPassword from '/pages/Auth/GetOTPForgotPassword'
 import ForgotPassword from '/pages/Auth/ForgotPassword'
 import VerifyForgetPassword from '/pages/Auth/VerifyForgetPassword'
 import { redirect } from 'react-router-dom'
-import { getWorkspaceList } from '/api'
 
-const loginLoader = async function() {
+const loginLoader = function() {
    const token = localStorage.getItem("token");
    const tokenTimeOut = localStorage.getItem("tokenTimeOut");
 

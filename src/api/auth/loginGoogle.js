@@ -1,5 +1,5 @@
-import baseUrl from "./baseUrl";
-import apikey from "./apiKey";
+import baseUrl from "../baseUrl";
+import apikey from "../apiKey";
 
 export default async (code) => {
   const response = await fetch(baseUrl("Auth/signin-google?code=") + code, {
