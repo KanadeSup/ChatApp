@@ -37,9 +37,8 @@ export default [
       }
    },
    {
-      accessorKey: "member",
+      accessorKey: "numberOfMembers",
       header: "Members",
-      cell: <p>5</p>
    },
    {
       id: "more",
