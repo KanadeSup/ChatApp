@@ -19,12 +19,43 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Pencil } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { getUserById, updateUser } from "/api"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { DialogClose } from "@radix-ui/react-dialog"
+import { useNavigate } from "react-router-dom"
 
-export default function() {
+
+export default function({ user}) {
+   const [firstName, setFirstName] = useState();
+   const [lastName, setLastName] = useState();
+   const [gender, setGender] = useState();
+   const [phone, setPhone] = useState();
+   const [birthDay, setBirthDay] = useState();
+   const [email, setEmail] = useState();
+
+   const navigate = useNavigate();
+
+   useEffect(() => {
+      const fetchUser = async () => {
+         const data = await getUserById(localStorage.getItem("userId"));
+         setFirstName(data.firstName);
+         setLastName(data.lastName);
+         setGender(data.gender);
+         setPhone(data.phone);
+         setBirthDay(data.birthDay);
+         setEmail(data.email);
+      };
+      fetchUser();
+   }, []);
+   
+   async function handleSave() {
+      console.log("click: ", firstName, lastName, gender, phone, birthDay)
+      await updateUser(user.id, firstName, lastName, gender, phone, email, birthDay);
+      navigate("/UserSetting");
+   }
+
    return (
       <Dialog>
          <DialogTrigger>
@@ -40,19 +71,23 @@ export default function() {
                      <AvatarFallback className="rounded-lg text-3xl"> P </AvatarFallback>
                   </Avatar>
                   <div>
-                     <h1 className="text-xl font-medium"> Putin Lord </h1>
-                     <h2 className="italic text-md text-muted-foreground"> putinlord@gmail.com </h2>
+                     <h1 className="text-xl font-medium"> {lastName} {" "} {firstName} </h1>
+                     <h2 className="italic text-md text-muted-foreground"> {user.email} </h2>
                   </div>
                </div>
             </DialogHeader>
             <div className="grid grid-cols-[80px_50px_auto] grid-flow-row items-center gap-y-3">
-               <Label> Full name </Label>
+               <Label> First name </Label>
                <span> : </span>
-               <Input defaultValue="Putin Adam"/>
+               <Input defaultValue={firstName} onChange={(e) => setFirstName(e.target.value)}/>
+
+               <Label> Last name </Label>
+               <span> : </span>
+               <Input defaultValue={lastName} onChange={(e) => setLastName(e.target.value)}/>
 
                <Label> Gender </Label>
                <span> : </span>
-               <RadioGroup defaultValue="male" className="flex items-center gap-10">
+               <RadioGroup defaultValue={gender ? "male" : "female"} onChange={(e) => setGender(e.target.value)} className="flex items-center gap-10">
                   <div className="flex items-center gap-1">
                      <RadioGroupItem value="male" id="male"/>
                      <Label htmlFor="male"> Male </Label>
@@ -65,18 +100,18 @@ export default function() {
 
                <Label> Phone </Label>
                <span> : </span>
-               <Input defaultValue="0123459559"/>
+               <Input defaultValue={phone} onChange={(e) => setPhone(e.target.value)}/>
 
                <Label> Birthday </Label>
                <span> : </span>
-               <Input type="date" />
+               <Input type="date" defaultValue="2002-06-20" onChange={(e) => setBirthDay(e.target.value)}/>
             </div>
 
             <DialogFooter>
                <DialogClose>
                   <Button variant="secondary"> Cancel </Button>
                </DialogClose>
-               <Button> Save </Button>
+               <Button onClick={handleSave}> Save </Button>
             </DialogFooter>
          </DialogContent>
       </Dialog>

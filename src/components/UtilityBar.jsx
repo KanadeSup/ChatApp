@@ -12,15 +12,23 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Suspense } from "react";
-import workspace from "../routers/workspace";
+import { useState, useEffect } from "react";
+import { getUserById } from "../api";
 
 function showMenu(event) {
    document.querySelector(".user-menu").classList.toggle("hidden");
 }
 export default function (props) {
+   const [user, setUser] = useState({});
    const utilites = Object.keys(props);
    const navigate = useNavigate();
 
+   useEffect(() => {
+      const userId = localStorage.getItem("userId");
+      getUserById(userId).then((data) => {
+         setUser(data);
+      });
+   }, []);
    function handleLogout() {
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
@@ -101,14 +109,14 @@ export default function (props) {
          <DropdownMenu>
             <DropdownMenuTrigger className="mt-auto outline-none mb-3">
                <Avatar className="rounded w-12 h-12">
-                  <AvatarImage className="rounded" src="https://igithub.com/shadcn.png" />
+                  <AvatarImage className="rounded" src={user.picture} />
                   <AvatarFallback className="rounded-lg border border-gray-500 bg-gray-200">
                      <User2 className="stroke-gray-800" />
                   </AvatarFallback>
                </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="absolute left-6 bottom-1 w-48">
-               <DropdownMenuLabel> Putin lord </DropdownMenuLabel>
+               <DropdownMenuLabel> {user.lastName + " " + user.firstName} </DropdownMenuLabel>
                <DropdownMenuSeparator />
                <Link to="/UserSetting">
                   <DropdownMenuItem className="cursor-pointer">
