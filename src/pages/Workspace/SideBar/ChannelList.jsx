@@ -6,7 +6,7 @@ import { useActionData, useFetcher, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getChannelList } from "/api"
 
-export default function ChannelList({ fetcher, name, avatar }) {
+export default function ChannelList({ fetcher, name, avatar, setChannelName }) {
    const [channelList, setChannelList] = useState(null)
    const { workspaceId } = useParams()
    const formCId = useActionData()
@@ -24,12 +24,12 @@ export default function ChannelList({ fetcher, name, avatar }) {
       </div>
    )
    return (
-      <div className="px-2 py-3">
+      <div className="px-2 py-3 flex flex-col gap-1">
          {
             channelList
             .sort((a,b)=>a.name > b.name)
             .map((channel)=>(
-               <ChannelItem key={channel.id} name={channel.name} cid={channel.id}/>
+               <ChannelItem key={channel.id} name={channel.name} cid={channel.id} setChannelName={setChannelName}/>
             ))
          }
          {
