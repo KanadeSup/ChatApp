@@ -24,6 +24,7 @@ export default function Login() {
         return;
       }
 
+      localStorage.setItem("userId", response.userId);
       localStorage.setItem("token", response.token);
       localStorage.setItem("tokenTimeOut", response.tokenTimeOut);
       localStorage.setItem("refreshToken", response.refreshToken);
@@ -43,7 +44,9 @@ export default function Login() {
         "945996023510-0j32cbj68e6ftd38sampakldkhok571m.apps.googleusercontent.com",
       scope: "profile email",
       callback: async (response) => {
+        console.log(response);
         const data = await loginGoogle(response.code);
+        localStorage.setItem("userId", data.userId);
         localStorage.setItem("token", data.token);
         localStorage.setItem("tokenTimeOut", data.tokenTimeOut);
         localStorage.setItem("refreshToken", data.refreshToken);

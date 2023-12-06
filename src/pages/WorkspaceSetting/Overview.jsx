@@ -9,7 +9,6 @@ import { Avatar } from "@/components/ui/avatar"
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
 import { toCharacters } from '/utils/ParseName'
 import { Suspense, useEffect, useState } from "react"
-import { useOutletContext } from "react-router-dom"
 import { getWorkspace, updateWorkspace } from '/api'
 import { Check, Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
