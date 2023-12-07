@@ -1,13 +1,18 @@
-import { createRoot } from 'react-dom/client'
+import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
-import './index.css'
-import router from './routers'
-import useTokenStore from "/storages/useTokenStore"
-const App = function(){
-   return (
-      <RouterProvider router={router} />
-   )
-} 
-const node = document.querySelector("#root")
-const root = createRoot(node)
-root.render(<App />)
+import "./index.css";
+import router from "./routers";
+import { HubContext } from "./contexts/HubContext";
+import { useHubContext } from "./hooks/useHubContext";
+
+const App = function () {
+  const [hub, setHub] = useHubContext();
+  return (
+      <HubContext.Provider value={[hub, setHub]}>
+        <RouterProvider router={router} />
+      </HubContext.Provider>
+  );
+};
+const node = document.querySelector("#root");
+const root = createRoot(node);
+root.render(<App />);
