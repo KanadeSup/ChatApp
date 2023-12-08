@@ -146,8 +146,8 @@ export default function () {
                if (addedMembers.includes(member)) return;
                removeUids.push(member.id);
             });
-            await addRoleMembers(workspaceId, addUids, roleId);
-            await addRoleMembers(workspaceId, removeUids, null);
+            if(addUids.length !== 0) await addRoleMembers(workspaceId, addUids, roleId);
+            if(removeUids.length !== 0) await addRoleMembers(workspaceId, removeUids, null);
 
             // notify
             toast({
@@ -172,16 +172,15 @@ export default function () {
          >
             <TabsList className="w-full grid grid-cols-3 mb-7">
                <TabsTrigger value="display" className="">
-                  {" "}
-                  Display{" "}
+                  Display
                </TabsTrigger>
                <TabsTrigger value="permissions" className="">
-                  {" "}
-                  Permissons{" "}
+                  
+                  Permissons
                </TabsTrigger>
                <TabsTrigger value="members" className="">
-                  {" "}
-                  Members{" "}
+                  
+                  Members
                </TabsTrigger>
             </TabsList>
             <TabsContent value="display" className="space-y-5">
@@ -277,7 +276,7 @@ export default function () {
                         <div className="" key={permission.id}>
                            <div className="flex justify-between items-center">
                               <h1 className="text-lg font-medium">
-                                 {permission.name}{" "}
+                                 {permission.name}
                               </h1>
                               <Switch
                                  name="permissiond"
@@ -294,8 +293,8 @@ export default function () {
                               />
                            </div>
                            <p className="text-muted-foreground text-sm">
-                              {" "}
-                              {permission.description}{" "}
+                              
+                              {permission.description}
                            </p>
                            <Separator className="mt-5" />
                         </div>
