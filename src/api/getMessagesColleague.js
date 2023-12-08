@@ -1,9 +1,9 @@
 import myFetch from "./myFetch";
 
-export default async function getMessages(channelId, time, count) {
+export default async function getMessages(conversationId, time, count) {
    const res = await myFetch({
       path: `Messages`,
-      params: `TimeCursor=${time}&Count=${count}&ToChannelId=${channelId}`,
+      params: `TimeCursor=${time}&Count=${count}&ToUserId=${conversationId}`,
       headers: {
          "accept": "text/plain",
       },

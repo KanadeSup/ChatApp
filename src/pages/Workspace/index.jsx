@@ -10,7 +10,7 @@ export default function () {
       <div className="flex min-h-screen w-screen">
          <UtilityBar workspace={workspace} colleague notification/>
          <SideBar workspace={workspace} setChannelName={setChannelName}/>
-         <Outlet context={name}/>
+         <Outlet />
       </div>
    );
 }

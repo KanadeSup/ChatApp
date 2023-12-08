@@ -8,7 +8,7 @@ export default function SideBarHeader(props) {
   return (
     <div className="z-10">
         { isClickedFilter && <FilterConversation setIsClickedFilter={setIsClickedFilter} setIsClosedFilter={setIsClosedFilter} setFilterName={setFilterName} />}
-        { isClosedFilter && <ToolBar setIsClosedFilter={setIsClosedFilter} setIsClickedFilter={setIsClickedFilter} setIsNewChat={props.setIsNewChat}/>}
+        { isClosedFilter && <ToolBar setIsClosedFilter={setIsClosedFilter} setIsClickedFilter={setIsClickedFilter}/>}
     </div>
   );
 }

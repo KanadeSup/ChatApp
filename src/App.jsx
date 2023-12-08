@@ -8,9 +8,9 @@ import { useHubContext } from "./hooks/useHubContext";
 const App = function () {
   const [hub, setHub] = useHubContext();
   return (
-      <HubContext.Provider value={[hub, setHub]}>
+      //<HubContext.Provider value={[hub, setHub]}>
         <RouterProvider router={router} />
-      </HubContext.Provider>
+      //</HubContext.Provider>
   );
 };
 const node = document.querySelector("#root");

@@ -23,6 +23,7 @@ import updateWorkspaceRole from "./updateWorkspaceRole"
 import getUserById from "./getUserById"
 import updateUser from "./updateUser"
 import getMessages from "./getMessages"
+import getMessagesColleague from "./getMessagesColleague"
 
 export { 
    updateWorkspaceRole,
@@ -50,4 +51,5 @@ export {
    getUserById,
    updateUser,
    getMessages,
+   getMessagesColleague
 }

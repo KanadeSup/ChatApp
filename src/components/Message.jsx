@@ -2,6 +2,7 @@ import { useState } from "react";
 import Emoji from "/components/Emoij";
 import { ChevronRight, User2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import convertTime from "../utils/convertTime";
 
 export default function Message(props) {
    const [showEmoij, setShowEmoij] = useState(false);
@@ -31,10 +32,10 @@ export default function Message(props) {
             <div className="relative bottom-1">
                <div className="flex items-baseline">
                   <span className="font-bold font-sans text-sm cursor-pointer">
-                     {props.message.senderName}
+                     {props.message.senderName} : {props.index}
                   </span>
                   <span className="text-gray-500 font-medium text-sm ml-2 cursor-default">
-                     {props.message.sendAt}
+                     {convertTime(props.message.sendAt)}
                   </span>
                </div>
 

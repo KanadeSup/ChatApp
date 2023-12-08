@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import useColleagueStore from "@/storages/useColleagueStore";
 
 export default function ToolbarIconComponent(props) {
   const [isHoveredFilter, setIsHoveredFilter] = useState(false);
   const [isHoveredNewChat, setIsHoveredNewChat] = useState(false);
+  const { setIsNewChat } = useColleagueStore();
   return (
-    <div className="flex h-12 justify-end items-center bg-gradient-to-l from-gray-100 to-gray-200">
+    <div className="flex h-12 justify-end items-center bg-gray-50 border-b">
       {/* Filter */}
       <div
         className="cursor-pointer relative"
@@ -44,7 +46,7 @@ export default function ToolbarIconComponent(props) {
         className="cursor-pointer relative"
         onMouseEnter={() => setIsHoveredNewChat(true)}
         onMouseLeave={() => setIsHoveredNewChat(false)}
-        onClick={() => props.setIsNewChat(true)}
+        onClick={() => setIsNewChat(true)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
