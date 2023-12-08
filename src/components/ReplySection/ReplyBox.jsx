@@ -4,11 +4,11 @@ import MessageReply from "./MessageReply";
 import ChatBox from "/components/ChatBox";
 
 export default function ReplyBox() {
-  const chatBoxRef = useRef(null);
+  // const chatBoxRef = useRef(null);
 
-  useEffect(() => {
-    chatBoxRef.current.scrollIntoView();
-  }, []);
+  // useEffect(() => {
+  //   chatBoxRef.current.scrollIntoView();
+  // }, []);
 
   return (
     <div
@@ -21,7 +21,8 @@ export default function ReplyBox() {
         <div className="block border-b flex-grow mx-2"></div>
       </div>
       <ReplyList />
-      <ChatBox ref={chatBoxRef} />
+      {/* <ChatBox ref={chatBoxRef} /> */}
+      <ChatBox />
     </div>
   );
 }

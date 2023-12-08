@@ -16,6 +16,7 @@ export const useHubContext = () => {
                   return localStorage.getItem("token");
                },
             })
+            .withAutomaticReconnect()
             .configureLogging(LogLevel.Information)
             .build();
          try {
