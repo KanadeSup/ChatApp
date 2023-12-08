@@ -1,4 +1,13 @@
-import { ArrowLeft, Check, Loader, Loader2, Search, Users } from "lucide-react";
+import {
+   ArrowLeft,
+   Check,
+   Loader,
+   Loader2,
+   Search,
+   Users,
+   User,
+   X,
+} from "lucide-react";
 import { Form, Link, useNavigate, useParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
@@ -11,10 +20,21 @@ import { RadioGroup, RadioGroupItem, } from "@/components/ui/radio-group"
 import { useEffect, useState } from "react";
 import { getChannelPermissions, updateChannelRole, getChannelRole } from "/api/channel"
 import { useToast } from "@/components/ui/use-toast"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getUnroleMember, getMemberByRole, addRoleMembers } from "/api/channel";
+import MemberDialog from "./MemberDialog";
+
 
 const roleColors = [
    "#1ABC9C", "#2ECC71", "#3498DB", "#9B59B6", "#E91E63", "#F1C40F", "#E67E22", "#E74C3C", "#95A5A6", "#607D8B", "#11806A", "#1F8B4C", "#206694", "#71368A", "#AD1457", "#C27C0E", "#A84300", "#992D22", "#979C9F", "#546E7A"
 ]
+function compareArray(arr1,arr2) {
+   if(arr1.length !== arr2.length) return false
+   for(const ele of arr1) {
+      if(!arr2.includes(ele)) return false
+   }
+   return true
+}
 export default function() {
    const [name, setName] = useState("")
    const [description, setDescription] = useState("")
@@ -23,13 +43,28 @@ export default function() {
    const [arePermissionEnable, setArePermissionEnable] = useState({})
    const [defaultValue, setDefaultValue] = useState({})
    const [color, setColor] = useState(roleColors[0])
-   const { channelId, roleId } = useParams()
+   const { channelId, roleId, workspaceId } = useParams()
    const navigate = useNavigate()
    const { toast } = useToast()
+   const [unaddedMembers, setUnaddedMembers] = useState([]);
+   const [addedMembers, setAddedMembers] = useState([]);
+
+   const addMembers = (members) => {
+      if (members.length === 0) return;
+      setAddedMembers([...members, ...addedMembers]);
+      members.map((member) => {
+         unaddedMembers.splice(unaddedMembers.indexOf(member), 1);
+      });
+      setUnaddedMembers([...unaddedMembers]);
+   };
 
    useEffect(()=>{
       async function fetchData() {
          const data = await getChannelRole(channelId,roleId)
+         setUnaddedMembers(await getUnroleMember(channelId));
+         const roleMembers = await getMemberByRole(channelId, roleId);
+         setAddedMembers(roleMembers);
+
          const areEnable = {}
          data.permissions.map(p => areEnable[p.id] = p.isEnabled)
          setRole(data)
@@ -43,6 +78,7 @@ export default function() {
             description: data.description,
             color: data.color,
             permissions: {...areEnable},
+            roleMembers: [...roleMembers],
          })
       }
       fetchData()
@@ -57,6 +93,8 @@ export default function() {
       <Form method="post"
          onSubmit={async (e)=>{
             e.preventDefault()
+            document.querySelector(".loader").classList.toggle("hidden")
+            document.querySelector(".submit").disabled = true
             const enableList = []
             Object.keys(arePermissionEnable).forEach(key =>{
                if(arePermissionEnable[key])
@@ -68,9 +106,21 @@ export default function() {
                color: color,
                permissions: enableList
             }
-            document.querySelector(".loader").classList.toggle("hidden")
-            document.querySelector(".submit").disabled = true
             const res = await updateChannelRole(channelId, roleId, roleData)
+
+            const removeUids = [];
+            const addUids = [];
+             addedMembers.map((member) => {
+               if (defaultValue.roleMembers.includes(member)) return;
+               addUids.push(member.id);
+            });
+            defaultValue.roleMembers.map((member) => {
+               if (addedMembers.includes(member)) return;
+               removeUids.push(member.id);
+            });
+            if(addUids.length !== 0) await addRoleMembers(channelId, addUids, roleId);
+            if(removeUids.length !== 0)  await addRoleMembers(channelId, removeUids, null);
+            
             toast({
                title: <p className="text-green-500">Successfully update role</p>,
                duration: 1500,
@@ -144,6 +194,7 @@ export default function() {
                               && description === defaultValue["description"]
                               && color === defaultValue["color"]
                               && JSON.stringify(arePermissionEnable) === JSON.stringify(defaultValue["permissions"])
+                              && compareArray(defaultValue["roleMembers"], addedMembers)
                            )
                      }
                   > 
@@ -156,7 +207,7 @@ export default function() {
                {
                   permissionList ?
                      permissionList
-                     .sort((a,b)=>a.name > b.name)
+                     .sort((a, b) => a.name.localeCompare(b.name))
                      .map((permission) => {
                         return (
                            <div className="" key={permission.id}>
@@ -180,19 +231,64 @@ export default function() {
             <TabsContent value="members">
                <div className="flex gap-5">
                   <div className="relative w-full">
-                     <Input placeholder="Search Members" className="pr-10"/>
-                     <Search className="absolute right-3 top-[10px] text-gray-600 w-5 h-5"/>
+                     <Input placeholder="Search Members" className="pr-10" />
+                     <Search className="absolute right-3 top-[10px] text-gray-600 w-5 h-5" />
                   </div>
-                  <Button id="add-member-but" className="shrink-0"> Add Member </Button>
+                  <MemberDialog
+                     members={unaddedMembers}
+                     addMembers={addMembers}
+                  >
+                     <Button id="add-member-but" className="shrink-0">
+                        Add Member
+                     </Button>
+                  </MemberDialog>
                </div>
-               <div className="flex gap-2 items-center mt-10">
-                  <Users className="w-5 h-5 stroke-gray-500"/>
-                  <p className="font-medium text-gray-500"> 
-                     No members were found. 
-                     <Label htmlFor="add-member-but" className="font-bold text-blue-600 ml-2 cursor-pointer text-md">
-                        Add members to this role
-                     </Label>
-                  </p>
+               <div className="mt-5 flex flex-col gap-2 h-[calc(100vh-350px)] overflow-y-auto">
+                  {addedMembers.length !== 0 ? (
+                     addedMembers.map((member) => {
+                        return (
+                           <div
+                              key={member.id}
+                              className="flex gap-3 items-center px-3 py-2 hover:bg-gray-100 rounded-lg"
+                           >
+                              <Avatar>
+                                 <AvatarImage src={member.picture} />
+                                 <AvatarFallback>
+                                    <User />
+                                 </AvatarFallback>
+                              </Avatar>
+                              <span className="font-medium">
+                                 {member.username}
+                              </span>
+                              <X
+                                 className="w-6 h-6 stroke-3 stroke-red-500 ml-auto cursor-pointer"
+                                 onClick={(e) => {
+                                    addedMembers.splice(
+                                       addedMembers.indexOf(member),
+                                       1,
+                                    );
+                                    unaddedMembers.push(member);
+                                    setAddedMembers([...addedMembers]);
+                                    setUnaddedMembers([...unaddedMembers]);
+                                 }}
+                              />
+                           </div>
+                        );
+                     })
+                  ) : (
+                        <div className="flex gap-2 items-center mt-10">
+                           <Users className="w-5 h-5 stroke-gray-500" />
+                           <p className="font-medium text-gray-500">
+                              No members were found.
+                              <Label
+                                 htmlFor="add-member-but"
+                                 className="font-bold text-blue-600 ml-2 cursor-pointer text-md"
+                              >
+                                 Add members to this role
+                              </Label>
+                           </p>
+                        </div>
+                     )}
                </div>
             </TabsContent>
          </Tabs>

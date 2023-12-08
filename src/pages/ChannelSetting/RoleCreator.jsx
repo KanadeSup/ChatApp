@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Loader2, Search, Users } from "lucide-react";
+import { ArrowLeft, Check, Loader2, Search, Users, User, X } from "lucide-react";
 import { Form, Link, useNavigate, useParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
 import { getChannelPermissions, createChannelRole } from "/api/channel";
 import { useToast } from "@/components/ui/use-toast";
+import { getUnroleMember, addRoleMembers } from "/api/channel";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+
+import MemberDialog from "../WorkspaceSetting/MemberDialog";
 const roleColors = [
    "#1ABC9C",
    "#2ECC71",
@@ -43,12 +47,23 @@ export default function () {
    const { channelId } = useParams();
    const navigate = useNavigate();
    const { toast } = useToast();
+   const [unaddedMembers, setUnaddedMembers] = useState([]);
+   const [addedMembers, setAddedMembers] = useState([]);
 
+   const addMembers = (members) => {
+      if (members.length === 0) return;
+      setAddedMembers([...members, ...addedMembers]);
+      members.map((member) => {
+         unaddedMembers.splice(unaddedMembers.indexOf(member), 1);
+      });
+      setUnaddedMembers([...unaddedMembers]);
+   };
    useEffect(() => {
       async function fetchData() {
-         const data = await getChannelPermissions();
-         setPermissionList(data);
-         data.map((p) => (enablePermissionList[p.id] = p.isEnabled));
+         setUnaddedMembers(await getUnroleMember(channelId));
+         const permissions = await getChannelPermissions();
+         setPermissionList(permissions);
+         permissions.map((p) => (enablePermissionList[p.id] = p.isEnabled));
          setEnablePermissionList(enablePermissionList);
       }
       fetchData();
@@ -71,7 +86,13 @@ export default function () {
             };
             document.querySelector(".loader").classList.toggle("hidden");
             document.querySelector(".submit").disabled = true;
+
             const res = await createChannelRole(channelId, roleData);
+            const uids = [];
+            addedMembers.map((member) => uids.push(member.id));
+            await addRoleMembers(channelId, uids, res.id);
+
+
             toast({
                title: (
                   <p className="text-green-500">Successfully Create new role</p>
@@ -167,7 +188,7 @@ export default function () {
             <TabsContent value="permissions" className="space-y-5">
                {permissionList
                   ? permissionList
-                       .sort((a, b) => a.name > b.name)
+                       .sort((a, b) => a.name.localeCompare(b.name))
                        .map((permission) => {
                           return (
                              <div className="" key={permission.id}>
@@ -204,21 +225,61 @@ export default function () {
                      <Input placeholder="Search Members" className="pr-10" />
                      <Search className="absolute right-3 top-[10px] text-gray-600 w-5 h-5" />
                   </div>
-                  <Button id="add-member-but" className="shrink-0">
-                     Add Member
-                  </Button>
+                  <MemberDialog
+                     members={unaddedMembers}
+                     addMembers={addMembers}
+                  >
+                     <Button id="add-member-but" className="shrink-0">
+                        Add Member
+                     </Button>
+                  </MemberDialog>
                </div>
-               <div className="flex gap-2 items-center mt-10">
-                  <Users className="w-5 h-5 stroke-gray-500" />
-                  <p className="font-medium text-gray-500">
-                     No members were found.
-                     <Label
-                        htmlFor="add-member-but"
-                        className="font-bold text-blue-600 ml-2 cursor-pointer text-md"
-                     >
-                        Add members to this role
-                     </Label>
-                  </p>
+               <div className="mt-5 flex flex-col gap-2 h-[calc(100vh-350px)] overflow-y-auto">
+                  {addedMembers.length !== 0 ? (
+                     addedMembers.map((member) => {
+                        return (
+                           <div
+                              key={member.id}
+                              className="flex gap-3 items-center px-3 py-2 hover:bg-gray-100 rounded-lg"
+                           >
+                              <Avatar>
+                                 <AvatarImage src={member.picture} />
+                                 <AvatarFallback>
+                                    <User />
+                                 </AvatarFallback>
+                              </Avatar>
+                              <span className="font-medium">
+                                 {member.username}
+                              </span>
+                              <X
+                                 className="w-6 h-6 stroke-3 stroke-red-500 ml-auto cursor-pointer"
+                                 onClick={(e) => {
+                                    addedMembers.splice(
+                                       addedMembers.indexOf(member),
+                                       1,
+                                    );
+                                    unaddedMembers.push(member);
+                                    setAddedMembers([...addedMembers]);
+                                    setUnaddedMembers([...unaddedMembers]);
+                                 }}
+                              />
+                           </div>
+                        );
+                     })
+                  ) : (
+                     <div className="flex gap-2 items-center mt-10">
+                        <Users className="w-5 h-5 stroke-gray-500" />
+                        <p className="font-medium text-gray-500">
+                           No members were found.
+                           <Label
+                              htmlFor="add-member-but"
+                              className="font-bold text-blue-600 ml-2 cursor-pointer text-md"
+                           >
+                              Add members to this role
+                           </Label>
+                        </p>
+                     </div>
+                  )}
                </div>
             </TabsContent>
          </Tabs>
