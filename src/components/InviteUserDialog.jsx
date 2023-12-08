@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
 import {
    Dialog,
    DialogContent,
@@ -9,16 +9,16 @@ import {
    DialogTitle,
    DialogTrigger,
 } from "@/components/ui/dialog"
-import { Loader2, X } from "lucide-react"
+import { Loader2, Tags, X } from "lucide-react"
 import { useEffect, useState } from "react"
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
 import { AddUserByEmails } from "/api/workspace"
 import { useParams } from "react-router-dom"
 
+
 export default function InviteUserDialog({ children,open, onOpenChange }) {
-   const [inviteText, setInviteText] = useState()
    const {workspaceId} = useParams()
+   const [tags, setTags] = useState([])
+   const [emailInput, setEmailInput] = useState("")
    return (
          <Dialog
             open={open}
@@ -38,8 +38,7 @@ export default function InviteUserDialog({ children,open, onOpenChange }) {
                   e.preventDefault()
                   document.querySelector(".invite-submit-but").disabled = true
                   document.querySelector(".invite-loader").classList.remove("hidden")
-                  const emails = inviteText.split(" ")
-                  await AddUserByEmails(workspaceId, emails)
+                  await AddUserByEmails(workspaceId, tags)
                   document.querySelector(".invite-submit-but").disabled = false
                   document.querySelector(".invite-loader").classList.add("hidden")
                   onOpenChange(false)
@@ -47,11 +46,41 @@ export default function InviteUserDialog({ children,open, onOpenChange }) {
             >
                <div>
                   <h1 className="font-bold">To: </h1>
-                  <Textarea placeholder="Name@gmail.com"
-                     onChange={e=>setInviteText(e.target.value)}
-                     value={inviteText}
-                     spellCheck="false"
-                  />
+                  <div className="space-y-3 mt-3">
+                     <div className="flex flex-wrap gap-2 max-h-[150px] overflow-y-scroll">
+                        {
+                           tags.map((tag)=> {
+                              return (
+                                 <span key={tag} className="flex items-center justify-center bg-gray-100 px-2 rounded-md cursor-pointer"
+                                    onClick={e=>{
+                                       tags.splice(tags.indexOf(tag),1)
+                                       setTags([...tags])
+                                    }}
+                                 > 
+                                    {tag}
+                                    <X className="w-3 h-3 ml-2"/> 
+                                 </span>
+                              )
+                           })
+                        }
+                     </div>
+                     <Input 
+                        placeholder="name1@gmail.com name2@gmail.com ..."
+                        value={emailInput}
+                        maxLength="50"
+                        onChange={(e)=>{
+                           const value = e.target.value
+                           if(value[value.length-1] === "\n" || value[value.length-1] === " "){
+                              setEmailInput("")
+                              if(tags.includes(emailInput)) return
+                              if(emailInput.length === 0) return
+                              setTags([...tags, emailInput])
+                           } else {
+                              setEmailInput(value)
+                           }
+                        }}
+                     />
+                  </div>
                </div>
                <DialogFooter className="mt-5">
                   <Button type="submit" className="invite-submit-but">

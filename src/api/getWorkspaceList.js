@@ -5,6 +5,5 @@ export default async function () {
    })
    const status = res.status
    const data = await res.json()
-   console.log(data)
    return data
 }

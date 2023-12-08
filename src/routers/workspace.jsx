@@ -11,6 +11,7 @@ import Homepage from '/pages/Homepage'
 import { getWorkspaceList, createWorkspace, getWorkspace, deleteWorkspace, updateWorkspace, createChannel,getChannelList, deleteChannel, deleteWorkspaceRole, getWorkspaceRoleById} from '/api'
 import { getWorkspaceRoleList} from "/api"
 import { defer, redirect, useNavigate, useParams } from 'react-router-dom'
+import ChannelChatSection from "/pages/Workspace/ChannelChatSection";
 
 const workspaceListLoader = async function() {
    return defer({wList: getWorkspaceList()})
@@ -78,6 +79,16 @@ export default [
       element: <Workspace />,
       action: channelAction,
       loader: workspaceLoader,
+      children: [
+         {
+            index: true,
+            element:<p>there is no chat here</p> 
+         },
+         {
+            path:":channelId",
+            element: <ChannelChatSection />
+         }
+      ]
    },
    {
       path: "/Workspace/:workspaceId/WorkspaceSetting",

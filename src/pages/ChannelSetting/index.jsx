@@ -13,8 +13,8 @@ export default function() {
          to: `/Workspace/${workspaceId}/${channelId}/ChannelSetting`,
       },
       {
-         title: "Privacy",
-         to: `/Workspace/${workspaceId}/${channelId}/ChannelSetting/Privacy`,
+         title: "Members",
+         to: `/Workspace/${workspaceId}/${channelId}/ChannelSetting/Members`,
       },
       {
          title: "Permisson",
