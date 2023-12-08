@@ -25,7 +25,7 @@ const extensions = [
   Underline,
 ];
 
-const ChatBox = React.forwardRef((props, ref) => {
+const ChatBox = React.forwardRef((props) => {
   const editor = useEditor({
     extensions: extensions,
     editorProps: {
@@ -36,7 +36,7 @@ const ChatBox = React.forwardRef((props, ref) => {
   });
   return (
     <div
-      ref={ref}
+      //ref={ref}
       className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2"
     >
       {/* Format bar */}

@@ -45,7 +45,7 @@ export default function (props) {
                      <div key={utility} className="flex items-center group">
                         <div className="line h-0 bg-black w-[4px] rounded-r-full transition-all group-hover:h-5 absolute left-0"> </div>
                         <NavLink
-                           to="/Colleague"
+                           to="/colleague-chat"
                            className= {
                               ({ isActive }) =>
                                  [

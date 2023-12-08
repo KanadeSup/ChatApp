@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { Link } from "react-router-dom";
 export default function FriendMessagePreview(props) {
   const [isHover, setIsHover] = useState(false);
   const shortMessage =
@@ -7,42 +7,45 @@ export default function FriendMessagePreview(props) {
       ? props.lastMessage.substring(0, 12) + "..."
       : props.lastMessage;
   return (
-    <div
-      className="relative px-1.5 py-2.5 flex rounded-lg items-center hover:bg-gray-300 cursor-pointer"
-      onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
-    >
-      <div className="relative">
-        <img className="h-9 w-9 rounded-md" src={props.avatar} />
-        <div
-          className={`${props.isActive ? "bg-green-600" : "bg-red-600"} absolute
+    <Link to={`/colleague-chat/${props.id}`}>
+      <div
+        className="relative px-1.5 py-2.5 flex rounded-lg items-center hover:bg-gray-100 cursor-pointer"
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+      >
+        <div className="relative">
+          <img className="h-9 w-9 rounded-md" src={props.avatar} />
+          <div
+            className={`${
+              props.isActive ? "bg-green-600" : "bg-red-600"
+            } absolute
             border-white border-2 rounded-full p-1 right-0 bottom-0`}
-        ></div>
-      </div>
-      <div className="ml-1 flex-1">
-        <div className="flex items-center justify-between relative bottom-0.5">
-          <p className={`${props.isRead ? "" : "font-bold"} text-sm`}>
-            {props.name}
-          </p>
+          ></div>
+        </div>
+        <div className="ml-1 flex-1">
+          <div className="flex items-center justify-between relative bottom-0.5">
+            <p className={`${props.isRead ? "" : "font-bold"} text-sm`}>
+              {props.name}
+            </p>
+            <p
+              className={`${
+                props.isRead ? "" : "font-bold"
+              } text-xs text-gray-600`}
+            >
+              {props.time}
+            </p>
+          </div>
           <p
             className={`${
               props.isRead ? "" : "font-bold"
-            } text-xs text-gray-600`}
+            } text-gray-900 mt-1 text-xs`}
           >
-            {props.time}
+            {shortMessage}
           </p>
         </div>
-        <p
-          className={`${
-            props.isRead ? "" : "font-bold"
-          } text-gray-900 mt-1 text-xs`}
-        >
-          {shortMessage}
-        </p>
-      </div>
 
-      {/* Hiện more khi hover */}
-      {isHover && (
+        {/* Hiện more khi hover */}
+        {/* {isHover && (
         <div
           style={{
             boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.4)", // This line adds the shadow
@@ -77,7 +80,8 @@ export default function FriendMessagePreview(props) {
             />{" "}
           </svg>
         </div>
-      )}
-    </div>
+      )} */}
+      </div>
+    </Link>
   );
 }

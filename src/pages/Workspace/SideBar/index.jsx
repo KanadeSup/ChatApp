@@ -1,7 +1,6 @@
 import SideBarHeader from "./SideBarHeader";
 import ChannelList from "./ChannelList";
-import { useEffect, useState } from "react";
-import { useActionData, useFetcher, useParams } from "react-router-dom";
+import { useFetcher } from "react-router-dom";
 
 export default function ({ workspace, setChannelName }) {
    const fetcher = useFetcher()

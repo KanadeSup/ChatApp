@@ -13,6 +13,12 @@ import { getWorkspaceRoleList} from "/api"
 import { defer, redirect, useNavigate, useParams } from 'react-router-dom'
 import ChannelChatSection from "/pages/Workspace/ChannelChatSection";
 
+
+function ChannelChatSectionWrapper() {
+   const { channelId } = useParams();
+   return <ChannelChatSection key={"a"+channelId} />;
+}
+
 const workspaceListLoader = async function() {
    return defer({wList: getWorkspaceList()})
 }
@@ -86,10 +92,10 @@ export default [
          },
          {
             path:":channelId",
-            element: <ChannelChatSection />
+            element: <ChannelChatSectionWrapper />
          }
       ]
-   },
+   },   
    {
       path: "/Workspace/:workspaceId/WorkspaceSetting",
       element: <WSetting />,
