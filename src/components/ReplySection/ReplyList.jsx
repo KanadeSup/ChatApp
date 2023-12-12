@@ -5,16 +5,7 @@ export default function ReplyList() {
     <div
       className="flex flex-col justify-start min-w-[360px]"
     >
-      <MessageReply />
-      <MessageReply />
-      <MessageReply />
-      <MessageReply />
-      <MessageReply />
-      <MessageReply />
-      <MessageReply />
-      <MessageReply />
-      <MessageReply />
-      <MessageReply />
+      
     </div>
   );
 }

@@ -4,8 +4,6 @@ import { login, loginGoogle } from "/api";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { HubContext } from "../../contexts/HubContext";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 export default function Login() {
    const [email, setEmail] = useState("");
@@ -15,25 +13,6 @@ export default function Login() {
    let navigate = useNavigate();
 
    // hub
-   const [hub, setHub] = useContext(HubContext);
-   async function connectHub() {
-      const connection = new HubConnectionBuilder()
-         .withUrl(`https://api.firar.live/chatHub`, {
-            accessTokenFactory: () => {
-               return localStorage.getItem("token");
-            },
-         })
-         .configureLogging(LogLevel.Information)
-         .build()
-      try {
-         await connection.start()
-         console.log("connect sucess")
-         setHub(connection)
-      } catch(e) {
-         return "connection error"
-      }
-      return "Success"
-   }
 
    async function handleLogin() {
       try {
@@ -54,8 +33,6 @@ export default function Login() {
             "refreshTokenTimeout",
             response.refreshTokenTimeout,
          );
-
-         await connectHub()
          navigate("/Workspace");
       } catch (error) {
          console.error(error);

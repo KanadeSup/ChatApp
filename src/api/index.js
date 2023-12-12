@@ -22,6 +22,9 @@ import getWorkspaceRoleById from "./getWorkspaceRoleById"
 import updateWorkspaceRole from "./updateWorkspaceRole"
 import getUserById from "./getUserById"
 import updateUser from "./updateUser"
+import getMessages from "./getMessages"
+import getMessagesColleague from "./getMessagesColleague"
+import getUserByEmail from "./user/getUserByEmail"
 
 export { 
    updateWorkspaceRole,
@@ -48,4 +51,7 @@ export {
    loginGoogle,
    getUserById,
    updateUser,
+   getMessages,
+   getMessagesColleague,
+   getUserByEmail,
 }

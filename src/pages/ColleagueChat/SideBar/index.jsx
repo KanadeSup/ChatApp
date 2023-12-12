@@ -1,35 +1,59 @@
 import FriendMessagePreview from "./FriendMessagePreview";
 import SideBarHeader from "./SideBarHeader";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import getConversions from "../../../api/colleague/getConversions";
+import convertTime from "../../../utils/convertTime";
+import useIsNewMessage from "../../../storages/useIsNewMessage";
+import { NavLink } from "react-router-dom";
+import useColleagueStore from "@/storages/useColleagueStore";
 
-export default function (props) {
-  const [chatUserList, setChatUserList] = useState([]); // Danh sách user chat
+
+export default function () {
+  const { isNewMessage, setIsNewMessage } = useIsNewMessage();
+  const [conversations, setConversations] = useState([]); // Danh sách các cuộc trò chuyện
+  const { isClickedReply, setIsClickedReply } = useColleagueStore();
+
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios("http://localhost:3000/users");
-      setChatUserList(result.data);
-    };
-    fetchData();
-  }, []);
+    async function fetchConversions() {
+      const response = await getConversions("", 0, 10);
+      console.log("response", response);
+      setConversations(response);
+      setIsNewMessage(false);
+      console.log("đã reset");
+    }
+    // if (isNewMessage) {
+      fetchConversions();
+    //}
+  }, [isNewMessage]);
   return (
-    <div className="h-screen w-72 bg-gray-100 shadow-xl flex-shrink-0">
-      <SideBarHeader isNewChat={props.isNewChat} setIsNewChat={props.setIsNewChat} />
+    <div className="h-screen w-72 shadow-xl flex-shrink-0">
+      <SideBarHeader />
 
       <div
         style={{ height: "calc(100vh - 3rem)" }}
-        className="flex flex-col flex-grow -z-10 justify-start overflow-y-auto"
+        className="flex flex-col flex-grow -z-10 justify-start overflow-y-auto space-y-1"
       >
-        {chatUserList.map((user) => (
-          <FriendMessagePreview
+        {conversations.map((user) => (
+          <NavLink
             key={user.id}
-            name={user.name}
-            avatar={user.avatar}
-            lastMessage={user.lastMessage}
-            time={user.time}
-            isRead={user.isRead}
-            isActive={user.isActive}
-          />
+            to={`/colleague-chat/${user.id}`}
+            className={({ isActive, isPending }) =>
+              isPending ? "" : isActive ? "bg-gray-100" : ""
+            }
+            onClick={() => setIsClickedReply(false)}
+
+          >
+            <FriendMessagePreview
+              key={user.id}
+              id={user.id}
+              name={user.name}
+              avatar={user.avatar}
+              lastMessage={user.lastMessage}
+              time={convertTime(user.lastMessageTime)}
+              isRead={user.isRead}
+              isActive={user.isActive}
+            />
+          </NavLink>
         ))}
       </div>
     </div>

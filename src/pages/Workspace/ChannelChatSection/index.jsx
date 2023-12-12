@@ -4,7 +4,7 @@ import ChannelChatBoxContent from "./ChannelChatBoxContent";
 import { useOutletContext, useParams } from "react-router-dom";
 import { getChannel } from "/api"
 
-export default function ChannelChatSection(props) {
+export default function ChannelChatSection() {
    const [isClickedReply, setIsClickedReply] = useState(false);
    const [isClickedChannelUtility, setIsClickedChannelUtility] = useState(false);
    const {channelId} = useParams()
@@ -17,7 +17,7 @@ export default function ChannelChatSection(props) {
       fetchData()
    },[channelId])
    return (
-      <div className="flex flex-col flex-grow">
+      <div className="flex flex-col h-full w-full">
          <ChannelHeader
             channel={channel}
             isClickedChannelUtility={isClickedChannelUtility}
