@@ -7,12 +7,12 @@ import InviteMember from '/pages/WorkspaceSetting/InviteMember'
 import Roles from '/pages/WorkspaceSetting/Roles'
 import RoleCreator from '/pages/WorkspaceSetting/RoleCreator'
 import RoleEditor from '/pages/WorkspaceSetting/RoleEditor'
-import Homepage from '/pages/Homepage'
 import { getWorkspaceList, createWorkspace, getWorkspace, deleteWorkspace, updateWorkspace, createChannel,getChannelList, deleteChannel, deleteWorkspaceRole, getWorkspaceRoleById} from '/api'
 import { getWorkspaceRoleList} from "/api"
-import { defer, redirect, useNavigate, useParams } from 'react-router-dom'
+import { defer, redirect, useNavigate, useParams, useRouteError } from 'react-router-dom'
 import ChannelChatSection from "/pages/Workspace/ChannelChatSection";
-
+import { getMemberList } from "/api/workspace"
+import { Button } from "/components/ui/button"
 
 function ChannelChatSectionWrapper() {
    const { channelId } = useParams();
@@ -46,15 +46,14 @@ async function channelAction({ request, params }) {
    const { workspaceId } = params 
    const formData = await request.formData();
    const formType = formData.get("type")
-
+   let res;
    if(formType === "create") {
-      const { id } = await createChannel(formData.get("name"), workspaceId)
-      return "create " + id
+      res = await createChannel(formData.get("name"), workspaceId)
    }
    if(formType === "delete") {
-      const { id } = await deleteChannel(workspaceId, formData.get("cid"))
-      return "delete " + id
+      res = await deleteChannel(workspaceId, formData.get("cid"))
    }
+   return res
 }
 async function deleteRoleAction({request,params}) {
    const formData = await request.formData();
@@ -68,12 +67,15 @@ async function workspaceRolesLoader({params}) {
    return defer({roleList: getWorkspaceRoleList(workspaceId)})
 }
 
+async function workspaceMemberLoader({params}) {
+   const { workspaceId } = params
+   return defer({memberList: getMemberList(workspaceId)})
+}
+
+
+
 export default [
-   {
-      path: "/",
-      element: <Homepage />,
-      loader: () => redirect("/Login")
-   },
+
    {
       path: "/Workspace",
       element: <WManager />,
@@ -107,11 +109,12 @@ export default [
          },
          {
             path: "Members",
-            element: <MemberManage />
+            element: <MemberManage />,
+            loader: workspaceMemberLoader,
          },
          {
             path: "Invites",
-            element: <InviteMember />
+            element: <InviteMember />,
          },
          {
             path: "Role",
@@ -130,3 +133,5 @@ export default [
       ]
    },
 ]
+
+

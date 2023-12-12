@@ -1,45 +1,190 @@
-import { Separator } from "@/components/ui/separator"
-import { Link } from 'react-router-dom'
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import { ArrowDownWideNarrow, MoreHorizontal, User } from "lucide-react"
+import { Separator } from "@/components/ui/separator";
+import { Await, Link, useLoaderData, useParams } from "react-router-dom";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { ArrowDownWideNarrow, Check, Contact, Loader2, MoreHorizontal, User, User2, X } from "lucide-react";
+import { Suspense, useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+   AlertDialog,
+   AlertDialogAction,
+   AlertDialogCancel,
+   AlertDialogContent,
+   AlertDialogDescription,
+   AlertDialogFooter,
+   AlertDialogHeader,
+   AlertDialogTitle,
+   AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { deleteMember } from "../../api/workspace";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
+import { getMemberList } from "/api/workspace";
 
-export default function() {
+export default function () {
+   const [memberList, setMemberList] = useState([]);
+   const [open, setOpen] = useState({});
+   const { workspaceId } = useParams();
+   const { toast } = useToast();
+   const [force, setForce] = useState({})
+   function forceLoad() {
+      setForce({})
+   }
+   useEffect(() => {
+      async function fetchData() {
+         const data = await getMemberList(workspaceId);
+         setMemberList(data);
+      }
+      fetchData()
+   }, [force]);
    return (
       <div className="">
          <div className="space-y-5 w-[800px]">
             <div>
                <h1 className="text-lg font-medium"> Members </h1>
-               <p className="text-muted-foreground text-sm"> Manage your workspace members</p>
+               <p className="text-muted-foreground text-sm">Manage your workspace members</p>
             </div>
             <Separator />
-            <div className="flex justify-end gap-3">
-               <div className="flex items-center gap-2 mr-auto text-md text-black font-medium">
-                  <User className="w-5 h-5 stroke-gray-700 " strokeWidth={2.5}/> (2)
+            <div>
+               <div className="flex justify-end gap-3">
+                  <Input className="w-60" placeholder="Search ..." />
+                  <Button variant="ghost" size="icon">
+                     <ArrowDownWideNarrow className="w-6 h-6 stroke-gray-500" />
+                  </Button>
                </div>
-               <Input className="w-60" placeholder="Search ..."/>
-               <Button variant="ghost" size="icon">
-                  <ArrowDownWideNarrow className="w-6 h-6 stroke-gray-500"/>
-               </Button>
-            </div>
-            <div className="flex gap-3 items-center">
-               <div className="w-14 h-14 border border-gray-400 rounded-lg items-center">
-               </div>
-               <div className="flex flex-col justify-center gap-1">
-                  <div className="flex gap-3">
-                     <h1 className="text-md font-medium text-black"> Putin Lord </h1>
-                     <span className="bg-gray-200 rounded-lg px-2 text-xs flex items-center font-bold"> Owner </span>
-                  </div>
-                  <h2 className="text-sm text-gray-600"> putinlord@gmail.com </h2>
-               </div>
-               <Button variant="ghost" size="icon" className="ml-auto">
-                  <MoreHorizontal />
-               </Button>
+               <Table>
+                  <TableHeader>
+                     <TableRow>
+                        <TableHead>
+                           <div className="flex items-center gap-2 mr-auto text-md text-black font-medium">
+                              <User className="w-5 h-5 stroke-gray-700 " strokeWidth={2.5} />({memberList.length})
+                           </div>
+                        </TableHead>
+                        <TableHead> Workspace Role </TableHead>
+                        <TableHead> </TableHead>
+                     </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                     {memberList.map((member) => {
+                        return (
+                           <TableRow key={member.id}>
+                              <TableCell>
+                                 <div className="flex items-center gap-3">
+                                    <Avatar>
+                                       <AvatarImage src={member.picture} />
+                                       <AvatarFallback>
+                                          <User2 />
+                                       </AvatarFallback>
+                                    </Avatar>
+                                    <h1> {member.username} </h1>
+                                 </div>
+                              </TableCell>
+                              <TableCell>
+                                 {member.role ? (
+                                    <Badge
+                                       style={{
+                                          backgroundColor: `${member.role.color}`,
+                                       }}
+                                    >
+                                       {member.role.name}
+                                    </Badge>
+                                 ) : (
+                                    ""
+                                 )}
+                              </TableCell>
+                              <TableCell>
+                                 <div className="flex justify-end gap-6 items-center h-full">
+                                    <Contact className="stroke-blue-600 cursor-pointer" />
+                                    <X
+                                       className="stroke-red-600 stroke-[3] cursor-pointer"
+                                       onClick={(e) => {
+                                          open[member.id] = true;
+                                          setOpen({ ...open });
+                                       }}
+                                    />
+                                 </div>
+                                 <AlertDialog
+                                    open={open[member.id]}
+                                    onOpenChange={(e) => {
+                                       open[member.id] = undefined;
+                                       setOpen({ ...open });
+                                    }}
+                                 >
+                                    <AlertDialogContent>
+                                       <AlertDialogHeader>
+                                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                          <AlertDialogDescription>
+                                             This action will kick member from this channel. And you need the permission to do this. If not, the action will be
+                                             failed
+                                          </AlertDialogDescription>
+                                       </AlertDialogHeader>
+                                       <AlertDialogFooter>
+                                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                          <form
+                                             onSubmit={async (e) => {
+                                                e.preventDefault();
+                                                document.querySelector(`.submit-${member.id}`).disabled = true;
+                                                document.querySelector(`.loader-${member.id}`).classList.remove("hidden");
+                                                const data = await deleteMember(workspaceId, member.id);
+                                                document.querySelector(`.submit-${member.id}`).disabled = false;
+                                                document.querySelector(`.loader-${member.id}`).classList.add("hidden");
+                                                forceLoad()
+                                                open[member.id] = false
+                                                setOpen({...open})
+                                                if (data.ok) {
+                                                   toast({
+                                                      title: (
+                                                         <p className="flex">
+                                                            <Check className="stroke-green-600 mr-2" />
+                                                            <span className="text-green-600">Delete Successfully!</span>
+                                                         </p>
+                                                      ),
+                                                   });
+                                                   return;
+                                                }
+                                                if (data.status === 403) {
+                                                   toast({
+                                                      title: (
+                                                         <p className="flex">
+                                                            <X className="stroke-red-600 mr-2" />
+                                                            <span className="text-red-600">You don't have permission to kick member</span>
+                                                         </p>
+                                                      ),
+                                                   });
+                                                   return;
+                                                }
+                                                toast({
+                                                   title: (
+                                                      <p className="flex">
+                                                         <X className="stroke-red-600 mr-2" />
+                                                         <span className="text-red-600">Something went wrong. Please try agains</span>
+                                                      </p>
+                                                   ),
+                                                });
+                                             }}
+                                          >
+                                             <Button type="submit" className={`submit-${member.id}`}>
+                                                <Loader2 className={`loader-${member.id} w-4 h-4 mr-2 animate-spin hidden`} />
+                                                Kick Member
+                                             </Button>
+                                          </form>
+                                       </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                 </AlertDialog>
+                              </TableCell>
+                           </TableRow>
+                        );
+                     })}
+                  </TableBody>
+               </Table>
             </div>
          </div>
+         <Toaster />
       </div>
-   )
+   );
 }

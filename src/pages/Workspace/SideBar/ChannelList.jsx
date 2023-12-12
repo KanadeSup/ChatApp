@@ -1,23 +1,49 @@
-import { Hash, Loader2, Plus } from "lucide-react";
+import { Hash, Loader2, Plus, X } from "lucide-react";
 import ChannelItem from "./ChannelItem";
 import ChannelCreation from "/components/ChannelCreation"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useActionData, useFetcher, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getChannelList } from "/api"
+import { Toaster } from "@/components/ui/toaster"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function ChannelList({ fetcher, name, avatar, setChannelName }) {
    const [channelList, setChannelList] = useState(null)
    const { workspaceId } = useParams()
    const formCId = useActionData()
-   const fetcherCId = fetcher.data
+   const fetcherData = fetcher.data
+   const { toast } = useToast()
    useEffect(()=>{
+      console.log(fetcherData)
+      if(fetcherData) {
+         if(fetcherData.status === 403) {
+            toast({
+               title: 
+                  <p className="flex items-center">
+                     <X className="stroke-red-600 mr-2" />
+                     <span className="text-red-600"> You don't have permission to do this action </span>
+                  </p>
+            })
+            return
+         }
+         if(!fetcherData.ok) {
+            toast({
+               title: 
+                  <p className="flex items-center">
+                     <X className="stroke-red-600 mr-2" />
+                     <span className="text-red-600"> Something went wrong, please try again ! </span>
+                  </p>
+            })
+            return
+         }
+      }
       async function fetchData() {
          const data = await getChannelList(workspaceId)
          setChannelList(data)
       }
       fetchData()
-   },[fetcherCId,formCId])
+   },[fetcherData,formCId])
    if(channelList === null) return (
       <div className="w-full flex justify-center h-full items-center">
          <Loader2 className="animate-spin w-10 h-10 stroke-gray-400"/>
@@ -50,6 +76,7 @@ export default function ChannelList({ fetcher, name, avatar, setChannelName }) {
                </span>
             </div>
          </ChannelCreation>
+         <Toaster />
       </div>
    );
 }

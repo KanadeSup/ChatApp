@@ -73,11 +73,15 @@ module.exports = {
                from: {height: "1.25rem"},
                to: {height: "2.25rem"},
             },
+            "error": {
+               from: { backgroundColor: "red" },
+            }
          },
          animation: {
             "accordion-down": "accordion-down 0.2s ease-out",
             "accordion-up": "accordion-up 0.2s ease-out",
-            "vline-expand": "vline-expand 0.2s forwards"
+            "vline-expand": "vline-expand 0.2s forwards",
+            "error": "error 2s ease-in-out"
          },
       },
    },

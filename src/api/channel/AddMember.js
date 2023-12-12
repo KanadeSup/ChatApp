@@ -8,8 +8,17 @@ export default async (cid, members) => {
          "channel-id": cid,
          'Content-Type': 'application/json'
       },
-      body: JSON.stringify(roledata),
+      body: JSON.stringify(members),
    })
+   if(!res.ok) return {
+      data: null,
+      status: res.status,
+      ok: res.ok
+   }
    const data = await res.json()
-   return data
+   return {
+      data: data,
+      status: res.status,
+      ok: res.ok
+   }
 };

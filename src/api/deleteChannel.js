@@ -9,6 +9,9 @@ export default async function (wid, cid) {
          "workspace-id": wid,
       },
    })
-   const data = await res.json()
-   return data 
+   return {
+      data: null,
+      status: res.status,
+      ok: res.ok
+   }
 }
