@@ -1,8 +1,17 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { User2 } from "lucide-react";
+import { Link } from "react-router-dom";
 function AvatarNameFilter(props) {
   return (
-    <div className="flex justify-start items-center px-3 py-1 rounded cursor-pointer hover:bg-bold-blue hover:text-white">
-      <img className="h-7 w-7" src={props.avatar} alt="" />
-      <span className="ml-2">{props.name}</span>
+    <div className="flex justify-start items-center px-3 py-1 space-x-3 rounded cursor-pointer hover:bg-bold-blue group">
+      <Avatar>
+        <AvatarImage src={props.avatar} alt="@shadcn" />
+        <AvatarFallback className="bg-gray-300"><User2 /></AvatarFallback>
+      </Avatar>
+      <div className="flex flex-col group-hover:text-white">
+        <p className="font-bold text-md">{props.name}</p>
+        <p className="text-sm">{props.email}</p>
+      </div>
     </div>
   );
 }
@@ -16,22 +25,19 @@ export default function UserDropList(props) {
       }}
       className="absolute z-10 top-[50px] p-1 w-11/12 border border-gray-300 left-10 shadow-xl  bg-white rounded-b-md py-2 flex flex-col flex-grow justify-start"
     >
-      <AvatarNameFilter
-        name="Aaaaaaaa"
-        avatar="https://www.famousbirthdays.com/headshots/russell-crowe-1.jpg"
-      />
-      <AvatarNameFilter
-        name="Russell Crowe"
-        avatar="https://www.famousbirthdays.com/headshots/russell-crowe-2.jpg"
-      />
-      <AvatarNameFilter
-        name="Russell Crowe"
-        avatar="https://www.famousbirthdays.com/headshots/russell-crowe-3.jpg"
-      />
-      <AvatarNameFilter
-        name="Aaaaaaaa"
-        avatar="https://www.famousbirthdays.com/headshots/russell-crowe-1.jpg"
-      />
+      {props.dataSearch.length ? (
+        props.dataSearch.map((user) => (
+          <Link to={`/colleague-chat/${user.id}`} key={user.id}>
+            <AvatarNameFilter
+              name={user.lastName + " " + user.firstName}
+              avatar={user.picture}
+              email={user.email}
+            />
+          </Link>
+        ))
+      ) : (
+        <p className="text-center">No result</p>
+      )}
     </div>
   );
 }

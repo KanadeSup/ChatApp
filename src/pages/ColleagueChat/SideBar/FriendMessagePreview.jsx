@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { User2 } from "lucide-react";
+import useColleagueStore from "@/storages/useColleagueStore";
 export default function FriendMessagePreview(props) {
   const [isHover, setIsHover] = useState(false);
   const shortMessage =
@@ -7,14 +9,18 @@ export default function FriendMessagePreview(props) {
       ? props.lastMessage.substring(0, 12) + "..."
       : props.lastMessage;
   return (
-    <Link to={`/colleague-chat/${props.id}`}>
       <div
         className="relative px-1.5 py-2.5 flex rounded-lg items-center hover:bg-gray-100 cursor-pointer"
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
       >
         <div className="relative">
-          <img className="h-9 w-9 rounded-md" src={props.avatar} />
+          <Avatar>
+            <AvatarImage src={props.avatar} alt="@shadcn" />
+            <AvatarFallback className="bg-gray-300">
+              <User2 />
+            </AvatarFallback>
+          </Avatar>
           <div
             className={`${
               props.isActive ? "bg-green-600" : "bg-red-600"
@@ -82,6 +88,5 @@ export default function FriendMessagePreview(props) {
         </div>
       )} */}
       </div>
-    </Link>
   );
 }
