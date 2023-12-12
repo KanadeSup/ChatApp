@@ -11,7 +11,7 @@ export default function () {
   return (
     <div className="flex ">
       {/* Utility bar */}
-      <UtilityBar colleague notification/>
+      <UtilityBar logo colleague notification/>
 
       {/* list friend */}
       {/* <SideBar isNewChat={isNewChat} setIsNewChat={setIsNewChat} /> */}

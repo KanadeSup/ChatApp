@@ -1,7 +1,4 @@
-import {
-  useEditor,
-  EditorContent,
-} from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import { Underline } from "@tiptap/extension-underline";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
@@ -16,22 +13,24 @@ import React from "react";
 const extensions = [
   StarterKit,
   Placeholder.configure({
-    placeholder: "Write the messages ... ",
+    placeholder: "Edit the messages ... ",
     emptyEditorClass:
       "cursor-text before:content-[attr(data-placeholder)] before:absolute before:text-mauve-11 before:opacity-50 before-pointer-events-none",
   }),
   Underline,
 ];
 
-const ChatBox = React.forwardRef((props) => {
+const ChatBoxEdit = React.forwardRef((props) => {
   const editor = useEditor({
     extensions: extensions,
+    content: props.message.content,
     editorProps: {
       attributes: {
         class: "outline-none overflow-y-auto max-h-56",
       },
     },
   });
+
   return (
     <div
       //ref={ref}
@@ -60,14 +59,16 @@ const ChatBox = React.forwardRef((props) => {
           <UnderlineIcon className="p-1" />
         </button>
       </div>
+
       {/* Chatbox */}
       <div
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             const message = editor.getHTML();
-            props.SendMessage(message);
+            props.UpdateMessage(props.message.id, message);
             editor.commands.clearContent(true);
+            props.setEditMessage(false);
           }
         }}
         className="outline-none mt-1 mb-2 relative max-w-[calc(100vw-25rem)]"
@@ -76,8 +77,9 @@ const ChatBox = React.forwardRef((props) => {
         <SendHorizontal
           onClick={() => {
             const message = editor.getHTML();
-            props.SendMessage(message);
+            props.UpdateMessage(props.message.id, message);
             editor.commands.clearContent(true);
+            props.setEditMessage(false);
           }}
           strokeWidth={1.25}
           className="absolute cursor-pointer bottom-0 right-0"
@@ -87,4 +89,4 @@ const ChatBox = React.forwardRef((props) => {
   );
 });
 
-export default ChatBox;
+export default ChatBoxEdit;

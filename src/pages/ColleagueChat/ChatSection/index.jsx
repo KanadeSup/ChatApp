@@ -15,7 +15,7 @@ export default function (props) {
   }, [conversationId]);
   
   return (
-    <div className="flex flex-col bg-white flex-grow shadow">
+    <div className="flex flex-col bg-white w-full shadow">
       {/* chat box header */}
       {isNewChat ? (
         <NewChatHeader setIsNewChat={setIsNewChat} />
