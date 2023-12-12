@@ -1,7 +1,7 @@
 import {create} from 'zustand';
 // Tạo store Zustand
 const useIsNewMessage = create(set => ({
-    isNewMessage: false,
+    isNewMessage: true,
     setIsNewMessage: (value) => set(() => ({ isNewMessage: value })),
   }));
 

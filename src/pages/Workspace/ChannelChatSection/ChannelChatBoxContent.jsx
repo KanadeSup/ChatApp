@@ -9,6 +9,8 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { getMessages } from "../../../api";
 import InfiniteScroll from "react-infinite-scroller";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { is } from "date-fns/locale";
+import { set } from "date-fns";
 
 // Do có dùng key là id channel bên routes nên khi chuyển channel sẽ re-render
 // mỗi component có một “key” duy nhất, Khi một component được cập nhật, React sẽ so sánh key hiện tại với
@@ -22,9 +24,9 @@ function SendMessage(hub, channelId, message) {
       ReceiverId: channelId,
       Content: message,
       IsChannel: true,
-    })
+    });
   } else {
-    console.error('Hub is not connected');
+    console.error("Hub is not connected");
   }
 }
 
@@ -32,33 +34,54 @@ export default function ChannelChatBoxContent(props) {
   const { channelId } = useParams();
   const [hub, setHub] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [isBottom, setIsBottom] = useState(true);
+  const [timeMessageLastLoad, setTimeMessageLastLoad] = useState(null);
 
+  const [scrollPosition, setScrollPosition] = useState(10);
+
+  // Hàm xử lý sự kiện cuộn
+  // const handleScroll = () => {
+  //   //const position = scrollParentRef.current.scrollTop;
+  //   const newScrollPosition = scrollParentRef.current.scrollTop;
+  //   if (newScrollPosition < scrollPosition) {
+  //     console.log("User scrolled up");
+  //     setScrollPosition(position);
+  //     if (position === 0) {
+  //       console.log("đã cuộn lên đầu");
+  //       setIsBottom(false);
+  //     }
+  //   }
+  // };
+
+  const scrollParentRef = useRef(null);
+  // Kết nối với hub
   useEffect(() => {
     // check access token is valid or not expired
     if (!localStorage.getItem("token")) {
-       setHub(null);
-       return
-    } 
+      setHub(null);
+      return;
+    }
     async function connect() {
-       const connection = new HubConnectionBuilder()
-          .withUrl(`https://api.firar.live/chatHub`, {
-             accessTokenFactory: () => {
-                return localStorage.getItem("token");
-             },
-          })
-          .withAutomaticReconnect()
-          .configureLogging(LogLevel.Information)
-          .build();
-       try {
-          await connection.start();
-          console.log("connect success");
-          setHub(connection);
-       } catch (e) {
-          console.log("error", e);
-       }
+      const connection = new HubConnectionBuilder()
+        .withUrl(`https://api.firar.live/chatHub`, {
+          accessTokenFactory: () => {
+            return localStorage.getItem("token");
+          },
+        })
+        .withAutomaticReconnect()
+        .configureLogging(LogLevel.Information)
+        .build();
+      try {
+        await connection.start();
+        console.log("connect success");
+        setHub(connection);
+      } catch (e) {
+        console.log("error", e);
+      }
     }
     connect();
- }, []);
+  }, []);
 
   // Tự động kéo xuống cuối khi có tin nhắn mới
   const messagesEndRef = useRef(null);
@@ -66,25 +89,45 @@ export default function ChannelChatBoxContent(props) {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
   useEffect(() => {
-    scrollToBottom();
+    if (isBottom) {
+      scrollToBottom();
+    }
   }, [messages]);
 
-  
-
-  //Lấy tin nhắn khi vào channel
+  //Lấy tin nhắn lần đầu khi vào channel
   useEffect(() => {
     console.log("id channel: ", channelId);
     async function fetchData() {
       const now = new Date();
       const timeCursor = encodeURIComponent(now.toISOString());
       const data = await getMessages(channelId, timeCursor, 7);
+      if (data.length > 0) setHasMore(true);
       // Sắp xếp tin nhắn theo thời gian
-      const sortedData = data.sort((a, b) => new Date(a.sendAt) - new Date(b.sendAt));
+      const sortedData = data.sort(
+        (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
+      );
       setMessages(sortedData);
     }
     fetchData();
   }, [channelId]);
 
+  // Lấy thêm tin nhắn khi kéo lên trên
+  // const fetchMoreData = async () => {
+  //   console.log("fetch more data");
+  //   //setIsBottom(false);
+  //   if (messages.length === 0) return;
+  //   const now = new Date(messages[0].sendAt);
+  //   const timeCursor = encodeURIComponent(now.toISOString());
+  //   const data = await getMessages(channelId, timeCursor, 1);
+  //   // Sắp xếp tin nhắn theo thời gian
+  //   const sortedData = data.sort(
+  //     (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
+  //   );
+  //   setMessages((prev) => [...sortedData, ...prev]);
+  //   if (data.length === 0) setHasMore(false);
+  // };
+
+  // Nhận tin nhắn mới
   useEffect(() => {
     console.log("hub: ", hub);
     if (hub) {
@@ -106,35 +149,42 @@ export default function ChannelChatBoxContent(props) {
 
   return (
     <div className="flex flex-row bg-white">
-      <div style={{ height: "calc(100vh - 4rem)" }} className="flex flex-col w-full">
+      <div
+        style={{ height: "calc(100vh - 4rem)" }}
+        className="flex flex-col w-full"
+      >
         <div
-          className="flex flex-col justify-start min-w-[480px] h-full overflow-y-scroll py-2"
+          ref={scrollParentRef}
+          //onScroll={handleScroll}
+          className="flex flex-col justify-start min-w-[480px] h-full overflow-auto py-2"
         >
           {/* <InfiniteScroll
             initialLoad={false}
             pageStart={0}
             loadMore={fetchMoreData}
-            hasMore={true}
+            hasMore={hasMore}
             isReverse={true}
+            threshold={50}
             loader={
-              <div className="flex w-full justify-center" key={0}>
+              <div className="flex w-full h-12 justify-center" key={0}>
                 <Loader2 className="w-8 h-8 animate-spin" />
               </div>
             }
             useWindow={false}
           > */}
-          {messages.map((message, index) => (
-            <Message
-              key={index}
-              index={index}
-              message={message}
-              setIsClickedReply={props.setIsClickedReply}
-              setIsClickedChannelUtility={props.setIsClickedChannelUtility}
-            />
-          ))}
+            {messages.map((message, index) => (
+              <Message
+                key={message.id}
+                index={index}
+                message={message}
+                setIsClickedReply={props.setIsClickedReply}
+                setIsClickedChannelUtility={props.setIsClickedChannelUtility}
+              />
+            ))}
           {/* </InfiniteScroll> */}
           <div ref={messagesEndRef} />
         </div>
+
         <ChatBox
           SendMessage={(message) => SendMessage(hub, channelId, message)}
         />
