@@ -8,6 +8,8 @@ import { getMessagesColleague } from "../../../api";
 import useIsNewMessage from "../../../storages/useIsNewMessage";
 import { getUserById } from "../../../api";
 import useColleagueStore from "@/storages/useColleagueStore";
+import userHubStore from "@/storages/useHubStore";
+import { set } from "date-fns";
 
 
 async function SendMessage(
@@ -23,7 +25,7 @@ async function SendMessage(
       ReceiverId: conversationId,
       Content: message,
       IsChannel: false,
-      ParentId: "83ecc9e6-ea9d-4cf3-ac0f-08dbfa0ea29b"
+      children : []
     });
     setIsNewMessage(true);
     const message2 = {
@@ -32,6 +34,7 @@ async function SendMessage(
       senderName: user.lastName + " " + user.firstName,
       senderId: localStorage.getItem("userId"),
       content: message,
+      children : []
     };
     setMessages((messages) => [...messages, message2]);
   } else {
@@ -65,7 +68,8 @@ async function DeleteMessage(hub, messageId, setMessages) {
 
 export default function ChatBoxContent(props) {
   const { conversationId } = useParams();
-  const [hub, setHub] = useState(null);
+  // const [hub, setHub] = useState(null);
+  const { hub, setHub } = userHubStore();
   const [messages, setMessages] = useState([]);
   const { isNewMessage, setIsNewMessage } = useIsNewMessage(); // Cập nhập danh sách hiển thị tin nhắn ở sideBar
   const [user, setUser] = useState(null);
@@ -79,7 +83,6 @@ export default function ChatBoxContent(props) {
     fetchData();
   }, []);
 
-  console.log("Hellllllllllllllllllllllllllllllllllllllo");
 
   // Kết nối với hub
   useEffect(() => {
@@ -141,10 +144,41 @@ export default function ChatBoxContent(props) {
       hub.off("receive_message");
       hub.on("receive_message", (message) => {
         console.log("đã chạy receive message");
-        if (message.senderId === conversationId)
-          setMessages((messages) => [...messages, message]);
-        else setMessages((messages) => [...messages]);
+        console.log("message đã nhận: ", message);
         setIsNewMessage(true);
+        
+        if (message.senderId !== conversationId) {
+          return;
+        }
+
+        setMessages((currentMessages) => {
+          const messages = [...currentMessages]; // Create a new copy of messages
+          const newMessage = {...message}; // Copy the message object to avoid mutation
+          const parentMessageIndex = messages.findIndex(m => m.id === newMessage.parentId);
+        
+          if (newMessage.senderId === conversationId && parentMessageIndex !== -1) {
+            // If the message has a parent in the current set of messages
+            const parentMessage = {...messages[parentMessageIndex]}; // Create a new copy of the parent message
+        
+            // Check if parentMessage.children is an array, if not initialize it as an empty array
+            if (!Array.isArray(parentMessage.children)) {
+              parentMessage.children = [];
+            }
+        
+            // Add the new message to the children of the parent message
+            parentMessage.children = [...parentMessage.children, newMessage];
+        
+            // Replace the old parent message with the updated one
+            messages[parentMessageIndex] = parentMessage;
+          } else {
+            // If the message doesn't have a parent in the current set of messages, add it to the set
+            messages.push(newMessage);
+          }
+        
+          return messages;
+        });
+        
+        
       });
     } else {
       console.error("Hub is not connected");
@@ -229,7 +263,7 @@ export default function ChatBoxContent(props) {
         />
       </div>
       {isClickedReply && (
-        <ReplySection setIsClickedReply={setIsClickedReply} hub={hub} user={user} setMessages={setMessages} />
+        <ReplySection setIsClickedReply={setIsClickedReply} messages={messages} setMessages={setMessages} conversationId={conversationId} />
       )}
     </div>
   );

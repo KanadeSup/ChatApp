@@ -93,7 +93,7 @@ export default function Message(props) {
               }}
             >
               <div className="text-xs font-bold text-bold-blue ml-1 mr-2 hover:underline">
-                1 replies
+                {props.message.children?.length} replies
               </div>
               {isHoverViewReply ? (
                 <>

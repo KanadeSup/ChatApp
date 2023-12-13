@@ -3,6 +3,7 @@ import ReplyList from "./ReplyList";
 import MessageReply from "./MessageReply";
 import ChatBox from "/components/ChatBox";
 import useColleagueStore from "@/storages/useColleagueStore";
+import useHubStore from "@/storages/useHubStore";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { getUserById } from "@/api";
 
@@ -10,33 +11,64 @@ import { getUserById } from "@/api";
 async function SendMessage(
   hub,
   message,
+  conversationId,
   content,
   setMessages,
   user
 ) {
   if (hub) {
+    console.log("conversationId reply: ", conversationId)
     const data = await hub.invoke("SendMessageAsync", {
-      ReceiverId: message.senderId,
+      //ReceiverId: message.senderId,
+      ReceiverId: conversationId,
       Content: content,
       IsChannel: false,
-      ParentId: message.id
+      ReplyTo: message.id
     });
     const message2 = {
       id: data,
       sendAt: new Date().toISOString(),
       senderName: user.lastName + " " + user.firstName,
       senderId: localStorage.getItem("userId"),
-      content: message,
+      content: content,
       parentId: message.id
     };
+
+    // Update setMessages
+    setMessages((currentMessages) => {
+      const messages = [...currentMessages]; // Create a new copy of messages
+      const parentMessageIndex = messages.findIndex(m => m.id === message2.parentId);
+
+      if (parentMessageIndex !== -1) {
+        // If the message has a parent in the current set of messages
+        const parentMessage = {...messages[parentMessageIndex]}; // Create a new copy of the parent message
+
+        // Check if parentMessage.children is an array, if not initialize it as an empty array
+        if (!Array.isArray(parentMessage.children)) {
+          parentMessage.children = [];
+        }
+
+        // Add the new message to the children of the parent message
+        parentMessage.children = [...parentMessage.children, message2];
+
+        // Replace the old parent message with the updated one
+        messages[parentMessageIndex] = parentMessage;
+      } else {
+        // If the message doesn't have a parent in the current set of messages, add it to the set
+        messages.push(message2);
+      }
+
+      return messages;
+    });
   } else {
     console.error("Hub is not connected");
   }
 }
+
 export default function ReplyBox(props) {
   const { message, setMessage } = useColleagueStore();
+  const { hub } = useHubStore();
   const chatBoxRef = useRef(null);
-  const [hub, setHub] = useState(null);
   const [user, setUser] = useState(null);
 
   async function fetchData() {
@@ -46,50 +78,6 @@ export default function ReplyBox(props) {
   useEffect(() => {
     fetchData();
   }, []);
-  // Kết nối với hub
-  useEffect(() => {
-    // check access token is valid or not expired
-    if (!localStorage.getItem("token")) {
-      setHub(null);
-      return;
-    }
-    async function connect() {
-      const connection = new HubConnectionBuilder()
-        .withUrl(`https://api.firar.live/chatHub`, {
-          accessTokenFactory: () => {
-            return localStorage.getItem("token");
-          },
-        })
-        .withAutomaticReconnect()
-        .configureLogging(LogLevel.Information)
-        .build();
-      try {
-        await connection.start();
-        console.log("connect success");
-        setHub(connection);
-      } catch (e) {
-        console.log("error", e);
-      }
-    }
-    connect();
-  }, []);
-
-  // Hub nhận tin nhắn mới
-  useEffect(() => {
-    if (hub) {
-      console.log("hub is not null");
-      hub.off("receive_message");
-      hub.on("receive_message", (message) => {
-        console.log("đã chạy receive message");
-        // if (message.senderId === conversationId)
-        //   setMessages((messages) => [...messages, message]);
-        // else setMessages((messages) => [...messages]);
-        // setIsNewMessage(true);
-      });
-    } else {
-      console.error("Hub is not connected");
-    }
-  }, [hub, message.id]);
 
   console.log("hub: ", hub);
   console.log("user: ", user);
@@ -115,6 +103,7 @@ export default function ReplyBox(props) {
             SendMessage(
               hub,
               message,
+              props.conversationId,
               content,
               props.setMessages,
               user

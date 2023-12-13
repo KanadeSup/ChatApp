@@ -20,7 +20,6 @@ const root = createRoot(node);
 root.render(<App />);
 
 
-// test
 // const fetchData = () => {
 //   return [
 //     "1", "2", "3", "4", "5", "6", "7", "8", "9","10"
@@ -56,4 +55,11 @@ root.render(<App />);
 //     </InfiniteScroll>
 //   ) 
 // }
+// export default function App () {
+//   return (
+//       <Infinity />
+//   )
+// }
+// const node = document.querySelector("#root");
+// const root = createRoot(node);
 // root.render(<Infinity />);
