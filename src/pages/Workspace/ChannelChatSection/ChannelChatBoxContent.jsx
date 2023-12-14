@@ -3,14 +3,11 @@ import ChatBox from "/components/ChatBox";
 import ReplySection from "../../../components/ReplySection";
 import ChannelUtility from "./ChannelUtility";
 import { useRef, useContext, useEffect, useState } from "react";
-import { HubContext } from "../../../contexts/HubContext";
 import { Loader2 } from "lucide-react";
 import { useOutletContext, useParams } from "react-router-dom";
 import { getMessages } from "../../../api";
-import InfiniteScroll from "react-infinite-scroller";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import { is } from "date-fns/locale";
-import { set } from "date-fns";
+import {InfiniteScroll} from "@/components/InfinityScroll";
 
 // Do có dùng key là id channel bên routes nên khi chuyển channel sẽ re-render
 // mỗi component có một “key” duy nhất, Khi một component được cập nhật, React sẽ so sánh key hiện tại với
@@ -36,23 +33,6 @@ export default function ChannelChatBoxContent(props) {
   const [messages, setMessages] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const [isBottom, setIsBottom] = useState(true);
-  const [timeMessageLastLoad, setTimeMessageLastLoad] = useState(null);
-
-  const [scrollPosition, setScrollPosition] = useState(10);
-
-  // Hàm xử lý sự kiện cuộn
-  // const handleScroll = () => {
-  //   //const position = scrollParentRef.current.scrollTop;
-  //   const newScrollPosition = scrollParentRef.current.scrollTop;
-  //   if (newScrollPosition < scrollPosition) {
-  //     console.log("User scrolled up");
-  //     setScrollPosition(position);
-  //     if (position === 0) {
-  //       console.log("đã cuộn lên đầu");
-  //       setIsBottom(false);
-  //     }
-  //   }
-  // };
 
   const scrollParentRef = useRef(null);
   // Kết nối với hub
@@ -84,15 +64,15 @@ export default function ChannelChatBoxContent(props) {
   }, []);
 
   // Tự động kéo xuống cuối khi có tin nhắn mới
-  const messagesEndRef = useRef(null);
-  const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-  };
-  useEffect(() => {
-    if (isBottom) {
-      scrollToBottom();
-    }
-  }, [messages]);
+  // const messagesEndRef = useRef(null);
+  // const scrollToBottom = () => {
+  //   messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  // };
+  // useEffect(() => {
+  //   if (isBottom) {
+  //     scrollToBottom();
+  //   }
+  // }, [messages]);
 
   //Lấy tin nhắn lần đầu khi vào channel
   useEffect(() => {
@@ -100,7 +80,7 @@ export default function ChannelChatBoxContent(props) {
     async function fetchData() {
       const now = new Date();
       const timeCursor = encodeURIComponent(now.toISOString());
-      const data = await getMessages(channelId, timeCursor, 7);
+      const data = await getMessages(channelId, timeCursor, 14);
       if (data.length > 0) setHasMore(true);
       // Sắp xếp tin nhắn theo thời gian
       const sortedData = data.sort(
@@ -112,20 +92,20 @@ export default function ChannelChatBoxContent(props) {
   }, [channelId]);
 
   // Lấy thêm tin nhắn khi kéo lên trên
-  // const fetchMoreData = async () => {
-  //   console.log("fetch more data");
-  //   //setIsBottom(false);
-  //   if (messages.length === 0) return;
-  //   const now = new Date(messages[0].sendAt);
-  //   const timeCursor = encodeURIComponent(now.toISOString());
-  //   const data = await getMessages(channelId, timeCursor, 1);
-  //   // Sắp xếp tin nhắn theo thời gian
-  //   const sortedData = data.sort(
-  //     (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
-  //   );
-  //   setMessages((prev) => [...sortedData, ...prev]);
-  //   if (data.length === 0) setHasMore(false);
-  // };
+  const fetchMoreData = async () => {
+    console.log("fetch more data");
+    //setIsBottom(false);
+    if (messages.length === 0) return;
+    const now = new Date(messages[0].sendAt);
+    const timeCursor = encodeURIComponent(now.toISOString());
+    const data = await getMessages(channelId, timeCursor, 1);
+    // Sắp xếp tin nhắn theo thời gian
+    const sortedData = data.sort(
+      (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
+    );
+    setMessages((prev) => [...sortedData, ...prev]);
+    if (data.length === 0) setHasMore(false);
+  };
 
   // Nhận tin nhắn mới
   useEffect(() => {
@@ -153,25 +133,11 @@ export default function ChannelChatBoxContent(props) {
         style={{ height: "calc(100vh - 4rem)" }}
         className="flex flex-col w-full"
       >
-        <div
-          ref={scrollParentRef}
-          //onScroll={handleScroll}
-          className="flex flex-col justify-start min-w-[480px] h-full overflow-auto py-2"
+        <InfiniteScroll
+          getMore={fetchMoreData}
+          invokeHeight={10}
+          className="view flex flex-col justify-start min-w-[480px] h-full py-10 overflow-auto"
         >
-          {/* <InfiniteScroll
-            initialLoad={false}
-            pageStart={0}
-            loadMore={fetchMoreData}
-            hasMore={hasMore}
-            isReverse={true}
-            threshold={50}
-            loader={
-              <div className="flex w-full h-12 justify-center" key={0}>
-                <Loader2 className="w-8 h-8 animate-spin" />
-              </div>
-            }
-            useWindow={false}
-          > */}
             {messages.map((message, index) => (
               <Message
                 key={message.id}
@@ -181,9 +147,8 @@ export default function ChannelChatBoxContent(props) {
                 setIsClickedChannelUtility={props.setIsClickedChannelUtility}
               />
             ))}
-          {/* </InfiniteScroll> */}
-          <div ref={messagesEndRef} />
-        </div>
+          {/* <div ref={messagesEndRef} /> */}
+        </InfiniteScroll>
 
         <ChatBox
           SendMessage={(message) => SendMessage(hub, channelId, message)}

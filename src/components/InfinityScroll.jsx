@@ -39,7 +39,6 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
    }, [page]);
 
    const handleScroll = async(e) => {
-      
       // Set scroll Bottom
       const currentScrollTop = scrollDivRef.current.scrollTop
       const currentClientHeight = scrollDivRef.current.clientHeight
@@ -66,7 +65,7 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
    return (
       <div className={`overflow-y-scroll ${className}`} onScroll={handleScroll} ref={scrollDivRef}>
          <div className="w-full flex items-center justify-center">
-            <Loader2 className="w-5 h-5 animate-spin" ref={loaderRef}/>
+            <Loader2 className="w-5 h-5 my-4 animate-spin" ref={loaderRef}/>
             <p className="text-lg font-medium hidden" ref={endMessageRef}> Nothing more !</p>
          </div>
          {children}

@@ -24,11 +24,11 @@ export default function Message(props) {
   const [editMessage, setEditMessage] = useState(false);
   const { isClickedReply, message,  setIsClickedReply, setMessage } = useColleagueStore();
 
-  useEffect(() => {
-    console.log("message: ", message);
-    console.log("props.message: ", props.message);
-  }
-  , [message]);
+  // useEffect(() => {
+  //   console.log("message: ", message);
+  //   console.log("props.message: ", props.message);
+  // }
+  // , [message]);
   return (  
     <div
       className="mx-2 relative group"
@@ -93,7 +93,7 @@ export default function Message(props) {
               }}
             >
               <div className="text-xs font-bold text-bold-blue ml-1 mr-2 hover:underline">
-                1 replies
+                {props.message.children?.length} replies
               </div>
               {isHoverViewReply ? (
                 <>

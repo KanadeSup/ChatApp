@@ -17,6 +17,8 @@ function AvatarNameFilter(props) {
 }
 
 export default function UserDropList(props) {
+  console.log("props",props.dataSearch);
+  console.log("props",props.dataSearch.length);
   return (
     <div
       style={{
@@ -25,8 +27,8 @@ export default function UserDropList(props) {
       }}
       className="absolute z-10 top-[50px] p-1 w-11/12 border border-gray-300 left-10 shadow-xl  bg-white rounded-b-md py-2 flex flex-col flex-grow justify-start"
     >
-      {props.dataSearch.length ? (
-        props.dataSearch.map((user) => (
+      {props.dataSearch?.data?.length ? (
+        props.dataSearch.data.map((user) => (
           <Link to={`/colleague-chat/${user.id}`} key={user.id}>
             <AvatarNameFilter
               name={user.lastName + " " + user.firstName}
