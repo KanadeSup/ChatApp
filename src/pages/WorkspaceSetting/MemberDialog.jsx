@@ -18,21 +18,28 @@ import { useState } from "react";
 
 export default function ({ children, members, addMembers }) {
    const [checkedMember, setCheckedMember] = useState([]);
+   const [search, setSearch] = useState("");
    return (
-      <Dialog>
+      <Dialog onOpenChange={e=>setSearch("")}>
          <DialogTrigger asChild>{children}</DialogTrigger>
          <DialogContent className="space-y-2">
             <DialogHeader className="space-y-5">
                <DialogTitle className="text-center"> Add Members </DialogTitle>
                <div className="relative">
                   <Search className="absolute left-3 top-2 w-5 h-6 stroke-gray-500" />
-                  <Input className="pl-10" />
+                  <Input className="pl-10" 
+                     onChange={e=> {
+                        setSearch(e.target.value.trim())
+                     }}
+                  />
                </div>
             </DialogHeader>
             <h2 className="text-gray-700 font-bold"> Members </h2>
             <div className="flex flex-col justify-start h-[300px] overflow-y-auto">
                {members
-                  ? members.map((member) => {
+                  ? members
+                  .filter(member=> search === "" ? true: member.username.includes(search))
+                  .map((member) => {
                        return (
                           <div key={member.id}>
                              <div

@@ -116,7 +116,7 @@ export default function (props) {
                </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="absolute left-6 bottom-1 w-48">
-               <DropdownMenuLabel> {user.lastName + " " + user.firstName} </DropdownMenuLabel>
+               <DropdownMenuLabel> {user.username} </DropdownMenuLabel>
                <DropdownMenuSeparator />
                <Link to="/UserSetting">
                   <DropdownMenuItem className="cursor-pointer">

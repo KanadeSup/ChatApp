@@ -31,6 +31,7 @@ import {
  } from "@/components/ui/alert-dialog"
 import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
+import ProfileDialog from "../../components/ProfileDiaglog";
 
 export default function() {
    const { workspaceId, channelId } = useParams()
@@ -40,6 +41,7 @@ export default function() {
    const [open, setOpen] = useState({})
    const [deleteId, setDeleteId] = useState("")
    const [load, setLoad] = useState({})
+   const [search, setSearch] = useState("")
    function forceLoad() {
       setLoad({});
    }
@@ -66,6 +68,9 @@ export default function() {
                <Input 
                   placeholder="Search ...."
                   className="w-full grow-1"
+                  onChange={e=> {
+                     setSearch(e.target.value.trim())
+                  }}
                />
                <WorkspaceMemberDialog members={workspaceMembers} forceLoad={forceLoad}>
                   <Button className="shrink-0"> Add Members </Button>
@@ -82,7 +87,9 @@ export default function() {
                <TableBody>
                   {
                      channelMembers ? 
-                     channelMembers.map(member=>(
+                     channelMembers
+                     .filter(member=> search === "" ? true: member.username.includes(search))
+                     .map(member=>(
                         <TableRow key={member.id}>
                            <TableCell className="flex gap-3 items-center"> 
                               <Avatar>
@@ -99,7 +106,9 @@ export default function() {
                               }
                            </TableCell>
                            <TableCell className="flex gap-6 justify-end">
-                              <Contact className="cursor-pointer stroke-blue-600 stroke-[2]" />
+                              <ProfileDialog member={member}>
+                                 <Contact className="cursor-pointer stroke-blue-600 stroke-[2]" />
+                              </ProfileDialog>
                               <AlertDialog open={open[member.id]} onOpenChange={e=>{
                                  open[member.id] = undefined
                                  setOpen({...open})

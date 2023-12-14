@@ -25,6 +25,7 @@ import { deleteMember } from "../../api/workspace";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { getMemberList } from "/api/workspace";
+import ProfileDialog from "../../components/ProfileDiaglog";
 
 export default function () {
    const [memberList, setMemberList] = useState([]);
@@ -32,6 +33,7 @@ export default function () {
    const { workspaceId } = useParams();
    const { toast } = useToast();
    const [force, setForce] = useState({})
+   const [search, setSearch] = useState("")
    function forceLoad() {
       setForce({})
    }
@@ -52,7 +54,11 @@ export default function () {
             <Separator />
             <div>
                <div className="flex justify-end gap-3">
-                  <Input className="w-60" placeholder="Search ..." />
+                  <Input className="w-60" placeholder="Search ..." 
+                     onChange={e=> {
+                        setSearch(e.target.value.trim())
+                     }}
+                  />
                   <Button variant="ghost" size="icon">
                      <ArrowDownWideNarrow className="w-6 h-6 stroke-gray-500" />
                   </Button>
@@ -70,7 +76,9 @@ export default function () {
                      </TableRow>
                   </TableHeader>
                   <TableBody>
-                     {memberList.map((member) => {
+                     {memberList
+                     .filter(member=> search === "" ? true: member.username.includes(search))
+                     .map((member) => {
                         return (
                            <TableRow key={member.id}>
                               <TableCell>
@@ -99,7 +107,9 @@ export default function () {
                               </TableCell>
                               <TableCell>
                                  <div className="flex justify-end gap-6 items-center h-full">
-                                    <Contact className="stroke-blue-600 cursor-pointer" />
+                                    <ProfileDialog member={member}>
+                                       <Contact className="stroke-blue-600 cursor-pointer" />
+                                    </ProfileDialog>
                                     <X
                                        className="stroke-red-600 stroke-[3] cursor-pointer"
                                        onClick={(e) => {

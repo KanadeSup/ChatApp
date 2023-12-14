@@ -15,9 +15,8 @@ export default function ChannelList({ fetcher, name, avatar, setChannelName }) {
    const fetcherData = fetcher.data
    const { toast } = useToast()
    useEffect(()=>{
-      console.log(fetcherData)
-      if(fetcherData) {
-         if(fetcherData.status === 403) {
+      if(fetcherData || formCId) {
+         if(fetcherData?.status === 403 || formCId?.status === 403) {
             toast({
                title: 
                   <p className="flex items-center">
@@ -27,7 +26,7 @@ export default function ChannelList({ fetcher, name, avatar, setChannelName }) {
             })
             return
          }
-         if(!fetcherData.ok) {
+         if(fetcherData?.ok === false || formCId?.ok === false) {
             toast({
                title: 
                   <p className="flex items-center">

@@ -57,6 +57,7 @@ export default function () {
    const { workspaceId } = useParams();
    const navigate = useNavigate();
    const { toast } = useToast();
+   const [search, setSearch] = useState("")
 
    const addMembers = (members) => {
       if (members.length === 0) return;
@@ -227,7 +228,11 @@ export default function () {
             <TabsContent value="members">
                <div className="flex gap-5">
                   <div className="relative w-full">
-                     <Input placeholder="Search Members" className="pr-10" />
+                     <Input placeholder="Search Members" className="pr-10" 
+                        onChange={e=> {
+                           setSearch(e.target.value.trim())
+                        }}
+                     />
                      <Search className="absolute right-3 top-[10px] text-gray-600 w-5 h-5" />
                   </div>
                   <MemberDialog
@@ -241,7 +246,9 @@ export default function () {
                </div>
                <div className="mt-5 flex flex-col gap-2 h-[calc(100vh-350px)] overflow-y-auto">
                   {addedMembers.length !== 0 ? (
-                     addedMembers.map((member) => {
+                     addedMembers
+                     .filter(member=> search === "" ? true: member.username.includes(search))
+                     .map((member) => {
                         return (
                            <div
                               key={member.id}

@@ -14,7 +14,7 @@ export default async (id, logo, name, description) => {
       })
    })
    if(!logo || logo.size === 0) return
-   console.log("done")
+   console.log(logo)
    const formData = new FormData()
    formData.append("Avatar", logo, "image")
    await myFetch({
