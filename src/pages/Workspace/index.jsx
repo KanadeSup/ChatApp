@@ -7,7 +7,7 @@ export default function () {
    const { workspace } = useLoaderData()
    const [channelName, setChannelName]= useState("")
    return (
-      <div className="flex min-h-screen w-screen">
+      <div className="flex h-screen w-full">
          <UtilityBar workspace={workspace} colleague notification/>
          <SideBar workspace={workspace} setChannelName={setChannelName}/>
          <Outlet />

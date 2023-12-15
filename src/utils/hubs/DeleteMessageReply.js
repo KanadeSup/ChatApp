@@ -1,5 +1,13 @@
-async function DeleteMessageReply(hub, childrenMessage, setMessage, setMessages) {
+async function DeleteMessageReply(hub, childrenMessage, setMessage, setMessagesChild, setMessages, isChannel) {
     if (hub) {
+        if (isChannel) {
+            await hub.invoke(
+                "DeleteMessageAsync",
+                childrenMessage.id,
+                true
+            );
+            return;
+        }
         const data = await hub.invoke(
             "DeleteMessageAsync",
             childrenMessage.id,
@@ -14,8 +22,11 @@ async function DeleteMessageReply(hub, childrenMessage, setMessage, setMessages)
             );
             if (parentMessageIndex !== -1) {
                 const parentMessage = { ...messages[parentMessageIndex] };
-                parentMessage.children = parentMessage.children.filter(
-                    (m) => m.id !== childrenMessage.id
+                parentMessage.childCount -= 1;
+                setMessagesChild((messagesChild) =>
+                    messagesChild.filter(
+                        (m) => m.id !== childrenMessage.id
+                    )
                 );
                 messages[parentMessageIndex] = parentMessage;
                 setMessage(parentMessage);

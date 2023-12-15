@@ -25,17 +25,15 @@ export default function MessageReply(props) {
       onMouseLeave={() => setShowEmoij(false)}
     >
       <div
-        className="flex w-full bg-gray-50 hover:bg-gray-100 rounded-md p-3 mb-4"
+        className="flex w-full gap-2 bg-gray-50 hover:bg-gray-100 rounded-md p-2"
         style={{ fontFamily: "'Roboto', Arial, sans-serif" }}
       >
-        <div className="flex-shrink-0 mr-2">
           <Avatar>
             <AvatarImage src={props.message?.senderAvatar} />
             <AvatarFallback className="bg-gray-300">
               <User2 />
             </AvatarFallback>
           </Avatar>
-        </div>
 
         <div className="w-full">
           <div className="flex relative bottom-1">

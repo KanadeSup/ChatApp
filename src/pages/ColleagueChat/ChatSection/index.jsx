@@ -5,7 +5,7 @@ import useColleagueStore from "@/storages/useColleagueStore";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-export default function (props) {
+export default function () {
   const { conversationId } = useParams();
   console.log(conversationId);
   const { isNewChat, setIsNewChat, isChatOption, setIsChatOption } = useColleagueStore();
@@ -28,10 +28,7 @@ export default function (props) {
       )}
 
       {/* chat box content */}
-      <ChatBoxContent
-        isClickedReply={props.isClickedReply}
-        setIsClickedReply={props.setIsClickedReply}
-      />
+      <ChatBoxContent/>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { login, loginGoogle } from "/api";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import useHubStore from "../../storages/useHubStore";
 
 export default function Login() {
    const [email, setEmail] = useState("");
@@ -11,8 +12,10 @@ export default function Login() {
    const [error, setError] = useState("");
    const [isLoading, setIsLoading] = useState(false);
    let navigate = useNavigate();
+   const { hub, setHub } = useHubStore();
 
    // hub
+   
 
    async function handleLogin() {
       try {
