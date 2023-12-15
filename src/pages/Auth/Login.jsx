@@ -57,7 +57,7 @@ export default function Login() {
                "refreshTokenTimeout",
                data.refreshTokenTimeout,
             );
-            navigate("/");
+            navigate("/Workspace");
          },
       });
 
