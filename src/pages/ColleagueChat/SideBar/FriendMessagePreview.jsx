@@ -1,13 +1,22 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User2 } from "lucide-react";
 import useColleagueStore from "@/storages/useColleagueStore";
+import { useReactTable } from "@tanstack/react-table";
 export default function FriendMessagePreview(props) {
   const [isHover, setIsHover] = useState(false);
-  const shortMessage =
-    props.lastMessage.length > 15
-      ? props.lastMessage.substring(0, 12) + "..."
-      : props.lastMessage;
+  const ref = useRef()
+  const [shortMessage, setShortMessage] = useState()
+  // const shortMessage =
+  //   props.lastMessage.length > 15
+  //     ? props.lastMessage.substring(0, 12) + "..."
+  //     : props.lastMessage;
+  useEffect(() => {
+    if(ref.current) {
+      ref.current.innerHTML = "<i> aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa </i>"
+      ref.current.textContent = ref.current.textContent
+    }
+  },[props.lastMessage])
   return (
       <div
         className="relative px-1.5 py-2.5 flex rounded-lg items-center hover:bg-gray-100 cursor-pointer"
@@ -44,9 +53,10 @@ export default function FriendMessagePreview(props) {
           <p
             className={`${
               props.isRead ? "" : "font-bold"
-            } text-gray-900 mt-1 text-xs`}
+            } text-gray-900 mt-1 text-sm truncate w-40`
+            }
+            ref={ref}
           >
-            {shortMessage}
           </p>
         </div>
 
