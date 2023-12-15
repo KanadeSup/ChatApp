@@ -16,10 +16,8 @@ export default function () {
   useEffect(() => {
     async function fetchConversions() {
       const response = await getConversions("", 0, 10);
-      console.log("response", response);
       setConversations(response);
       setIsNewMessage(false);
-      console.log("đã reset");
     }
     // if (isNewMessage) {
       fetchConversions();
