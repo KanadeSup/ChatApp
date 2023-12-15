@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import EditProfile from "./EditCardProfile";
 import { useState, useEffect, Suspense } from "react";
 import { getUserById } from "../../api";
+import { User2 } from "lucide-react";
 
 export default function () {
   const [user, setUser] = useState(null);
@@ -60,7 +61,9 @@ export default function () {
         <div className="flex items-center gap-5">
           <Avatar className="rounded-lg h-20 w-20">
             <AvatarImage src={user.picture} />
-            <AvatarFallback className="rounded-lg text-3xl"> P </AvatarFallback>
+            <AvatarFallback className="rounded-lg text-3xl"> 
+              <User2 className="w-10 h-10"/>
+            </AvatarFallback>
           </Avatar>
           <div>
             <h1 className="text-xl font-medium">
@@ -77,8 +80,7 @@ export default function () {
         <Label> Full name </Label>
         <span> : </span>
         <p>
-          {" "}
-          {user.lastName} {user.firstName}{" "}
+          {user.lastName} {user.firstName}
         </p>
 
         <Label> Gender </Label>

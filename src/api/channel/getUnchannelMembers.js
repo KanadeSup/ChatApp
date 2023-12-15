@@ -1,14 +1,19 @@
 import myFetch from '/api/myFetch'
 
-export default async (email) => {
+export default async function (wid, cid) {
    const res = await myFetch({
-      path: `User/search/email/${email}/10`,
+      path: `Channel/workspace/${wid}/channel/${cid}/user-not-in-channel`,
+      method: "GET",
+      headers: {
+         "workspace-id": wid,
+         "channel-id": cid,
+      },
    })
    if(!res.ok) {
       return {
          data: null,
          status: res.status,
-         ok: res.ok,
+         ok: res.ok
       }
    }
    const data = await res.json()
@@ -17,4 +22,4 @@ export default async (email) => {
       status: res.status,
       ok: res.ok,
    }
-};
+}

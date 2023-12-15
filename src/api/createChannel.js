@@ -13,6 +13,9 @@ export default async function (name, wId) {
          "workspaceId": wId,
       }),
    })
-   const data = await res.json()
-   return data
+   return {
+      data: null,
+      status: res.status,
+      ok: res.ok
+   }
 }

@@ -9,7 +9,11 @@ import AddMember from "./AddMember"
 import getUnroleMember from "./getUnroleMember"
 import addRoleMembers from "./addRoleMembers"
 import getMemberByRole from "./getMemberByRole"
+import deleteMember from "./deleteMember"
+import getUnchannelMembers from "./getUnchannelMembers"
 export {
+   getUnchannelMembers,
+   deleteMember,
    getMemberByRole,
    addRoleMembers,
    getUnroleMember,

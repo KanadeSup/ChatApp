@@ -34,7 +34,7 @@ export default function ({ workspace }) {
             <CardContent>
                <div className="flex items-center gap-5">
                   <div className="grid grid-cols-3 w-20">
-                     {members.map((member) => (
+                     {members.slice(0,3).map((member) => (
                         <Avatar key={member.id} className="rounded">
                            <AvatarImage src={member.picture} />
                            <AvatarFallback className="rounded font-medium border border-gray-300">
@@ -45,8 +45,7 @@ export default function ({ workspace }) {
                   </div>
                   {members.length > 3 ? (
                      <span className="text-gray-500">
-                        {" "}
-                        +{members.length - 3}{" "}
+                        +{members.length - 3}
                      </span>
                   ) : (
                      ""

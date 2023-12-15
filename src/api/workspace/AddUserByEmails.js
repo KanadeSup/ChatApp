@@ -4,11 +4,31 @@ import addUsers from './addUsers'
 
 export default async (wid, emails) => {
    const uids = []
+   let res;
    await Promise.all(emails.map(async email => {
-      const user = await getUserByEmail(email)
-      if(user.length !== 0) uids.push(user[0].id)
+      const res = await getUserByEmail(email)
+      console.log(res)
+      if(!res.ok) return {
+         data: null,
+         status: res.status,
+         ok: res.ok,
+      }
+      if(res.data.length !== 0) uids.push(res.data[0].id)
    }))
-   if(uids.length !== 0 )
-      await addUsers(wid, uids)
-   return "done"
+   console.log(emails)
+   console.log(uids)
+   if(uids.length !== 0 ) {
+      res = await addUsers(wid, uids)
+      if(!res.ok) return {
+         data: null,
+         status: res.status,
+         ok: res.ok
+      }
+   }
+   
+   return {
+      data: null,
+      status: 200,
+      ok: true,
+   }
 };

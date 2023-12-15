@@ -19,6 +19,7 @@ export default function NewChatHeader(props) {
       }, 200); 
       setTimerId(id); // save the timer id
     }
+    console.log("data search: ", dataSearch);
   }, [searchNewChat]);
 
   return (

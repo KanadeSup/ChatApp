@@ -11,7 +11,7 @@ import { getChannelRoleList, deleteChannelRole } from "/api/channel"
 const deleteChannelAction = async function({ request, params }) {
    const { workspaceId, channelId } = params
    const formData = await request.formData();
-   await deleteChannel(workspaceId, channelId)
+   const res = await deleteChannel(workspaceId, channelId)
    return redirect(`/Workspace/${workspaceId}`)
 }
 async function channelRolesLoader({params}) {
@@ -25,10 +25,7 @@ async function deleteRoleAction({request,params}) {
    await deleteChannelRole(channelId, roleId)
    return roleId
 }
-async function channelMemberLoader({params}) {
-   const { channelId } = params
-   return defer({roleList: getChannelRoleList(channelId)})
-}
+
 export default [
    {
       path: "/Workspace/:workspaceId/:channelId/ChannelSetting",
