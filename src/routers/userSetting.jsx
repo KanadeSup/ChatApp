@@ -11,7 +11,7 @@ const userSettingLoader = async function () {
 
 export default [
   {
-    path: "/UserSetting",
+    path: "/:workspaceId?/UserSetting",
     element: <UserSetting />,
     children: [
       {

@@ -20,6 +20,7 @@ function showMenu(event) {
 }
 export default function (props) {
    const [user, setUser] = useState({});
+   const [workspaceId, setWorkspaceId] = useState();
    const utilites = Object.keys(props);
    const navigate = useNavigate();
 
@@ -83,11 +84,14 @@ export default function (props) {
                         <Suspense>
                            <Await resolve={props.workspace}>
                               {
-                                 (workspace) => (
-                                    <NavLink to={`/Workspace/${workspace.id}`}>
-                                       <img src={workspace.avatarUrl} className="w-12 h-12 rounded" />
-                                    </NavLink>
-                                 )
+                                 (workspace) => {
+                                    setWorkspaceId(workspace.id)
+                                    return (
+                                       <NavLink to={`/Workspace/${workspace.id}`}>
+                                          <img src={workspace.avatarUrl} className="w-12 h-12 rounded" />
+                                       </NavLink>
+                                    )
+                                 }
                               }
                            </Await>
                         </Suspense>
@@ -118,7 +122,7 @@ export default function (props) {
             <DropdownMenuContent className="absolute left-6 bottom-1 w-48">
                <DropdownMenuLabel> {user.username} </DropdownMenuLabel>
                <DropdownMenuSeparator />
-               <Link to="/UserSetting">
+               <Link to={workspaceId ? `/${workspaceId}/UserSetting` : "/UserSetting"}>
                   <DropdownMenuItem className="cursor-pointer">
                      <UserCog className="w-4 h-4 mr-2"/>
                      User Setting
