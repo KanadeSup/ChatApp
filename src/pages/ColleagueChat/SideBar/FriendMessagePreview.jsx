@@ -13,7 +13,7 @@ export default function FriendMessagePreview(props) {
   //     : props.lastMessage;
   useEffect(() => {
     if(ref.current) {
-      ref.current.innerHTML = "<i> aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa </i>"
+      ref.current.innerHTML = props.lastMessage
       ref.current.textContent = ref.current.textContent
     }
   },[props.lastMessage])

@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import {InfiniteScroll} from "./components/InfinityScroll";
 
 const App = function () {
-  const [hub, setHub] = useHubContext();
+  // const [hub, setHub] = useHubContext();
   return (
       //<HubContext.Provider value={[hub, setHub]}>
         <RouterProvider router={router} />

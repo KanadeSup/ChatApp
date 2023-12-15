@@ -5,6 +5,7 @@ async function UpdateMessage(hub, messageId, message, isChannel) {
             Content: message,
             IsChannel: isChannel,
         });
+        console.log("UpdateMessageAsync: ", data);
     } else {
         console.error("Hub is not connected");
     }

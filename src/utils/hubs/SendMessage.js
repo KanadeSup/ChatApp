@@ -1,4 +1,3 @@
-import { is } from "date-fns/locale";
 
 async function SendMessage(
     hub,
@@ -26,17 +25,17 @@ async function SendMessage(
             ReceiverId: conversationId,
             Content: message,
             IsChannel: isChannel,
-            children: [],
         });
         setIsNewMessage(true);
         scrollToBottom();
         const message2 = {
             id: data,
             sendAt: new Date().toISOString(),
-            senderName: user.lastName + " " + user.firstName,
+            senderName: user.firstName + " " + user.lastName,
             senderId: localStorage.getItem("userId"),
             content: message,
-            children: [],
+            senderAvatar: user.picture,
+            childCount: 0,
         };
         setMessages((messages) => [...messages, message2]);
     } else {
