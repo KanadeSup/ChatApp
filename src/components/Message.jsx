@@ -72,7 +72,7 @@ export default function Message(props) {
           )}
 
           {/*-- View Reply --*/}
-          {props.message.children?.length ? (
+          {props.message.childCount? (
             <div
               className="flex relative select-none -left-1 flex-row mt-1 w-1/2 min-w-[240px] max-w-[300px] py-[5px] rounded-md cursor-pointer border border-transparent hover:border-gray-400 transition-all duration-200 hover:bg-white"
               onMouseEnter={() => setIsHoverViewReply(true)}
@@ -87,7 +87,7 @@ export default function Message(props) {
               }}
             >
               <div className="text-xs font-bold text-bold-blue ml-1 mr-2 hover:underline">
-                {props.message.children?.length} replies
+                {props.message.childCount} {props.message.childCount > 1 ? "replies" : "reply"}
               </div>
               {isHoverViewReply ? (
                 <>

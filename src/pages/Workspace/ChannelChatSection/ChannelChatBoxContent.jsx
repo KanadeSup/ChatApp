@@ -11,6 +11,7 @@ import useHubStore from "../../../storages/useHubStore";
 import { SendMessage, UpdateMessage, DeleteMessage } from "@/utils/hubs";
 import useChannelStore from "@/storages/useChannelStore";
 import { getUserById } from "@/api";
+import { set } from "date-fns";
 
 // Do có dùng key là id channel bên routes nên khi chuyển channel sẽ re-render
 // mỗi component có một “key” duy nhất, Khi một component được cập nhật, React sẽ so sánh key hiện tại với
@@ -23,6 +24,7 @@ export default function ChannelChatBoxContent(props) {
   const [user, setUser] = useState(null);
   const [forceScroll, setForceScroll] = useState({});
   const [isNewMessage, setIsNewMessage] = useState(false);
+  const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
   const scrollDivRef = useRef();
   const {
     messageParent,
@@ -33,16 +35,7 @@ export default function ChannelChatBoxContent(props) {
     setIsClickedChannelUtility,
   } = useChannelStore();
 
-  //Lấy thông tin user
-  async function fetchData() {
-    const data = await getUserById(localStorage.getItem("userId"));
-    setUser(data);
-  }
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // Kết nối với hub
+  //Kết nối với hub
   useEffect(() => {
     // check access token is valid or not expired
     if (!localStorage.getItem("token")) {
@@ -70,9 +63,17 @@ export default function ChannelChatBoxContent(props) {
     connect();
   }, []);
 
+  //Lấy thông tin user
+  async function fetchData() {
+    const data = await getUserById(localStorage.getItem("userId"));
+    setUser(data);
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   //Lấy tin nhắn lần đầu khi vào channel
   useEffect(() => {
-    console.log("id channel: ", channelId);
     async function fetchData() {
       const now = new Date();
       const timeCursor = encodeURIComponent(now.toISOString());
@@ -113,24 +114,22 @@ export default function ChannelChatBoxContent(props) {
         if (message.receiverId !== channelId) {
           return;
         }
+
         setMessages((currentMessages) => {
           const messages = [...currentMessages]; // Create a new copy of messages
           const newMessage = { ...message }; // Copy the message object to avoid mutation
           const parentMessageIndex = messages.findIndex(
             (m) => m.id === newMessage.parentId
           );
-          if (
-            newMessage.senderId === channelId &&
-            parentMessageIndex !== -1
-          ) {
+          if (newMessage.receiverId === channelId && parentMessageIndex !== -1) {
             // If the message has a parent in the current set of messages
             const parentMessage = { ...messages[parentMessageIndex] }; // Create a new copy of the parent message
-            // Check if parentMessage.children is an array, if not initialize it as an empty array
-            if (!Array.isArray(parentMessage.children)) {
-              parentMessage.children = [];
+            
+            if (message.parentId === localStorage.getItem("idMessage")) {
+              setMessagesChild((messagesChild) => [...messagesChild, message]);
             }
-            // Add the new message to the children of the parent message
-            parentMessage.children = [...parentMessage.children, newMessage];
+            parentMessage.childCount += 1;
+
             // Lưu lại tin nhắn để hiển thị trong reply box
             if (parentMessage.id === localStorage.getItem("idMessage")) {
               setMessageParent(parentMessage);
@@ -157,7 +156,6 @@ export default function ChannelChatBoxContent(props) {
     if (hub) {
       hub.off("update_message");
       hub.on("update_message", (message_updated) => {
-        console.log("đã chạy update message");
         if (message_updated.parentId === null) {
           setMessages((messages) =>
             messages.map((message) =>
@@ -165,25 +163,13 @@ export default function ChannelChatBoxContent(props) {
             )
           );
         } else {
-          setMessages((messages) => {
-            let updatedParentMessage;
-            const updatedMessages = messages.map((message) => {
-              if (message.id === message_updated.parentId) {
-                const updatedMessage = {
-                  ...message,
-                  children: message.children.map((child) =>
-                    child.id === message_updated.id ? message_updated : child
-                  ),
-                };
-                updatedParentMessage = updatedMessage;
-                return updatedMessage;
-              } else {
-                return message;
-              }
-            });
-            setMessageParent(updatedParentMessage);
-            return updatedMessages;
-          });
+          setMessagesChild(messagesChild => messagesChild.map((messageChild) => {
+            if (messageChild.id === message_updated.id) {
+              return message_updated;
+            } else {
+              return messageChild;
+            }
+          }));
         }
         // Lưu lại tin nhắn để hiển thị trong reply box
         if (message_updated.id === localStorage.getItem("idMessage")) {
@@ -211,23 +197,17 @@ export default function ChannelChatBoxContent(props) {
           );
         } else {
           setMessages((messages) => {
-            let updatedParentMessage;
-            const updatedMessages = messages.map((message) => {
+            const messagesNew = messages.map((message) => {
               if (message.id === message_deleted.parentId) {
-                const updatedMessage = {
-                  ...message,
-                  children: message.children.filter(
-                    (child) => child.id !== message_deleted.id
-                  ),
-                };
-                updatedParentMessage = updatedMessage;
-                return updatedMessage;
-              } else {
-                return message;
+                message.childCount -= 1;
+                setMessageParent(message);
+                setMessagesChild(messagesChild => 
+                  messagesChild.filter((messageChild) => messageChild.id !== message_deleted.id)
+                );
               }
+              return message;
             });
-            setMessageParent(updatedParentMessage);
-            return updatedMessages;
+            return messagesNew;
           });
         }
         if (message_deleted.id === localStorage.getItem("idMessage")) {
@@ -274,7 +254,7 @@ export default function ChannelChatBoxContent(props) {
           getMore={fetchMoreData}
           invokeHeight={5}
           scrollDivRef={scrollDivRef}
-          className="flex flex-col justify-start min-w-[480px] h-full overflow-y-scroll"
+          className="flex flex-col justify-start min-w-[400px] h-full overflow-y-scroll"
         >
           {messages.map((message, index) => (
             <Message
@@ -296,28 +276,32 @@ export default function ChannelChatBoxContent(props) {
         </InfiniteScroll>
 
         <ChatBox
-          SendMessage={(message) => SendMessage(
-            hub,
-            channelId,
-            message,
-            setMessages,
-            setIsNewMessage,
-            user,
-            scrollToBottom,
-            true
-          )}
+          SendMessage={(message) =>
+            SendMessage(
+              hub,
+              channelId,
+              message,
+              setMessages,
+              setIsNewMessage,
+              user,
+              scrollToBottom,
+              true
+            )
+          }
         />
       </div>
       {isClickedReply && (
         <ReplySection
           message={messageParent}
           setMessage={setMessageParent}
+          setIsClickedReply={setIsClickedReply}
           messages={messages}
           setMessages={setMessages}
-          setIsClickedReply={props.setIsClickedReply}
-          setIsClickedChannelUtility={props.setIsClickedChannelUtility}
+          messagesChild={messagesChild}
+          setMessagesChild={setMessagesChild}
           conversationId={channelId}
           isChannel={true}
+          setIsClickedChannelUtility={props.setIsClickedChannelUtility}
         />
       )}
       {props.isClickedChannelUtility && (

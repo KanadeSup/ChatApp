@@ -12,25 +12,17 @@ import useHubStore from "@/storages/useHubStore";
 import { InfiniteScroll } from "@/components/InfinityScroll";
 import { SendMessage, UpdateMessage, DeleteMessage } from "@/utils/hubs";
 
-export default function ChatBoxContent(props) {
+export default function ChatBoxContent() {
   const { conversationId } = useParams();
   const { hub, setHub } = useHubStore();
   const [messages, setMessages] = useState([]);
+  const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
   const { isNewMessage, setIsNewMessage } = useIsNewMessage(); // Cập nhập danh sách hiển thị tin nhắn ở sideBar
   const [user, setUser] = useState(null);
   const { isClickedReply, setIsClickedReply, message, setMessage } =
     useColleagueStore();
   const [forceScroll, setForceScroll] = useState({});
   const scrollDivRef = useRef();
-
-  //Lấy thông tin user
-  async function fetchData() {
-    const data = await getUserById(localStorage.getItem("userId"));
-    setUser(data);
-  }
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   // Kết nối với hub
   useEffect(() => {
@@ -60,12 +52,22 @@ export default function ChatBoxContent(props) {
     connect();
   }, []);
 
+  //Lấy thông tin user
+  async function fetchData() {
+    const data = await getUserById(localStorage.getItem("userId"));
+    setUser(data);
+    console.log("user", data);
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   //Lấy tin nhắn khi vào conversation
   useEffect(() => {
     async function fetchData() {
       const now = new Date();
       const timeCursor = encodeURIComponent(now.toISOString());
-      const data = await getMessagesColleague(conversationId, timeCursor, 9);
+      const data = await getMessagesColleague(conversationId, timeCursor, 10);
       // Sắp xếp tin nhắn theo thời gian
       const sortedData = data.sort(
         (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
@@ -116,12 +118,12 @@ export default function ChatBoxContent(props) {
           ) {
             // If the message has a parent in the current set of messages
             const parentMessage = { ...messages[parentMessageIndex] }; // Create a new copy of the parent message
-            // Check if parentMessage.children is an array, if not initialize it as an empty array
-            if (!Array.isArray(parentMessage.children)) {
-              parentMessage.children = [];
+        
+            if (message.parentId === localStorage.getItem("idMessage")) {
+              setMessagesChild((messagesChild) => [...messagesChild, newMessage,]);
             }
-            // Add the new message to the children of the parent message
-            parentMessage.children = [...parentMessage.children, newMessage];
+            parentMessage.childCount += 1;
+
             // Lưu lại tin nhắn để hiển thị trong reply box
             if (parentMessage.id === localStorage.getItem("idMessage")) {
               setMessage(parentMessage);
@@ -148,35 +150,20 @@ export default function ChatBoxContent(props) {
     if (hub) {
       hub.off("update_message");
       hub.on("update_message", (message_updated) => {
-        console.log("đã chạy update message");
         if (message_updated.parentId === null) {
           setMessages((messages) =>
             messages.map((message) =>
               message.id === message_updated.id ? message_updated : message
             )
           );
-        }
-
-        else {
-          setMessages((messages) => {
-            let updatedParentMessage;
-            const updatedMessages = messages.map((message) => {
-              if (message.id === message_updated.parentId) {
-                const updatedMessage = {
-                  ...message,
-                  children: message.children.map((child) =>
-                    child.id === message_updated.id ? message_updated : child
-                  ),
-                };
-                updatedParentMessage = updatedMessage;
-                return updatedMessage;
-              } else {
-                return message;
-              }
-            });
-            setMessage(updatedParentMessage);
-            return updatedMessages;
-          });
+        } else {
+          setMessagesChild(messagesChild => messagesChild.map((messageChild) => {
+            if (messageChild.id === message_updated.id) {
+              return message_updated;
+            } else {
+              return messageChild;
+            }
+          }));
         }
         // Lưu lại tin nhắn để hiển thị trong reply box
         if (message_updated.id === localStorage.getItem("idMessage")) {
@@ -200,30 +187,33 @@ export default function ChatBoxContent(props) {
         console.log("đã chạy delete message");
         if (message_deleted.parentId === null) {
           setMessages((messages) =>
-          messages.filter((message) => message.id !== message_deleted.id)
+            messages.filter((message) => message.id !== message_deleted.id)
           );
-        }
-
-        else {
-          setMessages((messages) => {
-            let updatedParentMessage;
-            const updatedMessages = messages.map((message) => {
-              if (message.id === message_deleted.parentId) {
-                const updatedMessage = {
-                  ...message,
-                  children: message.children.filter(
-                    (child) => child.id !== message_deleted.id
-                  ),
-                };
-                updatedParentMessage = updatedMessage;
-                return updatedMessage;
-              } else {
-                return message;
-              }
-            });
-            setMessage(updatedParentMessage);
-            return updatedMessages;
-          });          
+        } else {
+          console.log("đã chạy delete message child", message_deleted);
+          setMessages((currentMessages) => {
+            const messages = [...currentMessages]; // Create a new copy of messages
+            const parentMessageIndex = messages.findIndex(
+              (m) => m.id === message_deleted.parentId
+            );
+            if (parentMessageIndex !== -1) {
+              // If the message has a parent in the current set of messages
+              const parentMessage = { ...messages[parentMessageIndex] }; // Create a new copy of the parent message
+              parentMessage.childCount -= 1;
+              // Lưu lại tin nhắn để hiển thị trong reply box
+              setMessage(parentMessage);
+              setMessagesChild((messagesChild) =>
+                messagesChild.filter(
+                  (messageChild) => messageChild.id !== message_deleted.id
+                )
+              );
+              // Replace the old parent message with the updated one
+              messages[parentMessageIndex] = parentMessage;
+              return messages;
+            } 
+            return messages;
+          });
+          
         }
         if (message_deleted.id === localStorage.getItem("idMessage")) {
           setMessage(null);
@@ -309,6 +299,8 @@ export default function ChatBoxContent(props) {
           setIsClickedReply={setIsClickedReply}
           messages={messages}
           setMessages={setMessages}
+          messagesChild={messagesChild}
+          setMessagesChild={setMessagesChild}
           conversationId={conversationId}
           isChannel={false}
         />

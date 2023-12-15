@@ -3,10 +3,10 @@ import ChannelHeader from "./ChannelHeader";
 import ChannelChatBoxContent from "./ChannelChatBoxContent";
 import { useOutletContext, useParams } from "react-router-dom";
 import { getChannel } from "/api"
+import useChannelStore from "@/storages/useChannelStore";
 
 export default function ChannelChatSection() {
-   const [isClickedReply, setIsClickedReply] = useState(false);
-   const [isClickedChannelUtility, setIsClickedChannelUtility] = useState(false);
+   const {isClickedReply, setIsClickedReply, isClickedChannelUtility, setIsClickedChannelUtility} = useChannelStore();
    const {channelId} = useParams()
    const [channel,setChannel] = useState(null)
    useEffect(()=>{

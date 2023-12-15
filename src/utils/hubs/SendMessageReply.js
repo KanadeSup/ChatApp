@@ -1,3 +1,5 @@
+import { set } from "date-fns";
+
 async function SendMessageReply(
     hub,
     message,
@@ -6,8 +8,21 @@ async function SendMessageReply(
     setMessages,
     user,
     setMessage,
-    isChannel
+    setMessagesChild,
+    isChannel,
+
 ) {
+    if (isChannel) {
+        if (hub) {
+            await hub.invoke("SendMessageAsync", {
+                ReceiverId: conversationId,
+                Content: content,
+                IsChannel: true,
+                ReplyTo: message.id,
+            });
+        }
+        return;
+    }
     if (hub) {
         console.log("conversationId reply: ", conversationId);
         const data = await hub.invoke("SendMessageAsync", {
@@ -19,10 +34,11 @@ async function SendMessageReply(
         const messageChild = {
             id: data,
             sendAt: new Date().toISOString(),
-            senderName: user.lastName + " " + user.firstName,
+            senderName: user.firstName + " " + user.lastName,
             senderId: localStorage.getItem("userId"),
             content: content,
             parentId: message.id,
+            senderAvatar: user.picture,
         };
 
         // Update setMessages
@@ -35,16 +51,11 @@ async function SendMessageReply(
             if (parentMessageIndex !== -1) {
                 // If the message has a parent in the current set of messages
                 const parentMessage = { ...messages[parentMessageIndex] }; // Create a new copy of the parent message
-
-                // Check if parentMessage.children is an array, if not initialize it as an empty array
-                if (!Array.isArray(parentMessage.children)) {
-                    parentMessage.children = [];
-                }
-
-                // Add the new message to the children of the parent message
-                parentMessage.children = [...parentMessage.children, messageChild];
+                 
                 setMessage(parentMessage);
                 console.log("Message reply: ", parentMessage);
+                parentMessage.childCount += 1;
+                setMessagesChild((messagesChild) => [...messagesChild, messageChild]);
 
                 // Replace the old parent message with the updated one
                 messages[parentMessageIndex] = parentMessage;
