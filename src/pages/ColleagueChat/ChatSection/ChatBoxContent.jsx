@@ -135,6 +135,9 @@ export default function ChatBoxContent(props) {
           return messages;
         });
       });
+      return () => {
+        hub.off("receive_message");
+      };
     } else {
       console.error("Hub is not connected");
     }
@@ -180,6 +183,9 @@ export default function ChatBoxContent(props) {
           setMessage(message_updated);
         }
         setIsNewMessage(true);
+        return () => {
+          hub.off("update_message");
+        };
       });
     } else {
       console.error("Hub is not connected");
@@ -224,6 +230,9 @@ export default function ChatBoxContent(props) {
           setIsClickedReply(false);
         }
         //setIsNewMessage(true);
+        return () => {
+          hub.off("delete_message");
+        };
       });
     } else {
       console.error("Hub is not connected");
@@ -235,6 +244,9 @@ export default function ChatBoxContent(props) {
       hub.on("error", (error) => {
         console.log("error", error);
       });
+      return () => {
+        hub.off("error");
+      };
     }
   }, [hub]);
 

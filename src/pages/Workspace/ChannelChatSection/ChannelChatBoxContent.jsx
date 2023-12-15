@@ -191,6 +191,9 @@ export default function ChannelChatBoxContent(props) {
         }
         //setIsNewMessage(true);
       });
+      return () => {
+        hub.off("update_message");
+      };
     } else {
       console.error("Hub is not connected");
     }
@@ -232,6 +235,9 @@ export default function ChannelChatBoxContent(props) {
           setIsClickedReply(false);
         }
         //setIsNewMessage(true);
+        return () => {
+          hub.off("delete_message");
+        };
       });
     } else {
       console.error("Hub is not connected");
@@ -243,6 +249,9 @@ export default function ChannelChatBoxContent(props) {
       hub.on("error", (error) => {
         console.log("error", error);
       });
+      return () => {
+        hub.off("error");
+      };
     }
   }, [hub]);
 
