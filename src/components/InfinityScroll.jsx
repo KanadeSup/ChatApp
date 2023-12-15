@@ -9,8 +9,7 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
    const [scrollBottom, setScrollBottom] = useState(0);
    const loaderRef = useRef()
    const endMessageRef = useRef()
-   // console.log("number", numberMessage);
-   // console.log("page", page);
+
    useEffect(() => {
       if (children.length === 0) return;
       if (children.length === numberMessage) return;
@@ -31,6 +30,11 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
    useEffect(() => {
       if (page === 0) return;
       if (page === 1) {
+         if(Math.abs(scrollDivRef.current.scrollHeight - scrollDivRef.current.clientHeight) < 200) {
+            loaderRef.current.classList.add("hidden")
+            setLockScroll(true)
+            // endMessageRef.current.classList.remove("hidden")
+         }
          scrollDivRef.current.scrollTop = scrollDivRef.current.scrollHeight
          return
       }

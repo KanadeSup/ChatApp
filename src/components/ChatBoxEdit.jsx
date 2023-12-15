@@ -33,7 +33,6 @@ const ChatBoxEdit = React.forwardRef((props) => {
 
   return (
     <div
-      //ref={ref}
       className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2"
     >
       {/* Format bar */}

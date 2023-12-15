@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Emoji from "/components/Emoij";
 import {
   ChevronRight,
@@ -12,7 +12,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import convertTime from "../utils/convertTime";
 import ChatBoxEdit from "@/components/ChatBoxEdit";
-import useColleagueStore from "@/storages/useColleagueStore";
 
 export default function Message(props) {
   const [showEmoij, setShowEmoij] = useState(false);
@@ -22,13 +21,7 @@ export default function Message(props) {
   const [isHoveredDelete, setIsHoveredDelete] = useState(false);
   const [isHoverViewReply, setIsHoverViewReply] = useState(false);
   const [editMessage, setEditMessage] = useState(false);
-  const { isClickedReply, message,  setIsClickedReply, setMessage } = useColleagueStore();
 
-  // useEffect(() => {
-  //   console.log("message: ", message);
-  //   console.log("props.message: ", props.message);
-  // }
-  // , [message]);
   return (  
     <div
       className="mx-2 relative group"
@@ -85,8 +78,9 @@ export default function Message(props) {
               onMouseEnter={() => setIsHoverViewReply(true)}
               onMouseLeave={() => setIsHoverViewReply(false)}
               onClick={() => {
-                setMessage(props.message);
-                setIsClickedReply(true);
+                props.setMessage(props.message);
+                localStorage.setItem("idMessage", props.message.id);
+                props.setIsClickedReply(true);
                 if (props.setIsClickedChannelUtility) {
                   props.setIsClickedChannelUtility(false);
                 }
@@ -175,9 +169,9 @@ export default function Message(props) {
         <div
           className="hover:bg-gray-100 p-1.5"
           onClick={() => {
-            setIsClickedReply(true);
-            setMessage(props.message);
-            console.log("prop", props.message);
+            props.setIsClickedReply(true);
+            props.setMessage(props.message);
+            localStorage.setItem("idMessage", props.message.id);
           }}
           onMouseEnter={() => setIsHoveredReply(true)}
           onMouseLeave={() => setIsHoveredReply(false)}

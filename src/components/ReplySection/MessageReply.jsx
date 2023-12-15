@@ -3,14 +3,13 @@ import Emoji from "/components/Emoij";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import convertTime from "@/utils/convertTime";
 import {
-  ChevronRight,
   Pin,
   User2,
   SmilePlus,
-  Reply,
   Trash2,
   Pencil,
 } from "lucide-react";
+import ChatBoxEdit from "@/components/ChatBoxEdit";
 
 
 export default function MessageReply(props) {
@@ -18,6 +17,7 @@ export default function MessageReply(props) {
   const [isHoveredPin, setIsHoveredPin] = useState(false);
   const [isHoveredEdit, setIsHoveredEdit] = useState(false);
   const [isHoveredDelete, setIsHoveredDelete] = useState(false);
+  const [editMessage, setEditMessage] = useState(false);
 
   return (
     <div
@@ -37,7 +37,7 @@ export default function MessageReply(props) {
           </Avatar>
         </div>
 
-        <div className="">
+        <div className="w-full">
           <div className="flex relative bottom-1">
             <span className="font-bold text-[15px]">
               {props.message?.senderName}
@@ -47,10 +47,26 @@ export default function MessageReply(props) {
             </span>
           </div>
 
-          <div
-            className="text-[15px] leading-relaxed w-full break-all"
-            dangerouslySetInnerHTML={{ __html: props.message?.content }}
-          ></div>
+          {/*-- Content --*/}
+          {editMessage ? (
+            <ChatBoxEdit
+              message={props.message}
+              UpdateMessage={props.UpdateMessage}
+              setEditMessage={setEditMessage}
+            />
+          ) : (
+            <>
+              <div
+                className="text-[15px] leading-relaxed w-full break-all"
+                dangerouslySetInnerHTML={{ __html: props.message.content }}
+              ></div>
+              {props.message.isEdited ? (
+                <div className="text-xs text-gray-500">(edited)</div>
+              ) : (
+                <></>
+              )}
+            </>
+          )}
         </div>
       </div>
 
@@ -84,7 +100,7 @@ export default function MessageReply(props) {
             <>
               <div className="absolute z-20 w-2 h-2 right-2.5 bottom-9 bg-black transform rotate-45"></div>
 
-              <div className="absolute flex justify-center items-center w-20 h-6 z-20 bottom-10 -right-6 bg-black text-white text-xs rounded-md">
+              <div className="absolute flex justify-center items-center w-20 h-6 z-20 bottom-10 -right-1 bg-black text-white text-xs rounded-md">
                 <span>Pin message</span>
               </div>
             </>
@@ -105,7 +121,7 @@ export default function MessageReply(props) {
               <>
                 <div className="absolute z-20 w-2 h-2 right-2.5 bottom-9 bg-black transform rotate-45"></div>
 
-                <div className="absolute flex justify-center items-center w-24 h-6 z-20 bottom-10 -right-10 bg-black text-white text-xs rounded-md">
+                <div className="absolute flex justify-center items-center w-24 h-6 z-20 bottom-10 -right-5 bg-black text-white text-xs rounded-md">
                   <span>Edit message</span>
                 </div>
               </>
@@ -119,7 +135,7 @@ export default function MessageReply(props) {
             className="hover:bg-gray-200 p-1.5"
             onMouseEnter={() => setIsHoveredDelete(true)}
             onMouseLeave={() => setIsHoveredDelete(false)}
-            onClick={() => props.DeleteMessage(props.message.id)}
+            onClick={() => props.DeleteMessage(props.message)}
           >
             <Trash2 className="w-4 h-4 text-gray-600" />
 

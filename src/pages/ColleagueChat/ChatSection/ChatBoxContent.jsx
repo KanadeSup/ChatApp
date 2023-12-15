@@ -8,66 +8,13 @@ import { getMessagesColleague } from "../../../api";
 import useIsNewMessage from "../../../storages/useIsNewMessage";
 import { getUserById } from "../../../api";
 import useColleagueStore from "@/storages/useColleagueStore";
-import userHubStore from "@/storages/useHubStore";
+import useHubStore from "@/storages/useHubStore";
 import { InfiniteScroll } from "@/components/InfinityScroll";
-
-async function SendMessage(
-  hub,
-  conversationId,
-  message,
-  setMessages,
-  setIsNewMessage,
-  user
-) {
-  if (hub) {
-    const data = await hub.invoke("SendMessageAsync", {
-      ReceiverId: conversationId,
-      Content: message,
-      IsChannel: false,
-      children: [],
-    });
-    setIsNewMessage(true);
-    const message2 = {
-      id: data,
-      sendAt: new Date().toISOString(),
-      senderName: user.lastName + " " + user.firstName,
-      senderId: localStorage.getItem("userId"),
-      content: message,
-      children: [],
-    };
-    setMessages((messages) => [...messages, message2]);
-  } else {
-    console.error("Hub is not connected");
-  }
-}
-
-async function UpdateMessage(hub, messageId, message) {
-  if (hub) {
-    const data = await hub.invoke("UpdateMessageAsync", {
-      id: messageId,
-      Content: message,
-    });
-  } else {
-    console.error("Hub is not connected");
-  }
-}
-
-async function DeleteMessage(hub, messageId, setMessages) {
-  if (hub) {
-    console.log("id message: ", messageId);
-    const data = await hub.invoke("DeleteMessageAsync", messageId, true);
-    console.log("id message delete: ", data);
-    setMessages((messages) =>
-      messages.filter((message) => message.id !== messageId)
-    );
-  } else {
-    console.error("Hub is not connected");
-  }
-}
+import { SendMessage, UpdateMessage, DeleteMessage } from "@/utils/hubs";
 
 export default function ChatBoxContent(props) {
   const { conversationId } = useParams();
-  const { hub, setHub } = userHubStore();
+  const { hub, setHub } = useHubStore();
   const [messages, setMessages] = useState([]);
   const { isNewMessage, setIsNewMessage } = useIsNewMessage(); // Cập nhập danh sách hiển thị tin nhắn ở sideBar
   const [user, setUser] = useState(null);
@@ -118,7 +65,7 @@ export default function ChatBoxContent(props) {
     async function fetchData() {
       const now = new Date();
       const timeCursor = encodeURIComponent(now.toISOString());
-      const data = await getMessagesColleague(conversationId, timeCursor, 7);
+      const data = await getMessagesColleague(conversationId, timeCursor, 9);
       // Sắp xếp tin nhắn theo thời gian
       const sortedData = data.sort(
         (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
@@ -130,14 +77,13 @@ export default function ChatBoxContent(props) {
   }, [conversationId]);
 
   const fetchMoreData = async () => {
-    const time1 = messages[0].sendAt;
-    const now = new Date(time1);
+    if (messages.length === 0) {
+      return;
+    }
+    const timeFirst = messages[0].sendAt;
+    const now = new Date(timeFirst);
     const timeCursor = encodeURIComponent(now.toISOString());
-    const data = await getMessagesColleague(
-      conversationId,
-      timeCursor,
-      3
-    );
+    const data = await getMessagesColleague(conversationId, timeCursor, 3);
     // Sắp xếp tin nhắn theo thời gian
     const sortedData = data.sort(
       (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
@@ -149,10 +95,8 @@ export default function ChatBoxContent(props) {
   // Hub nhận tin nhắn mới
   useEffect(() => {
     if (hub) {
-      console.log("hub is not null");
       hub.off("receive_message");
       hub.on("receive_message", (message) => {
-        console.log("đã chạy receive message");
         console.log("message đã nhận: ", message);
         setIsNewMessage(true);
 
@@ -166,30 +110,28 @@ export default function ChatBoxContent(props) {
           const parentMessageIndex = messages.findIndex(
             (m) => m.id === newMessage.parentId
           );
-
           if (
             newMessage.senderId === conversationId &&
             parentMessageIndex !== -1
           ) {
             // If the message has a parent in the current set of messages
             const parentMessage = { ...messages[parentMessageIndex] }; // Create a new copy of the parent message
-
             // Check if parentMessage.children is an array, if not initialize it as an empty array
             if (!Array.isArray(parentMessage.children)) {
               parentMessage.children = [];
             }
-
             // Add the new message to the children of the parent message
             parentMessage.children = [...parentMessage.children, newMessage];
-            setMessage(parentMessage); // Lưu lại tin nhắn để hiển thị trong reply box
-
+            // Lưu lại tin nhắn để hiển thị trong reply box
+            if (parentMessage.id === localStorage.getItem("idMessage")) {
+              setMessage(parentMessage);
+            }
             // Replace the old parent message with the updated one
             messages[parentMessageIndex] = parentMessage;
           } else {
             // If the message doesn't have a parent in the current set of messages, add it to the set
             messages.push(newMessage);
           }
-
           return messages;
         });
       });
@@ -204,15 +146,39 @@ export default function ChatBoxContent(props) {
       hub.off("update_message");
       hub.on("update_message", (message_updated) => {
         console.log("đã chạy update message");
-        setMessages((messages) =>
-          messages.map((message) =>
-            message.id === message_updated.id ? message_updated : message
-          )
-        );
+        if (message_updated.parentId === null) {
+          setMessages((messages) =>
+            messages.map((message) =>
+              message.id === message_updated.id ? message_updated : message
+            )
+          );
+        }
 
-        console.log("message update1: ", message_updated);
-        console.log("message1: ", message);
-        setMessage(message_updated);
+        else {
+          setMessages((messages) => {
+            let updatedParentMessage;
+            const updatedMessages = messages.map((message) => {
+              if (message.id === message_updated.parentId) {
+                const updatedMessage = {
+                  ...message,
+                  children: message.children.map((child) =>
+                    child.id === message_updated.id ? message_updated : child
+                  ),
+                };
+                updatedParentMessage = updatedMessage;
+                return updatedMessage;
+              } else {
+                return message;
+              }
+            });
+            setMessage(updatedParentMessage);
+            return updatedMessages;
+          });
+        }
+        // Lưu lại tin nhắn để hiển thị trong reply box
+        if (message_updated.id === localStorage.getItem("idMessage")) {
+          setMessage(message_updated);
+        }
         setIsNewMessage(true);
       });
     } else {
@@ -226,10 +192,38 @@ export default function ChatBoxContent(props) {
       hub.off("delete_message");
       hub.on("delete_message", (message_deleted) => {
         console.log("đã chạy delete message");
-        setMessages((messages) =>
+        if (message_deleted.parentId === null) {
+          setMessages((messages) =>
           messages.filter((message) => message.id !== message_deleted.id)
-        );
-        setIsNewMessage(true);
+          );
+        }
+
+        else {
+          setMessages((messages) => {
+            let updatedParentMessage;
+            const updatedMessages = messages.map((message) => {
+              if (message.id === message_deleted.parentId) {
+                const updatedMessage = {
+                  ...message,
+                  children: message.children.filter(
+                    (child) => child.id !== message_deleted.id
+                  ),
+                };
+                updatedParentMessage = updatedMessage;
+                return updatedMessage;
+              } else {
+                return message;
+              }
+            });
+            setMessage(updatedParentMessage);
+            return updatedMessages;
+          });          
+        }
+        if (message_deleted.id === localStorage.getItem("idMessage")) {
+          setMessage(null);
+          setIsClickedReply(false);
+        }
+        //setIsNewMessage(true);
       });
     } else {
       console.error("Hub is not connected");
@@ -270,11 +264,13 @@ export default function ChatBoxContent(props) {
               key={index}
               index={index}
               message={message}
+              setMessage={setMessage}
+              setIsClickedReply={setIsClickedReply}
               DeleteMessage={(idMessage) =>
-                DeleteMessage(hub, idMessage, setMessages)
+                DeleteMessage(hub, idMessage, setMessages, setIsClickedReply)
               }
               UpdateMessage={(idMessage, message) =>
-                UpdateMessage(hub, idMessage, message)
+                UpdateMessage(hub, idMessage, message, false)
               }
             />
           ))}
@@ -287,17 +283,22 @@ export default function ChatBoxContent(props) {
               message,
               setMessages,
               setIsNewMessage,
-              user
+              user,
+              scrollToBottom,
+              false
             )
           }
         />
       </div>
       {isClickedReply && (
         <ReplySection
+          message={message}
+          setMessage={setMessage}
           setIsClickedReply={setIsClickedReply}
           messages={messages}
           setMessages={setMessages}
           conversationId={conversationId}
+          isChannel={false}
         />
       )}
     </div>
