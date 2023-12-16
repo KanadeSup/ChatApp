@@ -1,10 +1,8 @@
-import {
-  useEditor,
-  EditorContent,
-} from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import { Underline } from "@tiptap/extension-underline";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
+import { Extension } from "@tiptap/core";
 import {
   Bold,
   Italic,
@@ -12,7 +10,15 @@ import {
   SendHorizontal,
 } from "lucide-react";
 import React from "react";
+import { useRef } from "react";
 
+const DisableEnter = Extension.create({
+  addKeyboardShortcuts() {
+    return {
+      Enter: () => true,
+    };
+  },
+});
 const extensions = [
   StarterKit,
   Placeholder.configure({
@@ -21,6 +27,7 @@ const extensions = [
       "cursor-text before:content-[attr(data-placeholder)] before:absolute before:text-mauve-11 before:opacity-50 before-pointer-events-none",
   }),
   Underline,
+  DisableEnter,
 ];
 
 const ChatBox = React.forwardRef((props) => {
@@ -32,6 +39,7 @@ const ChatBox = React.forwardRef((props) => {
       },
     },
   });
+  const ref = useRef(null);
   return (
     <div
       //ref={ref}
@@ -65,19 +73,26 @@ const ChatBox = React.forwardRef((props) => {
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            const message = editor.getHTML();
-            props.SendMessage(message);
-            editor.commands.clearContent(true);
+            const contentHtml = editor.getHTML();
+            const content = ref.current.textContent;
+            if (content) {
+              props.SendMessage(contentHtml);
+              editor.commands.clearContent(true);
+            }
           }
         }}
         className="outline-none mt-1 mb-2 relative max-w-[calc(100vw-25rem)]"
+        ref={ref}
       >
         <EditorContent className="pr-10" editor={editor} spellCheck="false" />
         <SendHorizontal
           onClick={() => {
-            const message = editor.getHTML();
-            props.SendMessage(message);
-            editor.commands.clearContent(true);
+            const contentHtml = editor.getHTML();
+            const content = ref.current.textContent;
+            if (content) {
+              props.SendMessage(contentHtml);
+              editor.commands.clearContent(true);
+            }
           }}
           strokeWidth={1.25}
           className="absolute cursor-pointer bottom-0 right-0"

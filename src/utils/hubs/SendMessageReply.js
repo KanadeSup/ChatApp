@@ -1,4 +1,3 @@
-import { set } from "date-fns";
 
 async function SendMessageReply(
     hub,
@@ -39,6 +38,7 @@ async function SendMessageReply(
             content: content,
             parentId: message.id,
             senderAvatar: user.picture,
+            reactionCount: {}
         };
 
         // Update setMessages

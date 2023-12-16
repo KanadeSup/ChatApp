@@ -8,7 +8,7 @@ import { getMessages } from "../../../api";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { InfiniteScroll } from "@/components/InfinityScroll";
 import useHubStore from "../../../storages/useHubStore";
-import { SendMessage, UpdateMessage, DeleteMessage } from "@/utils/hubs";
+import { SendMessage, UpdateMessage, DeleteMessage, SendEmoji } from "@/utils/hubs";
 import useChannelStore from "@/storages/useChannelStore";
 import { getUserById } from "@/api";
 import { set } from "date-fns";
@@ -270,6 +270,7 @@ export default function ChannelChatBoxContent(props) {
               UpdateMessage={(idMessage, message) =>
                 UpdateMessage(hub, idMessage, message, true)
               }
+              SendEmoji={(emoji) => SendEmoji(hub, message.id, emoji)}
             />
           ))}
           {/* <div ref={messagesEndRef} /> */}
