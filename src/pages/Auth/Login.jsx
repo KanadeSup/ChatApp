@@ -13,10 +13,6 @@ export default function Login() {
    const [error, setError] = useState("");
    const [isLoading, setIsLoading] = useState(false);
    let navigate = useNavigate();
-   const { hub, setHub } = useHubStore();
-
-   // hub
-   
 
    async function handleLogin() {
       try {
