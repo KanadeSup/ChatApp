@@ -22,7 +22,7 @@ export default function Message(props) {
   const [isHoverViewReply, setIsHoverViewReply] = useState(false);
   const [editMessage, setEditMessage] = useState(false);
 
-  return (  
+  return (
     <div
       className="mx-2 relative group"
       onMouseLeave={() => setShowEmoij(false)}
@@ -43,7 +43,7 @@ export default function Message(props) {
         <div className="relative bottom-1 w-full max-w-[calc(100vw-28rem)]">
           <div className="flex items-baseline">
             <span className="font-bold font-sans text-sm cursor-pointer">
-              {props.message.senderName} : {props.index}
+              {props.message.senderName}
             </span>
             <span className="text-gray-500 font-medium text-xs ml-2 cursor-default">
               {convertTime(props.message.sendAt)}
@@ -71,8 +71,25 @@ export default function Message(props) {
             </>
           )}
 
+          {/*-- List Emoij --*/}
+          <div className="flex justify-start flex-wrap items-center pt-1 gap-2">
+            { props.message.reactionCount && Object.entries(props.message.reactionCount)?.map(
+              ([emoji, count], index) => (
+                <div
+                  key={index}
+                  className="h-full border-[1.5px] px-0.5 bg-blue-50 border-bold-blue rounded-lg"
+                >
+                  {emoji}{" "}
+                  <span className="text-base text-bold-blue font-mono font-medium">
+                    {count}
+                  </span>
+                </div>
+              )
+            )}
+          </div>
+
           {/*-- View Reply --*/}
-          {props.message.childCount? (
+          {props.message.childCount ? (
             <div
               className="flex relative select-none -left-1 flex-row mt-1 w-1/2 min-w-[240px] max-w-[300px] py-[5px] rounded-md cursor-pointer border border-transparent hover:border-gray-400 transition-all duration-200 hover:bg-white"
               onMouseEnter={() => setIsHoverViewReply(true)}
@@ -87,7 +104,8 @@ export default function Message(props) {
               }}
             >
               <div className="text-xs font-bold text-bold-blue ml-1 mr-2 hover:underline">
-                {props.message.childCount} {props.message.childCount > 1 ? "replies" : "reply"}
+                {props.message.childCount}{" "}
+                {props.message.childCount > 1 ? "replies" : "reply"}
               </div>
               {isHoverViewReply ? (
                 <>
@@ -102,7 +120,9 @@ export default function Message(props) {
                 </div>
               )}
             </div>
-          ) : <></>}
+          ) : (
+            <></>
+          )}
         </div>
       </div>
 
@@ -121,8 +141,9 @@ export default function Message(props) {
           onClick={() => setShowEmoij(!showEmoij)}
         >
           <SmilePlus className="w-4 h-4 text-gray-600" />
-          {showEmoij && <Emoji />}
+          {showEmoij && <Emoji SendEmoji={props.SendEmoji} />}
         </div>
+          {/* <Emoji2 SendEmoji={props.SendEmoji} /> */}
 
         {/* Pin */}
         <div
