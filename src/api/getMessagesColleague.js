@@ -1,7 +1,10 @@
 import myFetch from "./myFetch";
 
 export default async function getMessagesColleague(conversationId, time, count, parentId, isChannel) {
-   let params = `TimeCursor=${time}&Count=${count}`;
+   let params = `Count=${count}`;
+   if (time) {
+      params += `&TimeCursor=${time}`;
+   }
    if (isChannel) {
       params += `&ToChannelId=${conversationId}`;
    }
