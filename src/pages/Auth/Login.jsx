@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import useHubStore from "../../storages/useHubStore";
+import OneSignal from 'react-onesignal';
 
 export default function Login() {
    const [email, setEmail] = useState("");
@@ -36,6 +37,7 @@ export default function Login() {
             "refreshTokenTimeout",
             response.refreshTokenTimeout,
          );
+         OneSignal.login(response.userId)
          navigate("/Workspace");
       } catch (error) {
          console.error(error);

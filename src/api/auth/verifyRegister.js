@@ -1,6 +1,7 @@
 import baseUrl from "../baseUrl";
 import apikey from "../apiKey";
 
+
 export default async (token, otp) => {
     try {
         const response = await fetch(baseUrl("Auth/verify-register"), {
