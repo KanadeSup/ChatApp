@@ -10,7 +10,7 @@ import { getUserById } from "../../../api";
 import useColleagueStore from "@/storages/useColleagueStore";
 import useHubStore from "@/storages/useHubStore";
 import { InfiniteScroll } from "@/components/InfinityScroll";
-import { SendMessage, UpdateMessage, DeleteMessage } from "@/utils/hubs";
+import { SendMessage, UpdateMessage, DeleteMessage, SendEmoji } from "@/utils/hubs";
 
 export default function ChatBoxContent() {
   const { conversationId } = useParams();
@@ -92,6 +92,7 @@ export default function ChatBoxContent() {
     );
 
     setMessages((prev) => [...sortedData, ...prev]);
+    return data.length;
   };
 
   // Hub nhận tin nhắn mới
@@ -150,6 +151,7 @@ export default function ChatBoxContent() {
     if (hub) {
       hub.off("update_message");
       hub.on("update_message", (message_updated) => {
+        console.log("đã chạy nhận update message: ", message_updated);
         if (message_updated.parentId === null) {
           setMessages((messages) =>
             messages.map((message) =>
@@ -228,6 +230,30 @@ export default function ChatBoxContent() {
       console.error("Hub is not connected");
     }
   }, [hub, conversationId]);
+
+  //Hub nhận emoji
+  useEffect(() => {
+    if (hub) {
+      hub.off("receive_emoji");
+      hub.on("receive_emoji", (emoji) => {
+        console.log("emoji", emoji);
+        setMessages((messages) =>
+          messages.map((message) =>
+            message.id === emoji.messageId
+              ? { ...message, emojiCount: emoji.emojiCount }
+              : message
+          )
+        );
+      });
+      return () => {
+        hub.off("receive_emoji");
+      };
+    } else {
+      console.error("Hub is not connected");
+    }
+  }, [hub, conversationId]);
+
+  // Hub nhận lỗi
   useEffect(() => {
     if (hub) {
       hub.off("error");
@@ -253,18 +279,17 @@ export default function ChatBoxContent() {
     <div className="flex flex-row">
       <div
         style={{ height: "calc(100vh - 3rem)" }}
-        className="flex flex-col w-full"
+        className="flex flex-col w-full" 
       >
         <InfiniteScroll
           getMore={fetchMoreData}
           invokeHeight={5}
           scrollDivRef={scrollDivRef}
-          className="flex flex-col justify-start overflow-y-scroll h-full min-w-[400px]"
+          className="flex flex-col justify-start overflow-y-scroll h-full min-w-[400px] py-2"
         >
           {messages.map((message, index) => (
             <Message
               key={index}
-              index={index}
               message={message}
               setMessage={setMessage}
               setIsClickedReply={setIsClickedReply}
@@ -274,6 +299,7 @@ export default function ChatBoxContent() {
               UpdateMessage={(idMessage, message) =>
                 UpdateMessage(hub, idMessage, message, false)
               }
+              SendEmoji={(emoji) => SendEmoji(hub, message.id, emoji)}
             />
           ))}
         </InfiniteScroll>

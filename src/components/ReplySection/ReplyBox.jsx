@@ -9,6 +9,7 @@ import {
   SendMessageReply,
   UpdateMessage,
   DeleteMessageReply,
+  SendEmoji
 } from "@/utils/hubs";
 import { getMessagesColleague } from "../../api";
 import { is } from "date-fns/locale";
@@ -79,6 +80,9 @@ export default function ReplyBox(props) {
             }}
             UpdateMessage={(messageId, content) => {
               UpdateMessage(hub, messageId, content, props.isChannel);
+            }}
+            SendEmoji={(emoji) => {
+              SendEmoji(hub, message.id, emoji);
             }}
           />
         ))}

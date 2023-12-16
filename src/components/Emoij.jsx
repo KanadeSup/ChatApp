@@ -6,11 +6,11 @@ function List_Emoij() {
   return list;
 }
 
-export default function Emoji() {
+export default function Emoji(props) {
   const list = List_Emoij();
 
   const emojis = list.map((emoji) => (
-    <p className="text-xl cursor-pointer rounded-md p-1 transition-colors duration-200 ease-in-out hover:bg-gray-300">
+    <p key={emoji} className="text-xl cursor-pointer rounded-md p-1 transition-colors duration-200 ease-in-out hover:bg-gray-300" onClick={() => props.SendEmoji(emoji)}>
       {emoji}
     </p>
   ));

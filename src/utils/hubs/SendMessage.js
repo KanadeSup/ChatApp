@@ -1,4 +1,7 @@
 
+// Khi click gửi. Nêu ở channel thì khi gửi sẽ nhận tin nhắn của server. 
+// Còn private thì khi gửi mình nhận id message. Còn tin nhắn thì phải tự tạo.
+// Còn người khác thì được nhận tin nhắn của mình.
 async function SendMessage(
     hub,
     conversationId,
@@ -36,6 +39,7 @@ async function SendMessage(
             content: message,
             senderAvatar: user.picture,
             childCount: 0,
+            reactionCount: {}
         };
         setMessages((messages) => [...messages, message2]);
     } else {
