@@ -27,11 +27,11 @@ export default function ReplyBox(props) {
       setUser(data);
     }
     async function fetchMessages() {
-      const now = new Date();
-      const timeCursor = encodeURIComponent(now.toISOString());
+      // const now = new Date();
+      // const timeCursor = encodeURIComponent(now.toISOString());
       const data = await getMessagesColleague(
         props.conversationId,
-        timeCursor,
+        null,
         20,
         props.message.id,
         props.isChannel
