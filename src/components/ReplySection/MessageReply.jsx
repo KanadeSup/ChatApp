@@ -65,9 +65,25 @@ export default function MessageReply(props) {
               )}
             </>
           )}
+          {/*-- List Emoij --*/}
+          <div className="flex justify-start flex-wrap items-center pt-1 gap-2">
+            {props.message.reactionCount && Object.entries(props.message.reactionCount)?.map(
+              ([emoji, count], index) => (
+                <div
+                  key={index}
+                  className="h-full border-[1.5px] px-0.5 bg-blue-50 border-bold-blue rounded-lg"
+                >
+                  {emoji}{" "}
+                  <span className="text-base text-bold-blue font-mono font-medium">
+                    {count}
+                  </span>
+                </div>
+              )
+            )}
+          </div>
         </div>
       </div>
-
+          
       {/*-- Hover message --*/}
       <div
         style={{
@@ -83,7 +99,7 @@ export default function MessageReply(props) {
           onClick={() => setShowEmoij(!showEmoij)}
         >
           <SmilePlus className="w-4 h-4 text-gray-600" />
-          {showEmoij && <Emoji />}
+          {showEmoij && <Emoji SendEmoji={props.SendEmoji}/>}
         </div>
 
         {/* Pin */}

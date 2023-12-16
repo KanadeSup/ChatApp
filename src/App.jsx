@@ -2,12 +2,17 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import "./index.css";
 import router from "./routers";
-import { HubContext } from "./contexts/HubContext";
-import { useHubContext } from "./hooks/useHubContext";
 import { useEffect, useRef, useState } from "react";
 import {InfiniteScroll} from "./components/InfinityScroll";
+import OneSignal from 'react-onesignal';
+import config from "/appconfig.js"
 
 const App = function () {
+  useEffect(() => {
+    try {
+      initialize()
+    } catch(e) {}
+  },[])
   // const [hub, setHub] = useHubContext();
   return (
       //<HubContext.Provider value={[hub, setHub]}>
@@ -19,6 +24,11 @@ const node = document.querySelector("#root");
 const root = createRoot(node);
 root.render(<App />);
 
+const initialize =  async () => {
+  await OneSignal.init({
+    appId: config.oneSignalKey
+ });
+}
 
 // test
 // const fetchData = () => {

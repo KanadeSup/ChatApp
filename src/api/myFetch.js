@@ -1,8 +1,8 @@
-const apiKey = "5J0jCR1dAkvDt3YVoahpux0eawahkQB9"
-const baseUrl = "https://api.firar.live/api"
+import config from "../appconfig.js"
+
 export default async function({ path, params="", method="GET", headers={}, auth=true, body="" }) { 
    const token = localStorage.getItem('token')
-   headers["x-apikey"] = apiKey
+   headers["x-apikey"] = config.apiKey
    if(auth) headers['Authorization'] = `Bearer ${token}`
    if(!headers.hasOwnProperty('accept')) headers['accept'] = 'application/json'
    const request = {
@@ -10,7 +10,7 @@ export default async function({ path, params="", method="GET", headers={}, auth=
       headers: headers,
    }
    if(body !== "") request["body"] = body
-   const res = await fetch(`${baseUrl}/${path}?${params}`, request)
+   const res = await fetch(`${config.apiURL}/${path}?${params}`, request)
    console.log(res)
    if(res.status === 401) {
       location.href = "/Login";

@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { getUserById } from "../api";
+import OneSignal from 'react-onesignal';
 
 function showMenu(event) {
    document.querySelector(".user-menu").classList.toggle("hidden");
@@ -33,6 +34,8 @@ export default function (props) {
    function handleLogout() {
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
+      const uuid = localStorage.getItem("userId")
+      if(uuid) OneSignal.logout(uuid)
       navigate("/login");
    }
 
