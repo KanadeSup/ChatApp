@@ -28,6 +28,10 @@ const initialize =  async () => {
   await OneSignal.init({
     appId: config.oneSignalKey
  });
+var userId = localStorage.getItem("userId")
+if (userId != null) {
+    OneSignal.login(userId)
+  }
 }
 
 // test
