@@ -33,7 +33,8 @@ export default function Login() {
             "refreshTokenTimeout",
             response.refreshTokenTimeout,
          );
-         OneSignal.login(response.userId)
+         OneSignal.logout();
+         OneSignal.login(response.userId);
          navigate("/Workspace");
       } catch (error) {
          console.error(error);

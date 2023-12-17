@@ -30,6 +30,7 @@ const initialize =  async () => {
  });
 var userId = localStorage.getItem("userId")
 if (userId != null) {
+    OneSignal.logout()
     OneSignal.login(userId)
   }
 }
