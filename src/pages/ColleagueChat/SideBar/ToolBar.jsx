@@ -7,6 +7,7 @@ export default function ToolbarIconComponent(props) {
   const { setIsNewChat } = useColleagueStore();
   return (
     <div className="flex h-12 justify-end items-center bg-gray-50 border-b">
+      <div className="text-center w-full">Colleague chat</div>
       {/* Filter */}
       <div
         className="cursor-pointer relative"

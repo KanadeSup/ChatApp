@@ -3,7 +3,6 @@ import ChatBox from "/components/ChatBox";
 import ReplySection from "../../../components/ReplySection";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { getMessagesColleague } from "../../../api";
 import useIsNewMessage from "../../../storages/useIsNewMessage";
 import { getUserById } from "../../../api";
@@ -24,60 +23,6 @@ export default function ChatBoxContent() {
   const [forceScroll, setForceScroll] = useState({});
   const scrollDivRef = useRef();
 
-  // Kết nối với hub
-  useEffect(() => {
-    // check access token is valid or not expired
-    if (!localStorage.getItem("token")) {
-      setHub(null);
-      return;
-    }
-    async function connect() {
-      const connection = new HubConnectionBuilder()
-        .withUrl(`https://api.firar.live/chatHub`, {
-          accessTokenFactory: () => {
-            return localStorage.getItem("token");
-          },
-        })
-        .withAutomaticReconnect()
-        .configureLogging(LogLevel.Information)
-        .build();
-      try {
-        await connection.start();
-        console.log("connect success");
-        setHub(connection);
-      } catch (e) {
-        console.log("error", e);
-      }
-    }
-    connect();
-  }, []);
-
-  //Lấy thông tin user
-  async function fetchData() {
-    const data = await getUserById(localStorage.getItem("userId"));
-    setUser(data);
-    console.log("user", data);
-  }
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  //Lấy tin nhắn khi vào conversation
-  useEffect(() => {
-    async function fetchData() {
-      // const now = new Date();
-      // const timeCursor = encodeURIComponent(now.toISOString());
-      const data = await getMessagesColleague(conversationId, null, 10);
-      // Sắp xếp tin nhắn theo thời gian
-      const sortedData = data.sort(
-        (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
-      );
-
-      setMessages(sortedData);
-    }
-    fetchData();
-  }, [conversationId]);
-
   const fetchMoreData = async () => {
     if (messages.length === 0) {
       return;
@@ -85,7 +30,7 @@ export default function ChatBoxContent() {
     const timeFirst = messages[0].sendAt;
     const now = new Date(timeFirst);
     const timeCursor = encodeURIComponent(now.toISOString());
-    const data = await getMessagesColleague(conversationId, timeCursor, 3);
+    const data = await getMessagesColleague(conversationId, timeCursor, 20);
     // Sắp xếp tin nhắn theo thời gian
     const sortedData = data.sort(
       (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
@@ -145,6 +90,36 @@ export default function ChatBoxContent() {
       console.error("Hub is not connected");
     }
   }, [hub, conversationId]);
+
+  if (!conversationId) {
+    return <p>there is no chat here</p>;
+  }
+
+  //Lấy thông tin user
+  async function fetchData() {
+    const data = await getUserById(localStorage.getItem("userId"));
+    setUser(data);
+    console.log("user", data);
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  //Lấy tin nhắn khi vào conversation
+  useEffect(() => {
+    async function fetchData() {
+      // const now = new Date();
+      // const timeCursor = encodeURIComponent(now.toISOString());
+      const data = await getMessagesColleague(conversationId, null, 10);
+      // Sắp xếp tin nhắn theo thời gian
+      const sortedData = data.sort(
+        (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
+      );
+
+      setMessages(sortedData);
+    }
+    fetchData();
+  }, [conversationId]);
 
   // Hub nhận tin nhắn update
   useEffect(() => {
@@ -274,6 +249,7 @@ export default function ChatBoxContent() {
   useEffect(() => {
     scrollDivRef.current.scrollTop = scrollDivRef.current.scrollHeight;
   }, [forceScroll]);
+
 
   return (
     <div className="flex flex-row">

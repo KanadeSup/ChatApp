@@ -15,7 +15,9 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
          loaderRef.current.classList.add("hidden")
          return;
       }
-      loaderRef.current.classList.remove("hidden");
+      if(!lockScroll) {
+         loaderRef.current.classList.remove("hidden")
+      }
       if (children.length === numberMessage) return;
 
       setNumberMessage(children.length);
@@ -36,8 +38,8 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
       if (page === 1) {
          if(Math.abs(scrollDivRef.current.scrollHeight - scrollDivRef.current.clientHeight) < 200) {
             loaderRef.current.classList.add("hidden")
+            loaderRef.current.classList.add("hidden");
             setLockScroll(true)
-            // endMessageRef.current.classList.remove("hidden")
          }
          scrollDivRef.current.scrollTop = scrollDivRef.current.scrollHeight
          return
