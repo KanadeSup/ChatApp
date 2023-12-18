@@ -8,6 +8,7 @@ export default function() {
    useEffect(() => {
       OneSignal.Slidedown.promptPush();
    },[])
+      
 
    return (
       <div className="flex flex-row min-h-screen items-stretch">

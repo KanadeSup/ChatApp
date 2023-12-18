@@ -3,36 +3,39 @@ import { RouterProvider } from "react-router-dom";
 import "./index.css";
 import router from "./routers";
 import { useEffect, useRef, useState } from "react";
-import {InfiniteScroll} from "./components/InfinityScroll";
-import OneSignal from 'react-onesignal';
-import config from "/appconfig.js"
+import { InfiniteScroll } from "./components/InfinityScroll";
+import OneSignal from "react-onesignal";
+import config from "/appconfig.js";
 
 const App = function () {
-  useEffect(() => {
-    try {
-      initialize()
-    } catch(e) {}
-  },[])
-  // const [hub, setHub] = useHubContext();
-  return (
+   useEffect(() => {
+      try {
+         initialize();
+      } catch (e) {
+        console.log("error", e)
+      }
+   }, []);
+   // const [hub, setHub] = useHubContext();
+   return (
       //<HubContext.Provider value={[hub, setHub]}>
-        <RouterProvider router={router} />
+      <RouterProvider router={router} />
       //</HubContext.Provider>
-  );
+   );
 };
 const node = document.querySelector("#root");
 const root = createRoot(node);
 root.render(<App />);
 
-const initialize =  async () => {
-  await OneSignal.init({
-    appId: config.oneSignalKey
- });
+const initialize = async () => {
+   await OneSignal.init({
+      appId: config.oneSignalKey,
+      autoResubscribe: true,
+   });
 }
 
 // test
 // const fetchData = () => {
-//   return ["1","2","3","4"]
+// //   return ["1","2","3","4"]
 //   return [
 //     "1", "2", "3", "4", "5", "6", "7", "8", "9","10"
 //   ]
@@ -64,7 +67,7 @@ const initialize =  async () => {
 //     setForceScroll({})
 //   }
 
-//   // scroll to bottom 
+//   // scroll to bottom
 //   useEffect(()=>{
 //     ref.current.scrollTop = ref.current.scrollHeight
 //   },[forceScroll])
@@ -91,8 +94,8 @@ const initialize =  async () => {
 //           onClick={e=>{
 //             setMessage([...message, "Receive Message"])
 //           }}
-//         > 
-//           receive message 
+//         >
+//           receive message
 //         </button>
 //         <button
 //           className="bg-black px-3 py-1 rounded text-md font-medium text-white ml-3"
@@ -100,12 +103,12 @@ const initialize =  async () => {
 //             setMessage([...message, "Send Message"])
 //             scrollToBottom()
 //           }}
-//         > 
-//           Send message 
+//         >
+//           Send message
 //         </button>
 //       </div>
 //     </div>
-    
-//   ) 
+
+//   )
 // }
 // root.render(<Infinity />);

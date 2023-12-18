@@ -3,13 +3,21 @@ import SideBar from "./SideBar";
 import ChatSection from "./ChatSection";
 import "/assets/styles/scrollBar.css";
 import UtilityBar from "/components/UtilityBar";
-import { Outlet } from "react-router-dom";
 import useHubStore from "@/storages/useHubStore";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { Outlet, useParams } from "react-router-dom";
+import { getWorkspace } from "../../api";
 
 export default function () {
   const { hub, setHub } = useHubStore();
-  
+  const [workspace, setWorkspace] = useState(null);
+  const { workspaceId } = useParams();
+  useEffect(() => {
+    if (!workspaceId) return;
+    const data = getWorkspace(workspaceId);
+    setWorkspace(data);
+  }, []);
+
   // Kết nối với hub
   useEffect(() => {
     // check access token is valid or not expired
@@ -38,11 +46,14 @@ export default function () {
     connect();
   }, []);
 
-  
   return (
     <div className="flex ">
       {/* Utility bar */}
-      <UtilityBar logo colleague notification/>
+      {workspace ? (
+        <UtilityBar workspace={workspace} colleague notification />
+      ) : (
+        <UtilityBar logo colleague notification />
+      )}
 
       {/* list friend */}
       {/* <SideBar isNewChat={isNewChat} setIsNewChat={setIsNewChat} /> */}
@@ -50,7 +61,6 @@ export default function () {
 
       {/* chat box */}
       <Outlet />
-      
     </div>
   );
 }

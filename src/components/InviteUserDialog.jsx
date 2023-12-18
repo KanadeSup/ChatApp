@@ -1,4 +1,9 @@
 import { Button } from "@/components/ui/button"
+import {
+   Avatar,
+   AvatarFallback,
+   AvatarImage,
+ } from "@/components/ui/avatar"
 import { Textarea } from "@/components/ui/textarea"
 import {
    Dialog,
@@ -9,21 +14,31 @@ import {
    DialogTitle,
    DialogTrigger,
 } from "@/components/ui/dialog"
-import { Loader2, Tags, X } from "lucide-react"
+import { Loader2, Tags, User2, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import { AddUserByEmails } from "/api/workspace"
 import { useParams } from "react-router-dom"
 import { useToast } from "@/components/ui/use-toast"
+import getUserByEmail from "../api/user/getUserByEmail"
+import { useDebounce } from "use-debounce"
 
 
-export default function InviteUserDialog({ children,open, onOpenChange }) {
+export default function InviteUserDialog({ children, open, onOpenChange }) {
    const {workspaceId} = useParams()
    const [tags, setTags] = useState([])
    const [existTag, setExistTag] = useState(["", true])
    const [emailInput, setEmailInput] = useState("")
    const [emailErr, setEmailErr] = useState(false)
+   const [searchUsers, setSearchUsers] = useState([])
    const { toast } = useToast()
-
+   const  [debounceSearch] = useDebounce(emailInput, 300)
+   useEffect(() => {
+      async function fetchData() {
+         const res = await getUserByEmail(emailInput)
+         setSearchUsers(res.data ? res.data : [])
+      }
+      fetchData()
+   }, [debounceSearch])
    return (
          <Dialog
             open={open}
@@ -75,7 +90,7 @@ export default function InviteUserDialog({ children,open, onOpenChange }) {
             >
                <div>
                   <h1 className="font-bold">To: </h1>
-                  <div className="space-y-3 mt-3">
+                  <div className="space-y-3 mt-3 relative">
                      <div className="flex flex-wrap gap-2 max-h-[150px] overflow-y-scroll">
                         {
                            tags.map((tag)=> {
@@ -102,14 +117,19 @@ export default function InviteUserDialog({ children,open, onOpenChange }) {
                         onChange={(e)=>{
                            const value = e.target.value
                            setEmailErr(false)
-                           if(value[value.length-1] === "\n" || value[value.length-1] === " " || value[value.length-1] === "\t"){
+                           if(value.includes("\n") || value.includes(" ")){
                               setExistTag(["", existTag[1]])
                               const regrex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                               if(!emailInput.toLowerCase().match(regrex)){
                                  setEmailErr(true)
                                  return
                               }
-
+                              for(let i = 0; i < searchUsers.length; i++) {
+                                 if(searchUsers[i].email.toLowerCase() !== emailInput) {
+                                    setEmailErr(true)
+                                    return
+                                 }
+                              }
                               if(tags.includes(emailInput)){
                                  setExistTag([emailInput, !existTag[1]])
                                  setEmailErr(true)
@@ -119,10 +139,38 @@ export default function InviteUserDialog({ children,open, onOpenChange }) {
                               setTags([...tags, emailInput])
                               setEmailInput("")
                            } else {
-                              setEmailInput(value.trim())
+                              setEmailInput(value.trim().toLowerCase())
                            }
                         }}
                      />
+                     <div className={searchUsers.length !== 0 ? "absolute bg-white border-black border rounded-lg w-full max-h-[300px] overflow-y-scroll" : ""}>
+                        {
+                           searchUsers? 
+                              searchUsers
+                              .filter(user=> !tags.includes(user.email.toLowerCase()))
+                              .map(user=> {
+                                 return (
+                                    <div key={user.id} className="flex items-center gap-5 hover:bg-gray-200 p-2 rounded cursor-pointer"
+                                       onClick={e=>{
+                                          setTags([...tags, user.email.toLowerCase()])
+                                          setEmailInput("")
+                                       }}
+                                    >
+                                       <Avatar className="w-14 h-14">
+                                          <AvatarImage src={user.picture} />
+                                          <AvatarFallback>
+                                             <User2 className="w-6 h-6"/>
+                                          </AvatarFallback>
+                                       </Avatar>
+                                       <div>
+                                          <h1 className="font-medium text-lg"> {user.username} </h1>
+                                          <p className="text-gray-500 italic text-sm"> {user.email} </p>
+                                       </div>
+                                    </div>
+                                 )
+                              }): ""
+                        }
+                     </div>
                   </div>
                </div>
                <DialogFooter className="mt-5">

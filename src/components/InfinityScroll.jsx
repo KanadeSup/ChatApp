@@ -11,7 +11,11 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
    const endMessageRef = useRef()
 
    useEffect(() => {
-      if (children.length === 0) return;
+      if (children.length === 0){
+         loaderRef.current.classList.add("hidden")
+         return;
+      }
+      loaderRef.current.classList.remove("hidden");
       if (children.length === numberMessage) return;
 
       setNumberMessage(children.length);

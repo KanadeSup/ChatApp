@@ -4,7 +4,7 @@ import HomePage from '../pages/ColleagueChat/HomePage'
 
 export default [
    {
-      path: "/colleague-chat",
+      path: "/:workspaceId?/colleague-chat",
       element: <ColleagueChat />,
       children: [
          {

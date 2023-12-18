@@ -7,7 +7,6 @@ export default async (wid, emails) => {
    let res;
    await Promise.all(emails.map(async email => {
       const res = await getUserByEmail(email)
-      console.log(res)
       if(!res.ok) return {
          data: null,
          status: res.status,
@@ -15,8 +14,6 @@ export default async (wid, emails) => {
       }
       if(res.data.length !== 0) uids.push(res.data[0].id)
    }))
-   console.log(emails)
-   console.log(uids)
    if(uids.length !== 0 ) {
       res = await addUsers(wid, uids)
       if(!res.ok) return {

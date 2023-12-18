@@ -8,7 +8,6 @@ export default async (idUser, firstName, lastName, gender, phone, email, birthda
     formData.append('Phone', phone);
     formData.append('Email', email);
     formData.append('BirthDay', birthday);
-    console.log(idUser, firstName, lastName, gender, phone, email, birthday, "jsdjjhhfdshds");
     const res = await myFetch({
         path: `User/${idUser}`,
         method: "PUT",

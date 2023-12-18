@@ -1,7 +1,7 @@
 import Notification from '/pages/Notification'
 export default [
    {
-      path: "Notification",
+      path: "/:workspaceId?/Notification",
       element: <Notification />
    },
 ]

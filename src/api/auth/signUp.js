@@ -1,9 +1,11 @@
-import baseUrl from "../baseUrl";
-import apikey from "../apiKey";
+import appconfig from "../../appconfig";
+import myFetch from "../myFetch";
+const apikey = appconfig.apiKey
 
 export default async (email, username, password) => {
     try {
-        const response = await fetch(baseUrl("Auth/signup"), {
+        const response = await myFetch({
+            path: "Auth/signup",
             method: "POST",
             headers: {
                 "x-apikey": apikey,

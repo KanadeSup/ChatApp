@@ -7,7 +7,7 @@ import { getWorkspace } from "/api";
 
 export default function () {
    const { workspaceId } = useParams();
-   const [workspace, setWorkspace] = useState();
+   const [workspace, setWorkspace] = useState(null);
    const sidebarItems = [
       {
          title: "My Account",
@@ -19,18 +19,13 @@ export default function () {
       },
    ];
    useState(() => {
-      async function fetchData() {
-         if (!workspaceId) return;
-         const data = getWorkspace(workspaceId);
-         setWorkspace(data);
-      }
-      fetchData();
+      if (!workspaceId) return;
+      const data = getWorkspace(workspaceId);
+      setWorkspace(data);
    }, []);
    return (
       <div className="flex flex-row min-h-screen items-stretch">
-         {
-            workspace ? <UtilityBar workspace={workspace} colleague notification /> : <UtilityBar logo colleague notification />
-         }
+         {workspace ? <UtilityBar workspace={workspace} colleague notification /> : <UtilityBar logo colleague notification />}
          <div className="pl-10 pt-6 w-full">
             <div className="w-full">
                <div className="space-y-0.5">

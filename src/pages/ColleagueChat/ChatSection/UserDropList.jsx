@@ -17,8 +17,6 @@ function AvatarNameFilter(props) {
 }
 
 export default function UserDropList(props) {
-  console.log("props",props.dataSearch);
-  console.log("props",props.dataSearch.length);
   return (
     <div
       style={{

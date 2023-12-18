@@ -1,4 +1,5 @@
 import config from "../appconfig.js"
+import OneSignal from "react-onesignal";
 
 export default async function({ path, params="", method="GET", headers={}, auth=true, body="" }) { 
    const token = localStorage.getItem('token')
@@ -11,8 +12,10 @@ export default async function({ path, params="", method="GET", headers={}, auth=
    }
    if(body !== "") request["body"] = body
    const res = await fetch(`${config.apiURL}/${path}?${params}`, request)
-   console.log(res)
    if(res.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      OneSignal.logout()
       location.href = "/Login";
    }
    return res
