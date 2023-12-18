@@ -20,6 +20,7 @@ import { AddUserByEmails } from "/api/workspace"
 import { useParams } from "react-router-dom"
 import { useToast } from "@/components/ui/use-toast"
 import getUserByEmail from "../api/user/getUserByEmail"
+import { useDebounce } from "use-debounce"
 
 
 export default function InviteUserDialog({ children, open, onOpenChange }) {
@@ -30,17 +31,14 @@ export default function InviteUserDialog({ children, open, onOpenChange }) {
    const [emailErr, setEmailErr] = useState(false)
    const [searchUsers, setSearchUsers] = useState([])
    const { toast } = useToast()
+   const  [debounceSearch] = useDebounce(emailInput, 300)
    useEffect(() => {
-      if(emailInput === "") {
-         setSearchUsers([])
-         return
-      }
       async function fetchData() {
          const res = await getUserByEmail(emailInput)
          setSearchUsers(res.data ? res.data : [])
       }
       fetchData()
-   }, [emailInput])
+   }, [debounceSearch])
    return (
          <Dialog
             open={open}

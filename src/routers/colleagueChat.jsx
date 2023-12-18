@@ -3,7 +3,7 @@ import ChatSection from '../pages/ColleagueChat/ChatSection'
 
 export default [
    {
-      path: "/colleague-chat",
+      path: "/:workspaceId?/colleague-chat",
       element: <ColleagueChat />,
       children: [
          {
