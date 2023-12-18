@@ -115,6 +115,7 @@ export default function SignUp() {
         formState.username,
         formState.password
       );
+      console.log("response khi ddawng khi: ", response);
       setIsLoading(false);
       if (response.status === 400) {
         setNotificationServer(response.title);
@@ -134,11 +135,14 @@ export default function SignUp() {
       var token = localStorage.getItem("token");
       setIsLoadingOTP(true);
       const response = await verifyRegister(token, otp);
+      console.log("response khi xac thuc otp: ", response);
       setIsLoadingOTP(false);
       if (response && response.status === 400) {
         setNotificationServerOTP(response.title);
         return;
       }
+      localStorage.setItem("token", response.token);
+      console.log("ddax chay xac thuc token: ", response.token);
       navigate("/login");
     } catch (error) {
       setNotificationServer("An error occurred while verifying OTP.");

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import getConversions from "../../../api/colleague/getConversions";
 import convertTime from "../../../utils/convertTime";
 import useIsNewMessage from "../../../storages/useIsNewMessage";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import useColleagueStore from "@/storages/useColleagueStore";
 
 
@@ -12,25 +12,32 @@ export default function () {
   const { isNewMessage, setIsNewMessage } = useIsNewMessage();
   const [conversations, setConversations] = useState([]); // Danh sách các cuộc trò chuyện
   const { isClickedReply, setIsClickedReply } = useColleagueStore();
+  const { conversationId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchConversions() {
       const response = await getConversions("", 0, 10);
       setConversations(response);
       setIsNewMessage(false);
+      if (!conversationId && response.length > 0) {
+        console.log("conversationId: ", response[0].id);
+        navigate(`/colleague-chat/${response[0].id}`);
+      }
     }
     // if (isNewMessage) {
       fetchConversions();
     //}
   }, [isNewMessage]);
   return (
-    <div className="h-screen w-72 shadow-xl flex-shrink-0">
+    <div className="h-screen w-72 shadow-xl flex-shrink-0 border-r">
       <SideBarHeader />
 
       <div
         style={{ height: "calc(100vh - 3rem)" }}
         className="flex flex-col flex-grow -z-10 justify-start overflow-y-auto space-y-1"
       >
+        {conversations.length === 0 && (<p className="flex items-center justify-center h-10 font-medium text-gray-600">No one here</p>)}
         {conversations.map((user) => (
           <NavLink
             key={user.id}

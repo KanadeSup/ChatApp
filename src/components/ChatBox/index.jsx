@@ -3,6 +3,7 @@ import { Underline } from "@tiptap/extension-underline";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 import { Extension } from "@tiptap/core";
+import { Paperclip, X, FileUp } from "lucide-react";
 import {
   Bold,
   Italic,
@@ -10,7 +11,7 @@ import {
   SendHorizontal,
 } from "lucide-react";
 import React from "react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const DisableEnter = Extension.create({
   addKeyboardShortcuts() {
@@ -35,11 +36,17 @@ const ChatBox = React.forwardRef((props) => {
     extensions: extensions,
     editorProps: {
       attributes: {
-        class: "outline-none overflow-y-auto max-h-56",
+        class: "outline-none overflow-y-auto max-h-44",
       },
     },
   });
   const ref = useRef(null);
+  const refFile = useRef(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const handleFileUpload = (event) => {
+    setSelectedFiles([...event.target.files]);
+    console.log("file: ", event.target.files);
+  };
   return (
     <div
       //ref={ref}
@@ -67,6 +74,19 @@ const ChatBox = React.forwardRef((props) => {
         >
           <UnderlineIcon className="p-1" />
         </button>
+
+        {/* Up file */}
+        <FileUp
+          className="w-7 h-7 p-1"
+          onClick={() => refFile.current.click()}
+        />
+        <input
+          type="file"
+          ref={refFile}
+          style={{ display: "none" }}
+          multiple
+          onChange={handleFileUpload}
+        />
       </div>
       {/* Chatbox */}
       <div
@@ -95,8 +115,26 @@ const ChatBox = React.forwardRef((props) => {
             }
           }}
           strokeWidth={1.25}
-          className="absolute cursor-pointer bottom-0 right-0"
+          className="absolute cursor-pointer top-0 right-0"
         />
+      </div>
+      {/* Hiển thị các file upload */}
+      <div className="flex flex-row my-2 gap-4 flex-wrap">
+        {selectedFiles.map((file, index) => (
+          <div key={index}>
+            <div className="relative flex flex-row justify-start px-4 py-2 border rounded-lg w-56">
+              <img
+                src="https://chat.zalo.me/assets/icon-word.d7db8ecee5824ba530a5b74c5dd69110.svg"
+                alt=""
+                className="w-8 h-8"
+              />
+              <div className="flex flex-col justify-center ml-2">
+                <span className="font-semibold text-base truncate w-44 pr-2">{file.name}</span>
+              </div>
+              <X className="absolute -top-1.5 -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer" />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

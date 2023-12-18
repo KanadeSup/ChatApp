@@ -13,16 +13,18 @@ import {
    ContextMenuItem,
    ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import useChannelStore from "@/storages/useChannelStore";
 import DeleteChannelDialog from "/components/DeleteChannelDialog";
 import { Link, NavLink, useParams } from "react-router-dom";
 
 export default function ChannelItem({ name, cid, setChannelName }) {
    const { workspaceId } = useParams();
+   const { setIsClickedReply } = useChannelStore();
    return (
       <ContextMenu modal={false}>
          <ContextMenuTrigger asChild>
             <NavLink to={`${cid}`}
-               onClick={()=>setChannelName(name)}
+               onClick={()=>{setChannelName(name); setIsClickedReply(false)}}
             >
                {({ isActive }) => (
                   <Button
