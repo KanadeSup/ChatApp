@@ -31,6 +31,7 @@ const extensions = [
   DisableEnter,
 ];
 
+// function deleteFile
 const ChatBox = React.forwardRef((props) => {
   const editor = useEditor({
     extensions: extensions,
@@ -131,7 +132,7 @@ const ChatBox = React.forwardRef((props) => {
               <div className="flex flex-col justify-center ml-2">
                 <span className="font-semibold text-base truncate w-44 pr-2">{file.name}</span>
               </div>
-              <X className="absolute -top-1.5 -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer" />
+              <X className="absolute -top-1.5 -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer"/>
             </div>
           </div>
         ))}
