@@ -47,7 +47,6 @@ export default function Login() {
          client_id: "945996023510-0j32cbj68e6ftd38sampakldkhok571m.apps.googleusercontent.com",
          scope: "profile email",
          callback: async (response) => {
-            console.log(response);
             const data = await loginGoogle(response.code);
             localStorage.setItem("userId", data.userId);
             localStorage.setItem("token", data.token);

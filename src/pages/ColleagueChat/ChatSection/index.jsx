@@ -7,7 +7,6 @@ import { useParams } from "react-router-dom";
 
 export default function () {
   const { conversationId } = useParams();
-  console.log(conversationId);
   const { isNewChat, setIsNewChat, isChatOption, setIsChatOption } = useColleagueStore();
   useEffect(() => {
     setIsNewChat(false);

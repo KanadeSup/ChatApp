@@ -49,7 +49,6 @@ export default function() {
       async function fetchData() {
          const workspaceMemberList = await getUnchannelMembers(workspaceId, channelId)
          const channelMemberList = await getChannelMemberList(channelId)
-         console.log(channelMemberList)
          setWorkspaceMembers(workspaceMemberList.data)
          setChannelMembers(channelMemberList)
          Object.keys(open).forEach(key=>open[key] = undefined)

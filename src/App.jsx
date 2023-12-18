@@ -29,12 +29,8 @@ root.render(<App />);
 const initialize = async () => {
    await OneSignal.init({
       appId: config.oneSignalKey,
+      autoResubscribe: true,
    });
-   var userId = localStorage.getItem("userId")
-   if (userId != null) {
-       OneSignal.logout()
-       OneSignal.login(userId)
-   }
 }
 
 // test
