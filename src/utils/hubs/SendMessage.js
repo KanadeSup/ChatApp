@@ -34,7 +34,7 @@ async function SendMessage(
         const message2 = {
             id: data,
             sendAt: new Date().toISOString(),
-            senderName: user.firstName + " " + user.lastName,
+            senderName: user.firstName + " " + user.lastName ? user.lastName : "",
             senderId: localStorage.getItem("userId"),
             content: message,
             senderAvatar: user.picture,

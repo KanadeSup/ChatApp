@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useLoaderData, Await } from "react-router-dom";
 import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function () {
   const data = useLoaderData();
@@ -20,7 +21,7 @@ export default function () {
         <div className="flex items-center justify-between">
           <Label className="text-md text-muted-foreground">username</Label>
         </div>
-        <Suspense fallback={<p className="text-lg font-medium"> Username </p>}>
+        <Suspense fallback={<Skeleton className="w-full h-7" />}>
           <Await resolve={data.user}>
             {(user) => (
               <p className="text-lg font-medium"> {user.username} </p>
@@ -34,7 +35,13 @@ export default function () {
         <div className="flex items-center justify-between">
           <Label className="text-md text-muted-foreground"> Email </Label>
         </div>
-        <p className="text-lg font-medium"> PutinLord@gmail.com </p>
+         <Suspense fallback={<Skeleton className="w-full h-7" />}>
+          <Await resolve={data.user}>
+            {(user) => (
+              <p className="text-lg font-medium"> {user.email} </p>
+            )}
+          </Await>
+        </Suspense>
       </div>
       <Separator />
 

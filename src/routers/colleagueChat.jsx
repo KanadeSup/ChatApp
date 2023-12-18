@@ -1,5 +1,6 @@
 import ColleagueChat from '/pages/ColleagueChat'
 import ChatSection from '../pages/ColleagueChat/ChatSection'
+import HomePage from '../pages/ColleagueChat/HomePage'
 
 export default [
    {
@@ -8,7 +9,7 @@ export default [
       children: [
          {
             index: true,
-            element: <p>there is no chat here</p>
+            element: <HomePage />
          },
          {
             path:":conversationId",
