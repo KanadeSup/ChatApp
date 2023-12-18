@@ -4,9 +4,12 @@ import { login, loginGoogle } from "/api";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import useHubStore from "../../storages/useHubStore";
 import OneSignal from 'react-onesignal';
 
+function loginOneSignal(uid) {
+   OneSignal.logout();
+   OneSignal.login(uid);
+}
 export default function Login() {
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
@@ -29,12 +32,8 @@ export default function Login() {
          localStorage.setItem("token", response.token);
          localStorage.setItem("tokenTimeOut", response.tokenTimeOut);
          localStorage.setItem("refreshToken", response.refreshToken);
-         localStorage.setItem(
-            "refreshTokenTimeout",
-            response.refreshTokenTimeout,
-         );
-         OneSignal.logout();
-         OneSignal.login(response.userId);
+         localStorage.setItem("refreshTokenTimeout", response.refreshTokenTimeout);
+         loginOneSignal(response.userId)
          navigate("/Workspace");
       } catch (error) {
          console.error(error);
@@ -45,20 +44,16 @@ export default function Login() {
    // Google login
    useEffect(() => {
       const client_popup = window.google.accounts.oauth2.initCodeClient({
-         client_id:
-            "945996023510-0j32cbj68e6ftd38sampakldkhok571m.apps.googleusercontent.com",
+         client_id: "945996023510-0j32cbj68e6ftd38sampakldkhok571m.apps.googleusercontent.com",
          scope: "profile email",
          callback: async (response) => {
-            console.log(response);
             const data = await loginGoogle(response.code);
             localStorage.setItem("userId", data.userId);
             localStorage.setItem("token", data.token);
             localStorage.setItem("tokenTimeOut", data.tokenTimeOut);
             localStorage.setItem("refreshToken", data.refreshToken);
-            localStorage.setItem(
-               "refreshTokenTimeout",
-               data.refreshTokenTimeout,
-            );
+            localStorage.setItem("refreshTokenTimeout", data.refreshTokenTimeout);
+            loginOneSignal(data.userId)
             navigate("/Workspace");
          },
       });
@@ -76,15 +71,11 @@ export default function Login() {
 
                <div className="bg-white shadow-2xl w-full rounded-md divide-gray-200">
                   <div className="text-center pt-6 pb-1">
-                     <h1 className="font-bold text-3xl text-gray-900">
-                        Sign in
-                     </h1>
+                     <h1 className="font-bold text-3xl text-gray-900">Sign in</h1>
                   </div>
 
                   <div className="px-5 py-1">
-                     <label className="font-semibold text-sm text-gray-600 pb-1 block">
-                        Username
-                     </label>
+                     <label className="font-semibold text-sm text-gray-600 pb-1 block">Username</label>
                      <div className="flex mb-2">
                         <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
                            <i className="mdi mdi-email-outline text-gray-400 text-lg" />
@@ -96,9 +87,7 @@ export default function Login() {
                            onChange={(e) => setEmail(e.target.value)}
                         />
                      </div>
-                     <label className="font-semibold text-sm text-gray-600 pb-1 block">
-                        Password
-                     </label>
+                     <label className="font-semibold text-sm text-gray-600 pb-1 block">Password</label>
                      <div className="flex mb-2">
                         <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
                            <i className="mdi mdi-lock-outline text-gray-400 text-lg" />
@@ -112,19 +101,12 @@ export default function Login() {
                         />
                      </div>
                      <div className="text-right">
-                        <Link
-                           to={"/get-otp-forget-password"}
-                           className="text-sm font-semibold mt-2 block"
-                        >
-                           <span className="inline-block text-black hover:underline">
-                              Forgot Password?
-                           </span>
+                        <Link to={"/get-otp-forget-password"} className="text-sm font-semibold mt-2 block">
+                           <span className="inline-block text-black hover:underline">Forgot Password?</span>
                         </Link>
                      </div>
 
-                     <div className="text-red-500 font-medium text-sm h-6">
-                        {error}
-                     </div>
+                     <div className="text-red-500 font-medium text-sm h-6">{error}</div>
 
                      {isLoading ? (
                         <Button disabled className="w-full">
@@ -132,10 +114,7 @@ export default function Login() {
                            Please wait
                         </Button>
                      ) : (
-                        <Button
-                           className="w-full"
-                           onClick={() => handleLogin()}
-                        >
+                        <Button className="w-full" onClick={() => handleLogin()}>
                            Login
                         </Button>
                      )}
@@ -152,13 +131,8 @@ export default function Login() {
                      </button>
 
                      <div className="flex justify-center my-5">
-                        <span className="text-sm text-gray-400 font-semibold">
-                           Don't have account?
-                        </span>
-                        <Link
-                           to={"/signup"}
-                           className="text-sm mx-1 font-semibold border-black hover:underline"
-                        >
+                        <span className="text-sm text-gray-400 font-semibold">Don't have account?</span>
+                        <Link to={"/signup"} className="text-sm mx-1 font-semibold border-black hover:underline">
                            Sign up
                         </Link>
                      </div>

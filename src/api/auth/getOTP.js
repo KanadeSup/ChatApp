@@ -1,9 +1,11 @@
-import baseUrl from "../baseUrl";
-import apikey from "../apiKey";
+import appconfig from "../../appconfig";
+import myFetch from "../myFetch";
+const apikey = appconfig.apiKey
 
 export default async (otpType, email) => {
     try {
-        const response = await fetch(baseUrl("Auth/get-otp"), {
+        const response = await myFetch({
+            path: "Auth/get-otp",
             method: "POST",
             headers: {
                 "x-apikey": apikey,

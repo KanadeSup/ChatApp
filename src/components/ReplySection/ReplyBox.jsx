@@ -38,7 +38,6 @@ export default function ReplyBox(props) {
       );
       const reversedData = data.reverse();
       props.setMessagesChild(reversedData);
-      console.log("data load tin reply:", data);
     }
     fetchMessages();
     fetchData();

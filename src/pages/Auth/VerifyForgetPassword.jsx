@@ -35,7 +35,7 @@ export default function VerifyForgetPassword() {
                   <span className="inline-block mr-2">Confirm</span>
                 </button>
   
-                <div class="flex justify-center my-5">
+                <div className="flex justify-center my-5">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -50,7 +50,7 @@ export default function VerifyForgetPassword() {
                       d="M7 16l-4-4m0 0l4-4m-4 4h18"
                     />
                   </svg>
-                  <Link to={"/forget-password"} class="text-xs mx-1 font-semibold">
+                  <Link to={"/forget-password"} className="text-xs mx-1 font-semibold">
                     Back to forget password page
                   </Link>
                 </div>

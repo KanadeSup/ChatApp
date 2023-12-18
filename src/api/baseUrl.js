@@ -1,3 +1,4 @@
+import config from "../appconfig"
 export default function(source) {
-    return "https://api.firar.live/api/" + source;
+    return appconfig.apiUrl + source;
 }    

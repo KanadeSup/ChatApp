@@ -88,7 +88,7 @@ export default function() {
                      <div className="w-20 h-20 border border-gray-500 rounded-lg">
                         <label className="cursor-pointer">
                            <Avatar className="w-20 h-20 border border-gray-500 rounded-lg">
-                              <AvatarImage src={logo} />
+                              <AvatarImage src={logo} className="w-20 h-20"/>
                               <AvatarFallback className="w-20 h-20"> {toCharacters(name).trim().toUpperCase()} </AvatarFallback>
                            </Avatar>
                            <input type="file" className="hidden workspace-logo" name="logo"
