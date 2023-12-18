@@ -2,7 +2,7 @@ import { Hash, Loader2, Plus, X } from "lucide-react";
 import ChannelItem from "./ChannelItem";
 import ChannelCreation from "/components/ChannelCreation"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useActionData, useFetcher, useParams } from "react-router-dom";
+import { useActionData, useFetcher, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getChannelList } from "/api"
 import { Toaster } from "@/components/ui/toaster"
@@ -11,9 +11,11 @@ import { useToast } from "@/components/ui/use-toast"
 export default function ChannelList({ fetcher, name, avatar, setChannelName }) {
    const [channelList, setChannelList] = useState(null)
    const { workspaceId } = useParams()
+   const { channelId } = useParams()
    const formCId = useActionData()
    const fetcherData = fetcher.data
    const { toast } = useToast()
+   const navigate = useNavigate()
    useEffect(()=>{
       if(fetcherData || formCId) {
          if(fetcherData?.status === 403 || formCId?.status === 403) {
@@ -40,6 +42,11 @@ export default function ChannelList({ fetcher, name, avatar, setChannelName }) {
       async function fetchData() {
          const data = await getChannelList(workspaceId)
          setChannelList(data)
+         console.log("data channel:", data)
+         console.log("channelId: ", data[0].id);
+         if (!channelId && data.length > 0) {
+            navigate(`/Workspace/${workspaceId}/${data[0].id}`)
+         }
       }
       fetchData()
    },[fetcherData,formCId])

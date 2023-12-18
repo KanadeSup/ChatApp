@@ -1,4 +1,4 @@
-import { useState } from "react";
+import useChannelStore from "@/storages/useChannelStore";
 import { Button } from "@/components/ui/button";
 import { Hash, Settings } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -8,11 +8,13 @@ import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 
 export default function ChannelItem({ name, cid, setChannelName }) {
    const { workspaceId } = useParams();
-   const navigate = useNavigate();
+   const { setIsClickedReply } = useChannelStore();
    return (
       <ContextMenu modal={false}>
          <ContextMenuTrigger asChild>
-            <NavLink to={`${cid}`} onClick={() => setChannelName(name)}>
+            <NavLink to={`${cid}`}
+               onClick={()=>{setChannelName(name); setIsClickedReply(false)}}
+            >
                {({ isActive }) => (
                   <Button variant="ghost" className={"w-full justify-start group items-center " + (isActive ? "bg-muted" : "")}>
                      <Hash className="w-5 h-5 mr-2 stroke-gray-500" />

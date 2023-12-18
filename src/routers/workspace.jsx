@@ -13,7 +13,7 @@ import { defer, redirect, useNavigate, useParams, useRouteError } from 'react-ro
 import ChannelChatSection from "/pages/Workspace/ChannelChatSection";
 import { getMemberList } from "/api/workspace"
 import { Button } from "/components/ui/button"
-
+import { HomeChat } from '../assets/img/MySvg'
 function ChannelChatSectionWrapper() {
    const { channelId } = useParams();
    return <ChannelChatSection key={"a"+channelId} />;
@@ -90,7 +90,7 @@ export default [
       children: [
          {
             index: true,
-            element:<p>there is no chat here</p> 
+            element: <div className='w-full h-full flex justify-center items-center'><HomeChat /></div>
          },
          {
             path:":channelId",
