@@ -46,7 +46,7 @@ export default function NewChatHeader(props) {
             }}
           />
           <p className="absolute top-3.5 left-5 text-sm">To:</p>
-          {isFocus && <UserDropList dataSearch={dataSearch} />}
+          <UserDropList dataSearch={dataSearch} />
         </div>
       </div>
       <X
