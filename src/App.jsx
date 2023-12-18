@@ -3,36 +3,38 @@ import { RouterProvider } from "react-router-dom";
 import "./index.css";
 import router from "./routers";
 import { useEffect, useRef, useState } from "react";
-import {InfiniteScroll} from "./components/InfinityScroll";
-import OneSignal from 'react-onesignal';
-import config from "/appconfig.js"
+import { InfiniteScroll } from "./components/InfinityScroll";
+import OneSignal from "react-onesignal";
+import config from "/appconfig.js";
 
 const App = function () {
-  useEffect(() => {
-    try {
-      initialize()
-    } catch(e) {}
-  },[])
-  // const [hub, setHub] = useHubContext();
-  return (
+   useEffect(() => {
+      try {
+         initialize();
+      } catch (e) {
+        console.log("error", e)
+      }
+   }, []);
+   // const [hub, setHub] = useHubContext();
+   return (
       //<HubContext.Provider value={[hub, setHub]}>
-        <RouterProvider router={router} />
+      <RouterProvider router={router} />
       //</HubContext.Provider>
-  );
+   );
 };
 const node = document.querySelector("#root");
 const root = createRoot(node);
 root.render(<App />);
 
-const initialize =  async () => {
-  await OneSignal.init({
-    appId: config.oneSignalKey
- });
-var userId = localStorage.getItem("userId")
-if (userId != null) {
-    OneSignal.logout()
-    OneSignal.login(userId)
-  }
+const initialize = async () => {
+   await OneSignal.init({
+      appId: config.oneSignalKey,
+   });
+   var userId = localStorage.getItem("userId")
+   if (userId != null) {
+       OneSignal.logout()
+       OneSignal.login(userId)
+   }
 }
 
 // test
@@ -69,7 +71,7 @@ if (userId != null) {
 //     setForceScroll({})
 //   }
 
-//   // scroll to bottom 
+//   // scroll to bottom
 //   useEffect(()=>{
 //     ref.current.scrollTop = ref.current.scrollHeight
 //   },[forceScroll])
@@ -96,8 +98,8 @@ if (userId != null) {
 //           onClick={e=>{
 //             setMessage([...message, "Receive Message"])
 //           }}
-//         > 
-//           receive message 
+//         >
+//           receive message
 //         </button>
 //         <button
 //           className="bg-black px-3 py-1 rounded text-md font-medium text-white ml-3"
@@ -105,12 +107,12 @@ if (userId != null) {
 //             setMessage([...message, "Send Message"])
 //             scrollToBottom()
 //           }}
-//         > 
-//           Send message 
+//         >
+//           Send message
 //         </button>
 //       </div>
 //     </div>
-    
-//   ) 
+
+//   )
 // }
 // root.render(<Infinity />);

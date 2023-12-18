@@ -1,8 +1,11 @@
-import baseUrl from "../baseUrl";
-import apikey from "../apiKey";
+import appconfig from "../../appconfig";
+import myFetch from "../myFetch";
+const apikey = appconfig.apiKey
 
 export default async (code) => {
-  const response = await fetch(baseUrl("Auth/signin-google?code=") + code, {
+  const response = await myFetch({
+    path: "Auth/signin-google",
+    params: `code=${code}`,
     method: 'POST',
     headers: {
       'Accept': 'application/json',

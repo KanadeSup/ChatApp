@@ -1,9 +1,11 @@
-import baseUrl from "../baseUrl";
-import apikey from "../apiKey";
+import appconfig from "../../appconfig";
+import myFetch from "../myFetch";
+const apikey = appconfig.apiKey
 
 export default async (email, newPassword, otp) => {
     try {
-        const response = await fetch(baseUrl("Auth/forgot-password"), {
+        const response = await myFetch({
+            path:"Auth/forgot-password", 
             method: "POST",
             headers: {
                 "x-apikey": apikey,
@@ -16,7 +18,6 @@ export default async (email, newPassword, otp) => {
                 "otp": otp
             })
         });
-        console.log(response);
         if (response.status === 200) {
             console.log('Phản hồi từ máy chủ là 200.');
             return;

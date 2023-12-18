@@ -75,7 +75,7 @@ export default function GetOTPForgotPassword() {
 
               
 
-              <div class="flex justify-center mt-3 mb-3">
+              <div className="flex justify-center mt-3 mb-3">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -90,7 +90,7 @@ export default function GetOTPForgotPassword() {
                     d="M7 16l-4-4m0 0l4-4m-4 4h18"
                   />
                 </svg>
-                <Link to={"/login"} class="text-xs mx-1 font-semibold">
+                <Link to={"/login"} className="text-xs mx-1 font-semibold">
                   Back to login page
                 </Link>
               </div>
