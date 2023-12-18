@@ -15,9 +15,13 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
          loaderRef.current.classList.add("hidden")
          return;
       }
+      
       if(!lockScroll) {
          loaderRef.current.classList.remove("hidden")
+      } else {
+         loaderRef.current.classList.add("hidden")
       }
+
       if (children.length === numberMessage) return;
 
       setNumberMessage(children.length);
