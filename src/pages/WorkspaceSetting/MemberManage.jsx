@@ -1,11 +1,11 @@
 import { Separator } from "@/components/ui/separator";
-import { Await, Link, useLoaderData, useParams } from "react-router-dom";
+import { Await, Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { ArrowDownWideNarrow, Check, Contact, Loader2, MoreHorizontal, User, User2, X } from "lucide-react";
+import { ArrowDownWideNarrow, Check, Contact, Loader2, LogOut, MoreHorizontal, User, User2, X } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,6 +35,7 @@ export default function () {
    const [force, setForce] = useState({});
    const [search, setSearch] = useState("");
    const userId = localStorage.getItem("userId")
+   const navigate = useNavigate()
    function forceLoad() {
       setForce({});
    }
@@ -113,13 +114,23 @@ export default function () {
                                        <ProfileDialog member={member}>
                                           <Contact className="stroke-blue-600 cursor-pointer" />
                                        </ProfileDialog>
-                                       <X
-                                          className={`stroke-red-600 stroke-[3] cursor-pointer ${userId === member.id ? "invisible" : ""}`}
-                                          onClick={(e) => {
-                                             open[member.id] = true;
-                                             setOpen({ ...open });
-                                          }}
-                                       />
+                                       {
+                                          userId === member.id ?
+                                          <LogOut 
+                                             className={`stroke-red-600 stroke-[3] cursor-pointer w-5 h-5`}
+                                                onClick={(e) => {
+                                                   open[member.id] = true;
+                                                   setOpen({ ...open });
+                                                }}
+                                          />:
+                                          <X
+                                             className={`stroke-red-600 stroke-[3] cursor-pointer}`}
+                                             onClick={(e) => {
+                                                open[member.id] = true;
+                                                setOpen({ ...open });
+                                             }}
+                                          />
+                                       }
                                     </div>
                                     <AlertDialog
                                        open={open[member.id]}
@@ -146,6 +157,10 @@ export default function () {
                                                    const data = await deleteMember(workspaceId, member.id);
                                                    document.querySelector(`.submit-${member.id}`).disabled = false;
                                                    document.querySelector(`.loader-${member.id}`).classList.add("hidden");
+                                                   if(userId === member.id) {
+                                                      navigate("/Workspace")
+                                                      return
+                                                   }
                                                    forceLoad();
                                                    open[member.id] = false;
                                                    setOpen({ ...open });
