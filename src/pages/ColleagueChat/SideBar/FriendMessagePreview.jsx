@@ -32,7 +32,7 @@ export default function FriendMessagePreview(props) {
           </Avatar>
           <div
             className={`${
-              props.isActive ? "bg-green-600" : "bg-red-600"
+              props.isOnline ? "bg-green-600" : "bg-red-600"
             } absolute
             border-white border-2 rounded-full p-1 right-0 bottom-0`}
           ></div>

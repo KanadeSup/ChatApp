@@ -158,6 +158,7 @@ export default function ChannelChatBoxContent(props) {
     if (hub) {
       hub.off("update_message");
       hub.on("update_message", (message_updated) => {
+        console.log("đã chạy update message:", message_updated);
         if (message_updated.parentId === null) {
           setMessages((messages) =>
             messages.map((message) =>
@@ -261,7 +262,6 @@ export default function ChannelChatBoxContent(props) {
           {messages.map((message, index) => (
             <Message
               key={message.id}
-              index={index}
               message={message}
               setMessage={setMessageParent}
               setIsClickedReply={setIsClickedReply}

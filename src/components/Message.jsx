@@ -143,7 +143,6 @@ export default function Message(props) {
           <SmilePlus className="w-4 h-4 text-gray-600" />
           {showEmoij && <Emoji SendEmoji={props.SendEmoji} />}
         </div>
-          {/* <Emoji2 SendEmoji={props.SendEmoji} /> */}
 
         {/* Pin */}
         <div
