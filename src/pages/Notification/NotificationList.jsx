@@ -2,7 +2,7 @@ import { Bell } from "lucide-react";
 import NotificationItem from "./NotificationItem";
 import { Switch } from "@/components/ui/switch" 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import getNotifications from "../../api/notification/getNotifications";
 
 const categories = [
@@ -21,7 +21,7 @@ export default function ({ setNotification }) {
    const [category, setCategory] = useState(categories[0])
    const [notifications, setNotifications] = useState(null)
    const [unread, setUnread] = useState(false)
-
+   const {notificationId} = useParams()
    useEffect(() => {
       async function fetchData() {
          const res = await getNotifications()
@@ -29,6 +29,9 @@ export default function ({ setNotification }) {
          const data = res.data
          setNotifications(data)
          console.log(data)
+         data.map(noti=>{
+            if(notificationId === noti.id) setNotification(noti)
+         })
       }
       fetchData()
    }, [])
