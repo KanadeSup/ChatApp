@@ -9,7 +9,7 @@ import { getUserById } from "../../../api";
 import useColleagueStore from "@/storages/useColleagueStore";
 import useHubStore from "@/storages/useHubStore";
 import { InfiniteScroll } from "@/components/InfinityScroll";
-import { SendMessage, UpdateMessage, DeleteMessage, SendEmoji } from "@/utils/hubs";
+import { SendMessage, UpdateMessage, DeleteMessage, SendEmoji, PinMessage } from "@/utils/hubs";
 
 export default function ChatBoxContent() {
   const { conversationId } = useParams();
@@ -276,6 +276,7 @@ export default function ChatBoxContent() {
                 UpdateMessage(hub, idMessage, message, false)
               }
               SendEmoji={(emoji) => SendEmoji(hub, message.id, emoji)}
+              PinMessage={(messageId) => PinMessage(hub, messageId, !message.isPined)}
             />
           ))}
         </InfiniteScroll>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { login, loginGoogle } from "/api";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, User } from "lucide-react";
 import OneSignal from "react-onesignal";
 
 function loginOneSignal(uid) {
@@ -81,7 +81,7 @@ export default function Login() {
               </label>
               <div className="flex mb-2">
                 <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
-                  <i className="mdi mdi-email-outline text-gray-400 text-lg" />
+                <User className="text-gray-400 w-5 h-5"/>
                 </div>
                 <input
                   type="text"
