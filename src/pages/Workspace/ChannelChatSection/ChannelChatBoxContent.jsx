@@ -79,7 +79,7 @@ export default function ChannelChatBoxContent(props) {
       const timeCursor = encodeURIComponent(now.toISOString());
       console.log("timeCursor", timeCursor);
       console.log("now: ", now);
-      const data = await getMessages(channelId, 10);
+      const data = await getMessages(channelId, 20);
       // Sắp xếp tin nhắn theo thời gian
       const sortedData = data.sort(
         (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
@@ -97,7 +97,7 @@ export default function ChannelChatBoxContent(props) {
     const timeFirst = messages[0].sendAt;
     const now = new Date(timeFirst);
     const timeCursor = encodeURIComponent(now.toISOString());
-    const data = await getMessages(channelId, 3, timeCursor);
+    const data = await getMessages(channelId, 10, timeCursor);
     // Sắp xếp tin nhắn theo thời gian
     const sortedData = data.sort(
       (a, b) => new Date(a.sendAt) - new Date(b.sendAt)

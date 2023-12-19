@@ -9,6 +9,7 @@ export default function({ items }) {
             items.map((item) => (
                <NavLink 
                   to={item.to}
+                  key={item.title}
                   end
                   className={
                      ({isActive}) => 

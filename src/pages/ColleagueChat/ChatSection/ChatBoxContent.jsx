@@ -30,7 +30,7 @@ export default function ChatBoxContent() {
     const timeFirst = messages[0].sendAt;
     const now = new Date(timeFirst);
     const timeCursor = encodeURIComponent(now.toISOString());
-    const data = await getMessagesColleague(conversationId, timeCursor, 3);
+    const data = await getMessagesColleague(conversationId, timeCursor, 20);
     // Sắp xếp tin nhắn theo thời gian
     const sortedData = data.sort(
       (a, b) => new Date(a.sendAt) - new Date(b.sendAt)

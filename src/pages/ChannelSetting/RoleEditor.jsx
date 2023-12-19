@@ -251,7 +251,7 @@ export default function() {
                <div className="mt-5 flex flex-col gap-2 h-[calc(100vh-350px)] overflow-y-auto">
                   {addedMembers.length !== 0 ? (
                      addedMembers
-                     .filter(member=> search === "" ? true: member.username.includes(search))
+                     .filter(member=> search === "" ? true: member.username.toLowerCase().includes(search.toLowerCase()))
                      .map((member) => {
                         return (
                            <div

@@ -50,7 +50,7 @@ export default function ({ user, isUpdate, setIsUpdate }) {
 
    return (
       <Dialog>
-         <DialogTrigger>
+         <DialogTrigger asChild>
             <Button variant="outline" size="icon" className="ml-auto self-start w-7 h-7 absolute top-2 right-2">
                <Pencil className="stroke-gray-500 w-4 h-4" />
             </Button>
@@ -60,7 +60,7 @@ export default function ({ user, isUpdate, setIsUpdate }) {
                <div className="flex items-center gap-5">
                   <Label className="cursor-pointer">
                      <Avatar className="rounded-lg h-20 w-20">
-                        <AvatarImage src={avatar} />
+                        <AvatarImage src={avatar} className="h-20 w-20" />
                         <AvatarFallback className="rounded-lg text-3xl">
                            <User2 className="w-10 h-10" />
                         </AvatarFallback>
@@ -70,8 +70,27 @@ export default function ({ user, isUpdate, setIsUpdate }) {
                         className="hidden"
                         onChange={(e) => {
                            if(e.target.files[0] && e.target.files[0].type.split("/")[0] === "image") {
-                              setAvatar(URL.createObjectURL(e.target.files[0]));
-                              setFile(e.target.files[0])
+                              const imgFile = e.target.files[0]
+                              const reader = new FileReader()
+                              reader.onload = function(e) {
+                                 const img = document.createElement("img")
+                                 img.onload = function(e) {
+                                    const canvas = document.createElement("canvas")
+                                    const ctx = canvas.getContext("2d")
+                                    canvas.width = 100 
+                                    canvas.height = 100
+                                    ctx.drawImage(img,0,0,100,100)
+                                    setAvatar(canvas.toDataURL(imgFile.type))
+                                    canvas.toBlob(blob=>{
+                                       const file = new File([blob], "avatar")
+                                       setFile(file)
+                                    })
+                                 }
+                                 img.src = e.target.result;
+                              }
+                              reader.readAsDataURL(imgFile)
+                              // setAvatar(URL.createObjectURL(e.target.files[0]));
+                              // setFile(e.target.files[0])
                            }
                         }}
                      />
@@ -117,7 +136,7 @@ export default function ({ user, isUpdate, setIsUpdate }) {
             </div>
 
             <DialogFooter>
-               <DialogClose>
+               <DialogClose asChild>
                   <Button variant="secondary"> Cancel </Button>
                </DialogClose>
                {
