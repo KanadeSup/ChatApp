@@ -55,7 +55,7 @@ export default function () {
               name={user.name}
               avatar={user.avatar}
               lastMessage={user.lastMessage}
-              time={convertTime(user.lastMessageTime)}
+              time={user.lastMessageTime}
               isRead={user.isRead}
               isActive={user.isActive}
               isOnline={user.isOnline}

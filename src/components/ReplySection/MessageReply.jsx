@@ -2,15 +2,8 @@ import { useState } from "react";
 import Emoji from "/components/Emoij";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import convertTime from "@/utils/convertTime";
-import {
-  Pin,
-  User2,
-  SmilePlus,
-  Trash2,
-  Pencil,
-} from "lucide-react";
+import { Pin, User2, SmilePlus, Trash2, Pencil } from "lucide-react";
 import ChatBoxEdit from "@/components/ChatBoxEdit";
-
 
 export default function MessageReply(props) {
   const [showEmoij, setShowEmoij] = useState(false);
@@ -28,12 +21,12 @@ export default function MessageReply(props) {
         className="flex w-full gap-2 bg-gray-50 hover:bg-gray-100 rounded-md p-2"
         style={{ fontFamily: "'Roboto', Arial, sans-serif" }}
       >
-          <Avatar>
-            <AvatarImage src={props.message?.senderAvatar} />
-            <AvatarFallback className="bg-gray-300">
-              <User2 />
-            </AvatarFallback>
-          </Avatar>
+        <Avatar>
+          <AvatarImage src={props.message?.senderAvatar} />
+          <AvatarFallback className="bg-gray-300">
+            <User2 />
+          </AvatarFallback>
+        </Avatar>
 
         <div className="w-full">
           <div className="flex relative bottom-1">
@@ -67,103 +60,107 @@ export default function MessageReply(props) {
           )}
           {/*-- List Emoij --*/}
           <div className="flex justify-start flex-wrap items-center pt-1 gap-2">
-            {props.message.reactionCount && Object.entries(props.message.reactionCount)?.map(
-              ([emoji, count], index) => (
-                <div
-                  key={index}
-                  className="h-full border-[1.5px] px-0.5 bg-blue-50 border-bold-blue rounded-lg"
-                >
-                  {emoji}{" "}
-                  <span className="text-base text-bold-blue font-mono font-medium">
-                    {count}
-                  </span>
-                </div>
-              )
-            )}
+            {props.message.reactionCount &&
+              Object.entries(props.message.reactionCount)?.map(
+                ([emoji, count], index) => (
+                  <div
+                    key={index}
+                    className="h-full border-[1.5px] px-0.5 bg-blue-50 border-bold-blue rounded-lg"
+                  >
+                    {emoji}{" "}
+                    <span className="text-base text-bold-blue font-mono font-medium">
+                      {count}
+                    </span>
+                  </div>
+                )
+              )}
           </div>
         </div>
       </div>
-          
-      {/*-- Hover message --*/}
-      <div
-        style={{
-          boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.3)", // This line adds the shadow
-        }}
-        className="absolute right-0 top-1 flex bg-white cursor-pointer rounded-md
+
+      {props.messageHead ? (
+        ""
+      ) : (
+        <div
+          style={{
+            boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.3)", // This line adds the shadow
+          }}
+          className="absolute right-0 top-1 flex bg-white cursor-pointer rounded-md
         opacity-0 group-hover:opacity-100 transition-opacity
         "
-      >
-        {/* Emoij */}
-        <div
-          className="hover:bg-gray-200 p-1.5"
-          onClick={() => setShowEmoij(!showEmoij)}
         >
-          <SmilePlus className="w-4 h-4 text-gray-600" />
-          {showEmoij && <Emoji SendEmoji={props.SendEmoji}/>}
-        </div>
+          {/* Emoij */}
+          <div
+            className="hover:bg-gray-200 p-1.5"
+            onClick={() => setShowEmoij(!showEmoij)}
+          >
+            <SmilePlus className="w-4 h-4 text-gray-600" />
+            {showEmoij && <Emoji SendEmoji={props.SendEmoji} />}
+          </div>
 
-        {/* Pin */}
-        <div
-          className="relative hover:bg-gray-200 p-1.5"
-          onMouseEnter={() => setIsHoveredPin(true)}
-          onMouseLeave={() => setIsHoveredPin(false)}
-        >
-          <Pin className="w-4 h-4 text-gray-600" />
-
-          {isHoveredPin && (
-            <>
-              <div className="absolute z-20 w-2 h-2 right-2.5 bottom-9 bg-black transform rotate-45"></div>
-
-              <div className="absolute flex justify-center items-center w-20 h-6 z-20 bottom-10 -right-1 bg-black text-white text-xs rounded-md">
-                <span>Pin message</span>
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Edit */}
-        {props.message.senderId === localStorage.getItem("userId") && (
+          {/* Pin */}
           <div
             className="relative hover:bg-gray-200 p-1.5"
-            onMouseEnter={() => setIsHoveredEdit(true)}
-            onMouseLeave={() => setIsHoveredEdit(false)}
-            onClick={() => setEditMessage(!editMessage)}
+            onMouseEnter={() => setIsHoveredPin(true)}
+            onMouseLeave={() => setIsHoveredPin(false)}
           >
-            <Pencil className="w-4 h-4 text-gray-600" />
+            <Pin className="w-4 h-4 text-gray-600" />
 
-            {isHoveredEdit && (
+            {isHoveredPin && (
               <>
                 <div className="absolute z-20 w-2 h-2 right-2.5 bottom-9 bg-black transform rotate-45"></div>
 
-                <div className="absolute flex justify-center items-center w-24 h-6 z-20 bottom-10 -right-5 bg-black text-white text-xs rounded-md">
-                  <span>Edit message</span>
+                <div className="absolute flex justify-center items-center w-20 h-6 z-20 bottom-10 -right-1 bg-black text-white text-xs rounded-md">
+                  <span>Pin message</span>
                 </div>
               </>
             )}
           </div>
-        )}
 
-        {/* Delete */}
-        {props.message?.senderId === localStorage.getItem("userId") && (
-          <div
-            className="hover:bg-gray-200 p-1.5"
-            onMouseEnter={() => setIsHoveredDelete(true)}
-            onMouseLeave={() => setIsHoveredDelete(false)}
-            onClick={() => props.DeleteMessage(props.message)}
-          >
-            <Trash2 className="w-4 h-4 text-gray-600" />
+          {/* Edit */}
+          {props.message.senderId === localStorage.getItem("userId") && (
+            <div
+              className="relative hover:bg-gray-200 p-1.5"
+              onMouseEnter={() => setIsHoveredEdit(true)}
+              onMouseLeave={() => setIsHoveredEdit(false)}
+              onClick={() => setEditMessage(!editMessage)}
+            >
+              <Pencil className="w-4 h-4 text-gray-600" />
 
-            {isHoveredDelete && (
-              <>
-                <div className="absolute z-20 w-2 h-2 right-3 bottom-9 bg-black transform rotate-45"></div>
-                <div className="absolute flex justify-center items-center w-28 h-6 z-20 bottom-10 right-0 bg-black text-white text-xs rounded-md">
-                  <span>Delete this message</span>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-      </div>
+              {isHoveredEdit && (
+                <>
+                  <div className="absolute z-20 w-2 h-2 right-2.5 bottom-9 bg-black transform rotate-45"></div>
+
+                  <div className="absolute flex justify-center items-center w-24 h-6 z-20 bottom-10 -right-5 bg-black text-white text-xs rounded-md">
+                    <span>Edit message</span>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Delete */}
+          {props.message?.senderId === localStorage.getItem("userId") && (
+            <div
+              className="hover:bg-gray-200 p-1.5"
+              onMouseEnter={() => setIsHoveredDelete(true)}
+              onMouseLeave={() => setIsHoveredDelete(false)}
+              onClick={() => props.DeleteMessage(props.message)}
+            >
+              <Trash2 className="w-4 h-4 text-gray-600" />
+
+              {isHoveredDelete && (
+                <>
+                  <div className="absolute z-20 w-2 h-2 right-3 bottom-9 bg-black transform rotate-45"></div>
+                  <div className="absolute flex justify-center items-center w-28 h-6 z-20 bottom-10 right-0 bg-black text-white text-xs rounded-md">
+                    <span>Delete this message</span>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User2 } from "lucide-react";
-import useColleagueStore from "@/storages/useColleagueStore";
-import { useReactTable } from "@tanstack/react-table";
+import timeDifferent from "@/utils/timeDifferent";
+import convertTime from "../../../utils/convertTime";
+
 export default function FriendMessagePreview(props) {
   const [isHover, setIsHover] = useState(false);
   const ref = useRef()
@@ -39,7 +40,7 @@ export default function FriendMessagePreview(props) {
         </div>
         <div className="ml-1 flex-1">
           <div className="flex items-center justify-between relative bottom-0.5">
-            <p className={`${props.isRead ? "" : "font-bold"} text-sm`}>
+            <p className={`${props.isRead ? "" : "font-bold"} text-sm truncate w-24`}>
               {props.name}
             </p>
             <p
@@ -47,7 +48,7 @@ export default function FriendMessagePreview(props) {
                 props.isRead ? "" : "font-bold"
               } text-xs text-gray-600`}
             >
-              {props.time}
+              {convertTime(props.time)}
             </p>
           </div>
           <p

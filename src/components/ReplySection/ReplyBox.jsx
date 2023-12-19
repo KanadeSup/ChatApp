@@ -52,7 +52,7 @@ export default function ReplyBox(props) {
       style={{ height: "calc(100vh - 5.5rem)" }}
       className="flex flex-col overflow-y-scroll gap-1"
     >
-      <MessageReply message={props.message} setMessage={props.setMessage} />
+      <MessageReply message={props.message} setMessage={props.setMessage} messageHead={true}/>
 
       <div className="flex items-center px-2">
         <span className="text-sm font-medium text-gray-600">

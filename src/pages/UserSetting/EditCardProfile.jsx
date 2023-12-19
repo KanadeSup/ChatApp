@@ -2,7 +2,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogFooter, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Pencil, User2 } from "lucide-react";
+import { Loader2, Pencil, User2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { getUserById, updateUser } from "/api";
@@ -12,7 +12,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { useNavigate } from "react-router-dom";
 import updateUserAvatar from "../../api/user/updateUserAvatar";
 
-export default function ({ user }) {
+export default function ({ user, isUpdate, setIsUpdate }) {
    const [firstName, setFirstName] = useState();
    const [lastName, setLastName] = useState();
    const [gender, setGender] = useState();
@@ -21,6 +21,7 @@ export default function ({ user }) {
    const [email, setEmail] = useState();
    const [avatar, setAvatar] = useState();
    const [file, setFile] = useState();
+   const [isLoading, setIsLoading] = useState(false);
    const navigate = useNavigate();
 
    useEffect(() => {
@@ -39,9 +40,12 @@ export default function ({ user }) {
 
    async function handleSave() {
       console.log("click: ", firstName, lastName, gender, phone, birthDay);
+      setIsLoading(true);
       await updateUser(user.id, firstName, lastName, gender, phone, email, birthDay);
       if(file) await updateUserAvatar(user.id, file)
-      navigate("/UserSetting");
+      setIsLoading(false);
+      navigate("/UserSetting/Profile");
+      setIsUpdate(!isUpdate);
    }
 
    return (
@@ -116,7 +120,16 @@ export default function ({ user }) {
                <DialogClose>
                   <Button variant="secondary"> Cancel </Button>
                </DialogClose>
-               <Button onClick={handleSave}> Save </Button>
+               {
+                  isLoading ? (
+                     <Button disabled className="w-20" >
+                        <Loader2  />
+                     
+                     </Button>
+                  ) : (
+                     <Button className="w-20" onClick={handleSave}> Save </Button>
+                  )
+               }
             </DialogFooter>
          </DialogContent>
       </Dialog>

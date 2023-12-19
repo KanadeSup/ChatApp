@@ -13,16 +13,19 @@ import EditProfile from "./EditCardProfile";
 import { useState, useEffect, Suspense } from "react";
 import { getUserById } from "../../api";
 import { User2 } from "lucide-react";
+import { is } from "date-fns/locale";
 
 export default function () {
   const [user, setUser] = useState(null);
+  const [isUpdate, setIsUpdate] = useState(false);
   useEffect(() => {
     const fetchUser = async () => {
       const data = await getUserById(localStorage.getItem("userId"));
       setUser(data);
+      console.log("data", data);
     };
     fetchUser();
-  }, []);
+  }, [isUpdate]);
 
   if (user === null) {
     return (
@@ -73,7 +76,7 @@ export default function () {
               {user.email}
             </h2>
           </div>
-          <EditProfile user={user} />
+          <EditProfile user={user} isUpdate={isUpdate} setIsUpdate={setIsUpdate}/>
         </div>
       </CardHeader>
       <CardContent className="grid grid-cols-[80px_50px_auto] grid-flow-row items-center gap-y-3">

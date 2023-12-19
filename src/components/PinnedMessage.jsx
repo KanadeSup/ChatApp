@@ -1,23 +1,27 @@
 import { useState } from "react";
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import convertTime from "../utils/convertTime";
+import useHubStore from "../storages/useHubStore";
+import { PinMessage } from "../utils/hubs";
 export default function PinnedMessage(props) {
   const [isHoverUnpin, setIsHoverUnpin] = useState(false);
+  const { hub } = useHubStore();
   return (
     <div className="mx-3 border-gray-300">
       <div
         className="flex w-full my-2 border bg-gray-100 rounded-md p-3 mb-4"
         style={{ fontFamily: "'Roboto', Arial, sans-serif" }}
       >
-        <div className="flex-shrink-0 mr-2">
-          <img
-            className="h-7 w-7 rounded-md"
-            src="https://www.famousbirthdays.com/headshots/russell-crowe-8.jpg"
-          />
-        </div>
+        <Avatar className="w-7 h-7 mr-2">
+          <AvatarImage src={props.message.senderAvatar} alt="@shadcn" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
 
-        <div>
+        <div className="w-full">
           <div className="flex justify-between relative bottom-1">
-            <span className="font-bold text-sm">username</span>
+            <span className="font-bold text-sm">
+              {props.message.senderName}
+            </span>
             {}
             <div className="flex relative">
               <button className="text-[11px] px-1 my-0.5 rounded-sm bg-gray-200 text-gray-500 hover:text-gray-700">
@@ -29,6 +33,7 @@ export default function PinnedMessage(props) {
                 xmlns="http://www.w3.org/2000/svg"
                 onMouseEnter={() => setIsHoverUnpin(true)}
                 onMouseLeave={() => setIsHoverUnpin(false)}
+                onClick={() => {PinMessage(hub, props.message.id, false); props.setPinMessages(props.pinMessages.filter((message) => message.id !== props.message.id))}}
               >
                 <path
                   d="M7 17L16.8995 7.10051"
@@ -56,14 +61,10 @@ export default function PinnedMessage(props) {
           </div>
 
           <div className="flex flex-col">
-            <span className="text-sm">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Hic
-              molestiae vero nam cum, fuga, aliquid, quod quis nesciunt
-              dignissimos ut eligendi quos iusto consequuntur recusandae fugit
-              ea voluptates alias eaque!
+            <span className="text-sm text-gray-700" dangerouslySetInnerHTML={{__html: props.message.content}}>
             </span>
             <span className="text-gray-500 text-xs mt-3">
-              28/08/2023 1:50 AM
+              {convertTime(props.message.sendAt)}
             </span>
           </div>
         </div>
