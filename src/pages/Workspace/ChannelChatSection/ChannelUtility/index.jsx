@@ -10,7 +10,7 @@ export default function (props) {
   return (
     <div className="flex flex-col w-1/3 flex-shrink-0 border shadow">
       {selectedOption === "" && <ChannelOption setSelectedOption={setSelectedOption} />}
-      {selectedOption === "pinnedMessageList" && <PinnedMessageList setSelectedOption={setSelectedOption}/>}
+      {selectedOption === "pinnedMessageList" && <PinnedMessageList setSelectedOption={setSelectedOption} conversationId={props.conversationId} isChannel={props.isChannel}/>}
       {selectedOption === "allMember" && <AllMember setSelectedOption={setSelectedOption}/>}
       {selectedOption === "media" && <Media setSelectedOption={setSelectedOption}/>}
       {selectedOption === "files" && <Files setSelectedOption={setSelectedOption}/>}

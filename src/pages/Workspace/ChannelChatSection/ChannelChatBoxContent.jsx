@@ -8,10 +8,10 @@ import { getMessages } from "../../../api";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { InfiniteScroll } from "@/components/InfinityScroll";
 import useHubStore from "../../../storages/useHubStore";
-import { SendMessage, UpdateMessage, DeleteMessage, SendEmoji } from "@/utils/hubs";
+import { SendMessage, UpdateMessage, DeleteMessage, SendEmoji, PinMessage } from "@/utils/hubs";
 import useChannelStore from "@/storages/useChannelStore";
 import { getUserById } from "@/api";
-import { set } from "date-fns";
+
 
 // Do có dùng key là id channel bên routes nên khi chuyển channel sẽ re-render
 // mỗi component có một “key” duy nhất, Khi một component được cập nhật, React sẽ so sánh key hiện tại với
@@ -158,6 +158,7 @@ export default function ChannelChatBoxContent(props) {
     if (hub) {
       hub.off("update_message");
       hub.on("update_message", (message_updated) => {
+        console.log("đã chạy update message:", message_updated);
         if (message_updated.parentId === null) {
           setMessages((messages) =>
             messages.map((message) =>
@@ -256,12 +257,11 @@ export default function ChannelChatBoxContent(props) {
           getMore={fetchMoreData}
           invokeHeight={5}
           scrollDivRef={scrollDivRef}
-          className="flex flex-col justify-start min-w-[400px] h-full overflow-y-scroll"
+          className="flex flex-col justify-start min-w-[400px] h-full overflow-y-scroll pb-4"
         >
           {messages.map((message, index) => (
             <Message
               key={message.id}
-              index={index}
               message={message}
               setMessage={setMessageParent}
               setIsClickedReply={setIsClickedReply}
@@ -273,6 +273,7 @@ export default function ChannelChatBoxContent(props) {
                 UpdateMessage(hub, idMessage, message, true)
               }
               SendEmoji={(emoji) => SendEmoji(hub, message.id, emoji)}
+              PinMessage={(messageId) => PinMessage(hub, messageId, !message.isPined)}
             />
           ))}
           {/* <div ref={messagesEndRef} /> */}
@@ -309,7 +310,7 @@ export default function ChannelChatBoxContent(props) {
       )}
       {props.isClickedChannelUtility && (
         <ChannelUtility
-          setIsClickedChannelUtility={props.setIsClickedChannelUtility}
+          setIsClickedChannelUtility={props.setIsClickedChannelUtility} conversationId={channelId} isChannel={true}
         />
       )}
     </div>

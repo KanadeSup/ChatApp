@@ -24,6 +24,7 @@ export default function () {
         console.log("conversationId: ", response[0].id);
         navigate(workspaceId ? `/${workspaceId}/colleague-chat/${response[0].id}` : `/colleague-chat/${response[0].id}`);
       }
+
     }
     // if (isNewMessage) {
       fetchConversions();
@@ -54,9 +55,10 @@ export default function () {
               name={user.name}
               avatar={user.avatar}
               lastMessage={user.lastMessage}
-              time={convertTime(user.lastMessageTime)}
+              time={user.lastMessageTime}
               isRead={user.isRead}
               isActive={user.isActive}
+              isOnline={user.isOnline}
             />
           </NavLink>
         ))}
