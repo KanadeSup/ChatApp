@@ -14,7 +14,7 @@ export default function () {
   const { isClickedReply, setIsClickedReply } = useColleagueStore();
   const { conversationId } = useParams();
   const navigate = useNavigate();
-
+  const { workspaceId } = useParams()
   useEffect(() => {
     async function fetchConversions() {
       const response = await getConversions("", 0, 10);
@@ -22,7 +22,7 @@ export default function () {
       setIsNewMessage(false);
       if (!conversationId && response.length > 0) {
         console.log("conversationId: ", response[0].id);
-        navigate(`/colleague-chat/${response[0].id}`);
+        navigate(workspaceId ? `/${workspaceId}/colleague-chat/${response[0].id}` : `/colleague-chat/${response[0].id}`);
       }
     }
     // if (isNewMessage) {
@@ -41,7 +41,7 @@ export default function () {
         {conversations.map((user) => (
           <NavLink
             key={user.id}
-            to={`/colleague-chat/${user.id}`}
+            to={workspaceId ? `/${workspaceId}/colleague-chat/${user.id}` : `/colleague-chat/${user.id}`}
             className={({ isActive, isPending }) =>
               isPending ? "" : isActive ? "bg-gray-100" : ""
             }

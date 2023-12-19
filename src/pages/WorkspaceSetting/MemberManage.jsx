@@ -32,17 +32,18 @@ export default function () {
    const [open, setOpen] = useState({});
    const { workspaceId } = useParams();
    const { toast } = useToast();
-   const [force, setForce] = useState({})
-   const [search, setSearch] = useState("")
+   const [force, setForce] = useState({});
+   const [search, setSearch] = useState("");
+   const userId = localStorage.getItem("userId")
    function forceLoad() {
-      setForce({})
+      setForce({});
    }
    useEffect(() => {
       async function fetchData() {
          const data = await getMemberList(workspaceId);
          setMemberList(data);
       }
-      fetchData()
+      fetchData();
    }, [force]);
    return (
       <div className="">
@@ -54,9 +55,11 @@ export default function () {
             <Separator />
             <div>
                <div className="flex justify-end gap-3">
-                  <Input className="w-60" placeholder="Search ..." 
-                     onChange={e=> {
-                        setSearch(e.target.value.trim())
+                  <Input
+                     className="w-60"
+                     placeholder="Search ..."
+                     onChange={(e) => {
+                        setSearch(e.target.value.trim());
                      }}
                   />
                   <Button variant="ghost" size="icon">
@@ -77,119 +80,119 @@ export default function () {
                   </TableHeader>
                   <TableBody>
                      {memberList
-                     .filter(member=> search === "" ? true: member.username.includes(search))
-                     .map((member) => {
-                        return (
-                           <TableRow key={member.id}>
-                              <TableCell>
-                                 <div className="flex items-center gap-3">
-                                    <Avatar>
-                                       <AvatarImage src={member.picture} />
-                                       <AvatarFallback>
-                                          <User2 />
-                                       </AvatarFallback>
-                                    </Avatar>
-                                    <h1> {member.username} </h1>
-                                 </div>
-                              </TableCell>
-                              <TableCell>
-                                 {member.role ? (
-                                    <Badge
-                                       style={{
-                                          backgroundColor: `${member.role.color}`,
-                                       }}
-                                    >
-                                       {member.role.name}
-                                    </Badge>
-                                 ) : (
-                                    ""
-                                 )}
-                              </TableCell>
-                              <TableCell>
-                                 <div className="flex justify-end gap-6 items-center h-full">
-                                    <ProfileDialog member={member}>
-                                       <Contact className="stroke-blue-600 cursor-pointer" />
-                                    </ProfileDialog>
-                                    <X
-                                       className="stroke-red-600 stroke-[3] cursor-pointer"
-                                       onClick={(e) => {
-                                          open[member.id] = true;
+                        .filter((member) => (search === "" ? true : member.username.toLowerCase().includes(search.toLowerCase())))
+                        .map((member) => {
+                           return (
+                              <TableRow key={member.id}>
+                                 <TableCell>
+                                    <div className="flex items-center gap-3">
+                                       <Avatar>
+                                          <AvatarImage src={member.picture} />
+                                          <AvatarFallback>
+                                             <User2 />
+                                          </AvatarFallback>
+                                       </Avatar>
+                                       <h1> {member.username} </h1>
+                                    </div>
+                                 </TableCell>
+                                 <TableCell>
+                                    {member.role ? (
+                                       <Badge
+                                          style={{
+                                             backgroundColor: `${member.role.color}`,
+                                          }}
+                                       >
+                                          {member.role.name}
+                                       </Badge>
+                                    ) : (
+                                       ""
+                                    )}
+                                 </TableCell>
+                                 <TableCell>
+                                    <div className="flex justify-end gap-6 items-center h-full">
+                                       <ProfileDialog member={member}>
+                                          <Contact className="stroke-blue-600 cursor-pointer" />
+                                       </ProfileDialog>
+                                       <X
+                                          className={`stroke-red-600 stroke-[3] cursor-pointer ${userId === member.id ? "invisible" : ""}`}
+                                          onClick={(e) => {
+                                             open[member.id] = true;
+                                             setOpen({ ...open });
+                                          }}
+                                       />
+                                    </div>
+                                    <AlertDialog
+                                       open={open[member.id]}
+                                       onOpenChange={(e) => {
+                                          open[member.id] = undefined;
                                           setOpen({ ...open });
                                        }}
-                                    />
-                                 </div>
-                                 <AlertDialog
-                                    open={open[member.id]}
-                                    onOpenChange={(e) => {
-                                       open[member.id] = undefined;
-                                       setOpen({ ...open });
-                                    }}
-                                 >
-                                    <AlertDialogContent>
-                                       <AlertDialogHeader>
-                                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                          <AlertDialogDescription>
-                                             This action will kick member from this channel. And you need the permission to do this. If not, the action will be
-                                             failed
-                                          </AlertDialogDescription>
-                                       </AlertDialogHeader>
-                                       <AlertDialogFooter>
-                                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                          <form
-                                             onSubmit={async (e) => {
-                                                e.preventDefault();
-                                                document.querySelector(`.submit-${member.id}`).disabled = true;
-                                                document.querySelector(`.loader-${member.id}`).classList.remove("hidden");
-                                                const data = await deleteMember(workspaceId, member.id);
-                                                document.querySelector(`.submit-${member.id}`).disabled = false;
-                                                document.querySelector(`.loader-${member.id}`).classList.add("hidden");
-                                                forceLoad()
-                                                open[member.id] = false
-                                                setOpen({...open})
-                                                if (data.ok) {
-                                                   toast({
-                                                      title: (
-                                                         <p className="flex">
-                                                            <Check className="stroke-green-600 mr-2" />
-                                                            <span className="text-green-600">Delete Successfully!</span>
-                                                         </p>
-                                                      ),
-                                                   });
-                                                   return;
-                                                }
-                                                if (data.status === 403) {
+                                    >
+                                       <AlertDialogContent>
+                                          <AlertDialogHeader>
+                                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                             <AlertDialogDescription>
+                                                This action will kick member from this channel. And you need the permission to do this. If not, the action will
+                                                be failed
+                                             </AlertDialogDescription>
+                                          </AlertDialogHeader>
+                                          <AlertDialogFooter>
+                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                             <form
+                                                onSubmit={async (e) => {
+                                                   e.preventDefault();
+                                                   document.querySelector(`.submit-${member.id}`).disabled = true;
+                                                   document.querySelector(`.loader-${member.id}`).classList.remove("hidden");
+                                                   const data = await deleteMember(workspaceId, member.id);
+                                                   document.querySelector(`.submit-${member.id}`).disabled = false;
+                                                   document.querySelector(`.loader-${member.id}`).classList.add("hidden");
+                                                   forceLoad();
+                                                   open[member.id] = false;
+                                                   setOpen({ ...open });
+                                                   if (data.ok) {
+                                                      toast({
+                                                         title: (
+                                                            <p className="flex">
+                                                               <Check className="stroke-green-600 mr-2" />
+                                                               <span className="text-green-600">Delete Successfully!</span>
+                                                            </p>
+                                                         ),
+                                                      });
+                                                      return;
+                                                   }
+                                                   if (data.status === 403) {
+                                                      toast({
+                                                         title: (
+                                                            <p className="flex">
+                                                               <X className="stroke-red-600 mr-2" />
+                                                               <span className="text-red-600">You don't have permission to kick member</span>
+                                                            </p>
+                                                         ),
+                                                      });
+                                                      return;
+                                                   }
                                                    toast({
                                                       title: (
                                                          <p className="flex">
                                                             <X className="stroke-red-600 mr-2" />
-                                                            <span className="text-red-600">You don't have permission to kick member</span>
+                                                            <span className="text-red-600">Something went wrong. Please try agains</span>
                                                          </p>
                                                       ),
                                                    });
-                                                   return;
-                                                }
-                                                toast({
-                                                   title: (
-                                                      <p className="flex">
-                                                         <X className="stroke-red-600 mr-2" />
-                                                         <span className="text-red-600">Something went wrong. Please try agains</span>
-                                                      </p>
-                                                   ),
-                                                });
-                                             }}
-                                          >
-                                             <Button type="submit" className={`submit-${member.id}`}>
-                                                <Loader2 className={`loader-${member.id} w-4 h-4 mr-2 animate-spin hidden`} />
-                                                Kick Member
-                                             </Button>
-                                          </form>
-                                       </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                 </AlertDialog>
-                              </TableCell>
-                           </TableRow>
-                        );
-                     })}
+                                                }}
+                                             >
+                                                <Button type="submit" className={`submit-${member.id}`}>
+                                                   <Loader2 className={`loader-${member.id} w-4 h-4 mr-2 animate-spin hidden`} />
+                                                   Kick Member
+                                                </Button>
+                                             </form>
+                                          </AlertDialogFooter>
+                                       </AlertDialogContent>
+                                    </AlertDialog>
+                                 </TableCell>
+                              </TableRow>
+                           );
+                        })}
                   </TableBody>
                </Table>
             </div>

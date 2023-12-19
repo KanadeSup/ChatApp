@@ -1,71 +1,86 @@
+import { Bell } from "lucide-react";
 import NotificationItem from "./NotificationItem";
+import { Switch } from "@/components/ui/switch" 
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import getNotifications from "../../api/notification/getNotifications";
 
-export default function (props) {
-  return (
-    <div className="h-screen w-72 bg-gray-100 shadow-xl flex-shrink-0 flex flex-col">
-      <div className="text-md flex justify-start items-center py-3 px-3 border-b bg-gradient-to-l from-gray-100 to-gray-200 h-12 shadow">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          className="w-5 h-5 mr-2 stroke-neutral-500 relative top-[1px]"
-        >
-          <path d="M10 21h4a2 2 0 01-4 0zm-6.924-2.617a1 1 0 01.217-1.09L5 15.586V10a7.006 7.006 0 016-6.92V2a1 1 0 012 0v1.08A7.006 7.006 0 0119 10v5.586l1.707 1.707A1 1 0 0120 19H4a1 1 0 01-.924-.617zM6.414 17h11.172l-.293-.293A1 1 0 0117 16v-6a5 5 0 00-10 0v6a1 1 0 01-.293.707z"></path>
-        </svg>
-        <span className="font-semibold text-neutral-700">Notification</span>
+const categories = [
+   "All",
+   "General",
+   "Message",
+   "Workspace",
+   "Channel",
+]
+const ALL = "0"
+const GENERAL = "1"
+const MESSAGE = "2"
+const CHANNEL = "45"
+const WORKSPACE = "67"
+export default function ({ setNotification }) {
+   const [category, setCategory] = useState(categories[0])
+   const [notifications, setNotifications] = useState(null)
+   const [unread, setUnread] = useState(false)
+
+   useEffect(() => {
+      async function fetchData() {
+         const res = await getNotifications()
+         if(!res.ok) throw new Error('Cannot get Notification data');
+         const data = res.data
+         setNotifications(data)
+         console.log(data)
+      }
+      fetchData()
+   }, [])
+   return (
+      // header
+      <div className="h-screen w-96 bg-gray-50 border-r flex-shrink-0 flex flex-col">
+         <div className="text-md flex justify-between items-center py-3 px-3 h-12 bg-gray-50 mt-1">
+            <span className="font-bold text-neutral-800 text-xl">Notification</span>
+            <div className="flex items-center gap-1">
+              <span className="text-sm font-bold"> unread </span>
+              <Switch className=""/>
+            </div>
+         </div>
+
+         {/* categories */}
+         <div className="flex justify-between w-full px-2 mt-4 border-b border-gray-300">
+            {
+               categories.map(cate => (
+                  <div className={`transition-all px-1 font-semibold text-gray-600 cursor-pointer pb-1 border-b-2 ${cate === category ? "border-blue-700":"border-transparent"}`} key={cate}
+                     onClick={e=>{
+                        setCategory(cate)
+                     }}
+                  > 
+                     {cate}
+                  </div>
+               ))
+            }
+         </div>
+         {/* notifications */}
+         <div className="flex flex-col overflow-y-auto">
+         {
+            notifications ? 
+               notifications
+               .filter(noti => {
+                  if(category === "All") return unread ? noti.isRead : true
+                  if(category === "General") return unread ? noti.isRead && GENERAL.includes(noti.type) : GENERAL.includes(noti.type)
+                  if(category === "Message") return unread ? noti.isRead && MESSAGE.includes(noti.type) : MESSAGE.includes(noti.type)
+                  if(category === "Workspace") return unread ? noti.isRead && WORKSPACE.includes(noti.type) : WORKSPACE.includes(noti.type)
+                  if(category === "Channel") return unread ? noti.isRead && CHANNEL.includes(noti.type) : CHANNEL.includes(noti.type)
+                  return true
+               })
+               .map(noti => {
+                  return (
+                     <NotificationItem 
+                        key={noti.id}
+                        notification={noti}
+                        onClick={e=>setNotification(noti)}
+                     />
+                  )
+               }) : ""
+         }
+         </div>
       </div>
-      <div className="flex flex-col overflow-y-scroll">
-        <NotificationItem
-          sender={"WorkSpace 1"}
-          title={"You have"}
-          img={"https://www.famousbirthdays.com/headshots/russell-crowe-1.jpg"}
-          time={"31/10/2023"}
-          content={"Họp bàn chính trị"}
-          onclick={() => {
-            props.setIsDetail(true);
-          }}
-        />
-
-        <NotificationItem
-          sender={"WorkSpace 2"}
-          title={"You have meeting at 17:00 31/10/2023"}
-          img={"https://www.famousbirthdays.com/headshots/russell-crowe-1.jpg"}
-          time={"31/10/2023"}
-          content={"Họp bàn chính trị"}
-        />
-
-        <NotificationItem
-          sender={"System"}
-          title={"Your prenium will be expired at 17:00 31/10/2023"}
-          img={"https://www.famousbirthdays.com/headshots/russell-crowe-1.jpg"}
-          time={"31/10/2023"}
-          content={
-            "Your prenium will be exired at 17:00 31/10/2023. Bạn nên gia hạn để được sử dụng các tính năng vip của hệ thống"
-          }
-        />
-        <NotificationItem
-          sender={"WorkSpace 1"}
-          img={"https://www.famousbirthdays.com/headshots/russell-crowe-1.jpg"}
-          title={"You have meeting at 17:00 31/10/2023"}
-          time={"31/10/2023"}
-          content={"Họp bàn chính trị"}
-        />
-
-        <NotificationItem
-          sender={"WorkSpace 2"}
-          title={"You have meeting at 17:00 31/10/2023"}
-          time={"31/10/2023"}
-          content={"Họp bàn chính trị"}
-        />
-
-        <NotificationItem
-          sender={"System"}
-          title={"You have meeting at 17:00 31/10/2023"}
-          time={"31/10/2023"}
-          content={
-            "Your prenium will be exired at 17:00 31/10/2023. Bạn nên gia hạn để được sử dụng các tính năng vip của hệ thống"
-          }
-        />
-      </div>
-    </div>
-  );
+   );
 }

@@ -8,9 +8,9 @@ export default function NotificationDetailEmpty() {
           alt=""
         />
         <div className="text-base font-semibold text-gray-700 text-center mt-3">
-          Chọn mục để đọc
+	  			Select notification to read
         </div>
-        <div className="text-base text-gray-600 text-center">Chưa chọn mục nào</div>
+        <div className="text-base text-gray-600 text-center"> There is no selection </div>
       </div>
     </div>
   );
