@@ -31,7 +31,7 @@ export default function InviteUserDialog({ children, open, onOpenChange }) {
    const [emailErr, setEmailErr] = useState(false)
    const [searchUsers, setSearchUsers] = useState([])
    const { toast } = useToast()
-   const  [debounceSearch] = useDebounce(emailInput, 300)
+   const  [debounceSearch] = useDebounce(emailInput, 150)
    useEffect(() => {
       async function fetchData() {
          const res = await getUserByEmail(emailInput)

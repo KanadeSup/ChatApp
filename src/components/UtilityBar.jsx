@@ -24,7 +24,6 @@ export default function (props) {
    const { workspaceId } = useParams();
    const utilites = Object.keys(props);
    const navigate = useNavigate();
-
    useEffect(() => {
       const userId = localStorage.getItem("userId");
       getUserById(userId).then((data) => {

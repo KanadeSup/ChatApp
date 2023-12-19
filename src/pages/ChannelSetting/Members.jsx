@@ -42,6 +42,7 @@ export default function() {
    const [deleteId, setDeleteId] = useState("")
    const [load, setLoad] = useState({})
    const [search, setSearch] = useState("")
+   const userId = localStorage.getItem("userId")
    function forceLoad() {
       setLoad({});
    }
@@ -87,7 +88,7 @@ export default function() {
                   {
                      channelMembers ? 
                      channelMembers
-                     .filter(member=> search === "" ? true: member.username.includes(search))
+                     .filter(member=> search === "" ? true: member.username.toLowerCase().includes(search.toLowerCase()))
                      .map(member=>(
                         <TableRow key={member.id}>
                            <TableCell className="flex gap-3 items-center"> 
@@ -112,7 +113,7 @@ export default function() {
                                  open[member.id] = undefined
                                  setOpen({...open})
                               }}>
-                                 <X className="stroke-red-500 stroke-[3] cursor-pointer"
+                                 <X className={`stroke-red-500 stroke-[3] cursor-pointer ${userId == member.id ? "invisible" : ""}`}
                                     onClick= {e=>{
                                        open[member.id] = true
                                        setOpen({...open})

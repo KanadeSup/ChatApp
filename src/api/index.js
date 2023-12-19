@@ -25,6 +25,7 @@ import updateUser from "./updateUser"
 import getMessages from "./getMessages"
 import getMessagesColleague from "./getMessagesColleague"
 import getUserByEmail from "./user/getUserByEmail"
+import getPinMessages from "./getPinMessages"
 
 export { 
    updateWorkspaceRole,
@@ -54,4 +55,5 @@ export {
    getMessages,
    getMessagesColleague,
    getUserByEmail,
+   getPinMessages
 }

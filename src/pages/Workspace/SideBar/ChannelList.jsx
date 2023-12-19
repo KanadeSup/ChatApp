@@ -42,8 +42,6 @@ export default function ChannelList({ fetcher, name, avatar, setChannelName }) {
       async function fetchData() {
          const data = await getChannelList(workspaceId)
          setChannelList(data)
-         console.log("data channel:", data)
-         console.log("channelId: ", data[0].id);
          if (!channelId && data.length > 0) {
             navigate(`/Workspace/${workspaceId}/${data[0].id}`)
          }

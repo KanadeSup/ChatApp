@@ -1,30 +1,35 @@
-export default function NotificationDetail(props) {
-  return (
-    <div className="flex flex-col flex-grow py-3 min-w-[480px]">
-      <div className="text-lg font-medium ml-7">You have Meeting today</div>
-      <div className="flex flex-row mt-7 ml-5">
-        <div className="px-1 ml-1">
-          <img
-            className="h-9 w-9 rounded-md text-xs mt-1.5"
-            src={props.img}
-            alt="anh"
-          />
-        </div>
-        <div className="flex flex-col ml-5 flex-grow border-b mr-24">
-          <div className="flex flex-row justify-between">
-            <div className="text-base font-medium">Admin</div>
-            <div className="text-xs text-gray-500 mt-1.5">23:10 17/10/2023</div>
-          </div>
-          <div className="text-sm text-gray-600 pb-2">Đến tôi</div>
-        </div>
-      </div>
+import {
+   Avatar,
+   AvatarFallback,
+   AvatarImage,
+ } from "@/components/ui/avatar"
+import { Bell, MailPlus, MessageSquare, UserX } from "lucide-react"
 
-      <div className="flex flex-shrink mt-5 ml-20 mr-20 px-2">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia nobis
-        reprehenderit sequi illo minima quibusdam cum! Veniam officiis aperiam
-        possimus exercitationem recusandae, dignissimos voluptatem soluta
-        repellat rerum. Sed, ab qui?
+
+const GENERAL = 1
+const MESSAGE = 2
+const CHANNEL_INVITE = 4
+const CHANNEL_REMOVE = 5
+const WORKSPACE_INVITE = 6
+const WORKSPACE_REMOVE = 7
+export default function NotificationDetail({notification}) {
+   return (
+      <div className="px-5 flex-grow">
+         <div className="flex items-center gap-3 mt-3 pb-3 border-b">
+            <Avatar>
+               <AvatarImage src={notification.Avatar} />
+               <AvatarFallback>
+                  { notification.type === GENERAL ? <Bell /> : "" }
+                  { notification.type === MESSAGE ? <MessageSquare /> : "" }
+                  { notification.type === CHANNEL_INVITE ? <MailPlus /> : "" }
+                  { notification.type === CHANNEL_REMOVE ? <UserX /> : "" }
+                  { notification.type === WORKSPACE_INVITE ? <MailPlus /> : "" }
+                  { notification.type === WORKSPACE_REMOVE ? <UserX /> : "" }                 
+               </AvatarFallback>
+            </Avatar>
+            <h1 className="text-2xl font-bold"> {notification.title} </h1>
+         </div>
+         <p className="text-lg mt-2"> {notification.content} </p>
       </div>
-    </div>
-  );
+   );
 }

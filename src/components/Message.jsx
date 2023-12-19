@@ -8,6 +8,7 @@ import {
   Reply,
   Trash2,
   Pencil,
+  PinIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import convertTime from "../utils/convertTime";
@@ -45,8 +46,8 @@ export default function Message(props) {
             <span className="font-bold font-sans text-sm cursor-pointer">
               {props.message.senderName}
             </span>
-            <span className="text-gray-500 font-medium text-xs ml-2 cursor-default">
-              {convertTime(props.message.sendAt)}
+            <span className="text-gray-500 flex gap-2 font-medium text-xs ml-2 cursor-default">
+              {convertTime(props.message.sendAt)} {" "} {props.message.isPined && <span className="text-red-500 italic flex"><PinIcon className="w-4 h-4"/> (pinned)</span>}
             </span>
           </div>
 
@@ -143,22 +144,22 @@ export default function Message(props) {
           <SmilePlus className="w-4 h-4 text-gray-600" />
           {showEmoij && <Emoji SendEmoji={props.SendEmoji} />}
         </div>
-          {/* <Emoji2 SendEmoji={props.SendEmoji} /> */}
 
         {/* Pin */}
         <div
-          className="relative hover:bg-gray-200 p-1.5"
+          className="relative hover:bg-gray-200 p-1.5" 
           onMouseEnter={() => setIsHoveredPin(true)}
           onMouseLeave={() => setIsHoveredPin(false)}
+          onClick={() => props.PinMessage(props.message.id)}
         >
-          <Pin className="w-4 h-4 text-gray-600" />
+          <Pin className={`w-4 h-4 text-gray-600 ${props.message.isPined ? "text-red-500" : ""}`} />
 
           {isHoveredPin && (
             <>
               <div className="absolute z-20 w-2 h-2 right-2.5 bottom-9 bg-black transform rotate-45"></div>
 
-              <div className="absolute flex justify-center items-center w-20 h-6 z-20 bottom-10 -right-6 bg-black text-white text-xs rounded-md">
-                <span>Pin message</span>
+              <div className="absolute flex justify-center items-center w-28 h-6 z-20 bottom-10 -right-6 bg-black text-white text-xs rounded-md">
+                <span>{props.message.isPined ? "Unpin message" : "Pin message"}</span>
               </div>
             </>
           )}

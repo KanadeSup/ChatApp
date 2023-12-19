@@ -1,5 +1,22 @@
 import PinnedMessage from "/components/PinnedMessage";
+import { getPinMessages } from "@/api";
+import { da } from "date-fns/locale";
+import { useEffect, useState } from "react";
 export default function PinnedMessageList(props) {
+  const [pinMessages, setPinMessages] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getPinMessages(
+        props.conversationId,
+        0,
+        10,
+        props.isChannel
+      );
+      setPinMessages(data);
+    }
+    fetchData();
+  }, []);
   return (
     <>
       <div className="font-medium flex items-center py-2 px-3 border-b shadow">
@@ -24,12 +41,21 @@ export default function PinnedMessageList(props) {
         style={{ height: "calc(100vh - 6.5rem)" }}
         className="overflow-y-scroll"
       >
-        <PinnedMessage />
-        <PinnedMessage />
-        <PinnedMessage />
-        <PinnedMessage />
-        <PinnedMessage />
-        <PinnedMessage />
+        {pinMessages.length === 0 ? (
+          <p className="flex items-center justify-center h-10 font-medium text-gray-600">
+            No pinned messages
+          </p>
+        ) : (
+          pinMessages?.map((message) => (
+            <PinnedMessage
+              key={message.id}
+              message={message}
+              isChannel={props.isChannel}
+              setPinMessages={setPinMessages}
+              pinMessages={pinMessages}
+            />
+          ))
+        )}
       </div>
     </>
   );

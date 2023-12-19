@@ -18,7 +18,7 @@ export default function ChatBoxContent() {
   const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
   const { isNewMessage, setIsNewMessage } = useIsNewMessage(); // Cập nhập danh sách hiển thị tin nhắn ở sideBar
   const [user, setUser] = useState(null);
-  const { isClickedReply, setIsClickedReply, message, setMessage } =
+  const { isClickedReply, setIsClickedReply, setIsNewChat, message, setMessage } =
     useColleagueStore();
   const [forceScroll, setForceScroll] = useState({});
   const scrollDivRef = useRef();

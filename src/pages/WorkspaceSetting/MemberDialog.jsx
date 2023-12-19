@@ -38,7 +38,7 @@ export default function ({ children, members, addMembers }) {
             <div className="flex flex-col justify-start h-[300px] overflow-y-auto">
                {members
                   ? members
-                  .filter(member=> search === "" ? true: member.username.includes(search))
+                  .filter(member=> search === "" ? true: member.username.toLowerCase().includes(search.toLowerCase()))
                   .map((member) => {
                        return (
                           <div key={member.id}>
