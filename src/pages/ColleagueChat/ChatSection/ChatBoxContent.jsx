@@ -247,7 +247,7 @@ export default function ChatBoxContent() {
   };
 
   useEffect(() => {
-    scrollDivRef.current.scrollTop = scrollDivRef.current.scrollHeight;
+    scrollDivRef.current.scroll({top: scrollDivRef.current.scrollHeight, behavior:"smooth"})
   }, [forceScroll]);
 
 
