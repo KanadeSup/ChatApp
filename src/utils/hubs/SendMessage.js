@@ -10,7 +10,8 @@ async function SendMessage(
     setIsNewMessage,
     user,
     scrollToBottom,
-    isChannel
+    isChannel,
+    files
 ) {
     if (isChannel) {
         if (hub) {
@@ -18,6 +19,7 @@ async function SendMessage(
                 ReceiverId: conversationId,
                 Content: message,
                 IsChannel: true,
+                Files: files,
             });
         }
         return;

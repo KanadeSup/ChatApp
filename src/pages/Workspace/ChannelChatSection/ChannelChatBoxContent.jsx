@@ -74,6 +74,18 @@ export default function ChannelChatBoxContent(props) {
     setMessages((prev) => [...data.reverse(), ...prev]);
   };
 
+  // Lấy thêm tin nhắn khi kéo xuống dưới
+  const fetchMoreDataBottom = async () => {
+    if (messages.length === 0) {
+      return;
+    }
+    const timeLast = messages[messages.length - 1].sendAt;
+    const now = new Date(timeLast);
+    const timeCursor = encodeURIComponent(now.toISOString());
+    const data = await getMessages(channelId, 6, timeCursor, false);
+    setMessages((prev) => [...prev, ...data]);
+  };
+
   // Hub nhận tin nhắn mới
   useEffect(() => {
     if (hub) {
@@ -287,7 +299,7 @@ export default function ChannelChatBoxContent(props) {
         </InfiniteScroll>
 
         <ChatBox
-          SendMessage={(message) =>
+          SendMessage={(message, files) =>
             SendMessage(
               hub,
               channelId,
@@ -296,7 +308,8 @@ export default function ChannelChatBoxContent(props) {
               setIsNewMessage,
               user,
               scrollToBottom,
-              true
+              true,
+              files
             )
           }
         />

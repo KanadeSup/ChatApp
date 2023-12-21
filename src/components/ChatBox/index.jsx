@@ -4,6 +4,7 @@ import { Placeholder } from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 import { Extension } from "@tiptap/core";
 import { Paperclip, X, FileUp } from "lucide-react";
+import { uploadFiles } from "../../api";
 import {
   Bold,
   Italic,
@@ -44,16 +45,23 @@ const ChatBox = React.forwardRef((props) => {
   });
   const ref = useRef(null);
   const refFile = useRef(null);
+  const [isHaveFile, setIsHaveFile] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const handleFileUpload = (event) => {
+
+  const handleFileUpload = async (event) => {
     setSelectedFiles([...event.target.files]);
-    console.log("file: ", event.target.files);
+    setIsHaveFile(true);
+    
+    // const files = Array.from(event.target.files);
+    // const res = await uploadFiles(files);
+    // console.log("res: ", res);
   };
 
   function handleRemoveFile(index) {
     const newFiles = [...selectedFiles];
     newFiles.splice(index, 1);
     setSelectedFiles(newFiles);
+    if (newFiles.length === 0) setIsHaveFile(false);
   }
 
   return (
@@ -117,8 +125,22 @@ const ChatBox = React.forwardRef((props) => {
           onClick={() => {
             const contentHtml = editor.getHTML();
             const content = ref.current.textContent;
+
+            if (isHaveFile) {
+              async function SendFiles() {
+                const res = await uploadFiles(selectedFiles);
+                console.log("res: ", res);
+                props.SendMessage(contentHtml, res);
+                editor.commands.clearContent(true);
+                setSelectedFiles([]);
+                setIsHaveFile(false);
+                return;
+              }
+              SendFiles();
+            }
+
             if (content) {
-              props.SendMessage(contentHtml);
+              props.SendMessage(contentHtml, null);
               editor.commands.clearContent(true);
             }
           }}

@@ -281,7 +281,7 @@ export default function ChatBoxContent() {
           ))}
         </InfiniteScroll>
         <ChatBox
-          SendMessage={(message) =>
+          SendMessage={(message, files) =>
             SendMessage(
               hub,
               conversationId,
@@ -290,7 +290,8 @@ export default function ChatBoxContent() {
               setIsNewMessage,
               user,
               scrollToBottom,
-              false
+              false,
+              files
             )
           }
         />
