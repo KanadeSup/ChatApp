@@ -22,6 +22,8 @@ async function SendMessage(
                 Files: files,
             });
         }
+        console.log("send message channel: ", message, hub);
+        console.log("channel id: ", conversationId);
         return;
     }
 
@@ -30,6 +32,7 @@ async function SendMessage(
             ReceiverId: conversationId,
             Content: message,
             IsChannel: isChannel,
+            Files: files,
         });
         setIsNewMessage(true);
         scrollToBottom();

@@ -15,6 +15,7 @@ import convertTime from "../utils/convertTime";
 import timeDifference from "../utils/timeDifferent";
 import ChatBoxEdit from "@/components/ChatBoxEdit";
 import { BsFillPinAngleFill } from "react-icons/bs";
+import FileCard from "./FileCard";
 
 export default function Message(props) {
   const [showEmoij, setShowEmoij] = useState(false);
@@ -86,6 +87,18 @@ export default function Message(props) {
                 )}
               </>
             )}
+
+            {/*-- Files --*/}
+            <div>
+              {props.message.files && (
+                <div className="flex flex-row flex-wrap gap-2 mt-1">
+                  {props.message.files.map((file) => (
+                    <FileCard key={file.id} file={file} />
+                  ))}
+                  </div>
+              )}
+                
+            </div>
 
             {/*-- List Emoij --*/}
             <div className="flex justify-start flex-wrap items-center pt-1 gap-2">

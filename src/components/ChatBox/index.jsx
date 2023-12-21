@@ -47,8 +47,8 @@ const ChatBox = React.forwardRef((props) => {
   const refFile = useRef(null);
   const [isHaveFile, setIsHaveFile] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
-
   const handleFileUpload = async (event) => {
+    console.log("event: ", event.target.value);
     setSelectedFiles([...event.target.files]);
     setIsHaveFile(true);
     
@@ -57,7 +57,7 @@ const ChatBox = React.forwardRef((props) => {
     // console.log("res: ", res);
   };
 
-  function handleRemoveFile(index) {
+  function handleRemoveFile(e, index) {
     const newFiles = [...selectedFiles];
     newFiles.splice(index, 1);
     setSelectedFiles(newFiles);
@@ -137,7 +137,9 @@ const ChatBox = React.forwardRef((props) => {
                 return;
               }
               SendFiles();
+              return;
             }
+
 
             if (content) {
               props.SendMessage(contentHtml, null);
@@ -161,7 +163,7 @@ const ChatBox = React.forwardRef((props) => {
               <div className="flex flex-col justify-center ml-2">
                 <span className="font-semibold text-base truncate w-44 pr-2">{file.name}</span>
               </div>
-              <X className="absolute -top-1.5 -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer" onClick={() => handleRemoveFile(index)}/>
+              <X className="absolute -top-1.5 -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer" onClick={(e) => handleRemoveFile(e, index)}/>
             </div>
           </div>
         ))}
