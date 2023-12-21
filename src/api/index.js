@@ -27,6 +27,7 @@ import getMessagesColleague from "./getMessagesColleague"
 import getUserByEmail from "./user/getUserByEmail"
 import getPinMessages from "./getPinMessages"
 import getMessageJump from "./getMessageJump"
+import uploadFiles from "./uploadFiles"
 
 export { 
    updateWorkspaceRole,
@@ -58,4 +59,5 @@ export {
    getUserByEmail,
    getPinMessages,
    getMessageJump,
+   uploadFiles,
 }
