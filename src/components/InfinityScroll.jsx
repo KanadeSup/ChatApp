@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { Children, useEffect, useRef, useState } from "react";
 
-function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive = 50, className, scrollDivRef }) {
+function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive = 50, className, scrollDivRef, jump }) {
    const [lockScroll, setLockScroll] = useState(false);
    const [page, setPage] = useState(0);
    const [numberMessage, setNumberMessage] = useState(children.length);
@@ -44,6 +44,11 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
       scrollDivRef.current.scrollTop = scrollDivRef.current.scrollHeight - prevScrollHeight
       setLockScroll(false)
    }, [page]);
+
+   useEffect(()=> {
+      if(!jump) return
+      scrollDivRef.current.scrollTop = document.querySelector(`#message-${jump}`).offsetTop - scrollDivRef.current.clientHeight/2
+   },[jump])
 
    const handleScroll = async(e) => {
       // Set scroll Bottom
