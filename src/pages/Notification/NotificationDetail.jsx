@@ -29,7 +29,10 @@ export default function NotificationDetail({notification}) {
             </Avatar>
             <h1 className="text-2xl font-bold"> {notification.title} </h1>
          </div>
-         <p className="text-lg mt-2"> {notification.content} </p>
+         <div className="text-lg mt-2"> 
+            <div dangerouslySetInnerHTML={{__html: notification.content}}>
+            </div>
+         </div>
       </div>
    );
 }
