@@ -89,7 +89,7 @@ export default function ChatBoxContent() {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub, conversationId]);
+  }, [hub]);
 
   if (!conversationId) {
     return <p>there is no chat here</p>;
@@ -154,7 +154,7 @@ export default function ChatBoxContent() {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub, conversationId]);
+  }, [hub]);
 
   // Hub nhận tin nhắn delete
   useEffect(() => {
@@ -204,7 +204,7 @@ export default function ChatBoxContent() {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub, conversationId]);
+  }, [hub]);
 
   //Hub nhận emoji
   useEffect(() => {
@@ -226,7 +226,7 @@ export default function ChatBoxContent() {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub, conversationId]);
+  }, [hub]);
 
   // Hub nhận lỗi
   useEffect(() => {
@@ -261,7 +261,7 @@ export default function ChatBoxContent() {
           getMore={fetchMoreData}
           invokeHeight={5}
           scrollDivRef={scrollDivRef}
-          className="flex flex-col justify-start overflow-y-scroll h-full min-w-[400px] py-2"
+          className="flex flex-col justify-start overflow-y-scroll h-full min-w-[400px] py-2 gap-1"
         >
           {messages.map((message, index) => (
             <Message
