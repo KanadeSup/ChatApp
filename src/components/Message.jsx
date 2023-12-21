@@ -12,7 +12,9 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import convertTime from "../utils/convertTime";
+import timeDifference from "../utils/timeDifferent";
 import ChatBoxEdit from "@/components/ChatBoxEdit";
+import { BsFillPinAngleFill } from "react-icons/bs";
 
 export default function Message(props) {
   const [showEmoij, setShowEmoij] = useState(false);
@@ -25,105 +27,121 @@ export default function Message(props) {
 
   return (
     <div
+      id={props.id}
       className="mx-2 relative group"
       onMouseLeave={() => setShowEmoij(false)}
     >
-      <div
-        className="flex w-full hover:bg-gray-100 rounded-md p-2"
-        style={{ fontFamily: "'Roboto', Arial, sans-serif" }}
-      >
-        <div className="flex-shrink-0 mr-2">
-          <Avatar>
-            <AvatarImage src={props.message.senderAvatar} />
-            <AvatarFallback className="bg-gray-300">
-              <User2 />
-            </AvatarFallback>
-          </Avatar>
-        </div>
-
-        <div className="relative bottom-1 w-full max-w-[calc(100vw-28rem)]">
-          <div className="flex items-baseline">
-            <span className="font-bold font-sans text-sm cursor-pointer">
-              {props.message.senderName}
-            </span>
-            <span className="text-gray-500 flex gap-2 font-medium text-xs ml-2 cursor-default">
-              {convertTime(props.message.sendAt)} {" "} {props.message.isPined && <span className="text-red-500 italic flex"><PinIcon className="w-4 h-4"/> (pinned)</span>}
-            </span>
+      <div className={`flex flex-col  rounded-md ${props.message.isPined ? 'bg-[rgb(254,249,236)]' : 'hover:bg-gray-100'}`}>
+        {props.message.isPined && (
+          <div className="pt-1 mx-9 flex gap-2 items-center">
+            <BsFillPinAngleFill className="w-3 h-3 text-yellow-600" />
+            <span className="text-xs text-[rgb(96,94,90)]">Pinned</span>
+          </div>
+        )}
+        {/* body tin nhắn */}
+        <div
+          className="flex w-full rounded-md p-2"
+          style={{ fontFamily: "'Roboto', Arial, sans-serif" }}
+        >
+          <div className="flex-shrink-0 mr-2">
+            <Avatar>
+              <AvatarImage src={props.message.senderAvatar} />
+              <AvatarFallback className="bg-gray-300">
+                <User2 />
+              </AvatarFallback>
+            </Avatar>
           </div>
 
-          {/*-- Content --*/}
-          {editMessage ? (
-            <ChatBoxEdit
-              message={props.message}
-              UpdateMessage={props.UpdateMessage}
-              setEditMessage={setEditMessage}
-            />
-          ) : (
-            <>
-              <div
-                className="text-[15px] leading-relaxed w-full break-all"
-                dangerouslySetInnerHTML={{ __html: props.message.content }}
-              ></div>
-              {props.message.isEdited ? (
-                <div className="text-xs text-gray-500">(edited)</div>
-              ) : (
-                <></>
-              )}
-            </>
-          )}
-
-          {/*-- List Emoij --*/}
-          <div className="flex justify-start flex-wrap items-center pt-1 gap-2">
-            { props.message.reactionCount && Object.entries(props.message.reactionCount)?.map(
-              ([emoji, count], index) => (
-                <div
-                  key={index}
-                  className="h-full border-[1.5px] px-0.5 bg-blue-50 border-bold-blue rounded-lg"
-                >
-                  {emoji}{" "}
-                  <span className="text-base text-bold-blue font-mono font-medium">
-                    {count}
+          <div className="relative bottom-1 w-full max-w-[calc(100vw-28rem)]">
+            <div className="flex items-baseline">
+              <span className="font-bold font-sans text-sm cursor-pointer">
+                {props.message.senderName}
+              </span>
+              <span className="text-gray-500 flex gap-2 font-medium text-xs ml-2 cursor-default">
+                {convertTime(props.message.sendAt)}{" "}
+                {/* {props.message.isPined && (
+                  <span className="text-red-500 italic flex">
+                    <PinIcon className="w-4 h-4" /> (pinned)
                   </span>
+                )} */}
+              </span>
+            </div>
+
+            {/*-- Content --*/}
+            {editMessage ? (
+              <ChatBoxEdit
+                message={props.message}
+                UpdateMessage={props.UpdateMessage}
+                setEditMessage={setEditMessage}
+              />
+            ) : (
+              <>
+                <div
+                  className="text-[15px] mt-1 leading-relaxed w-full break-all"
+                  dangerouslySetInnerHTML={{ __html: props.message.content }}
+                ></div>
+                {props.message.isEdited ? (
+                  <div className="text-xs text-gray-500">(edited)</div>
+                ) : (
+                  <></>
+                )}
+              </>
+            )}
+
+            {/*-- List Emoij --*/}
+            <div className="flex justify-start flex-wrap items-center pt-1 gap-2">
+              {props.message.reactionCount &&
+                Object.entries(props.message.reactionCount)?.map(
+                  ([emoji, count], index) => (
+                    <div
+                      key={index}
+                      className="h-full border-[1.5px] px-0.5 bg-blue-50 border-bold-blue rounded-lg"
+                    >
+                      {emoji}{" "}
+                      <span className="text-base text-bold-blue font-mono font-medium">
+                        {count}
+                      </span>
+                    </div>
+                  )
+                )}
+            </div>
+
+            {/*-- View Reply --*/}
+            {props.message.childCount ? (
+              <div
+                className="flex relative select-none -left-1 flex-row mt-1 w-1/2 min-w-[240px] max-w-[300px] py-[5px] rounded-md cursor-pointer border border-transparent hover:border-gray-400 transition-all duration-200 hover:bg-white"
+                onMouseEnter={() => setIsHoverViewReply(true)}
+                onMouseLeave={() => setIsHoverViewReply(false)}
+                onClick={() => {
+                  props.setMessage(props.message);
+                  localStorage.setItem("idMessage", props.message.id);
+                  props.setIsClickedReply(true);
+                  if (props.setIsClickedChannelUtility) {
+                    props.setIsClickedChannelUtility(false);
+                  }
+                }}
+              >
+                <div className="text-xs font-bold text-bold-blue ml-1 mr-2 hover:underline">
+                  {props.message.childCount}{" "}
+                  {props.message.childCount > 1 ? "replies" : "reply"}
                 </div>
-              )
+                {isHoverViewReply ? (
+                  <>
+                    <div className="text-xs text-gray-500 flex-grow">
+                      View reply
+                    </div>
+                    <ChevronRight className="w-4 h-4" />
+                  </>
+                ) : (
+                  <div className="text-xs text-gray-500">
+                    Last reply at 11:10 10/10/2023
+                  </div>
+                )}
+              </div>
+            ) : (
+              <></>
             )}
           </div>
-
-          {/*-- View Reply --*/}
-          {props.message.childCount ? (
-            <div
-              className="flex relative select-none -left-1 flex-row mt-1 w-1/2 min-w-[240px] max-w-[300px] py-[5px] rounded-md cursor-pointer border border-transparent hover:border-gray-400 transition-all duration-200 hover:bg-white"
-              onMouseEnter={() => setIsHoverViewReply(true)}
-              onMouseLeave={() => setIsHoverViewReply(false)}
-              onClick={() => {
-                props.setMessage(props.message);
-                localStorage.setItem("idMessage", props.message.id);
-                props.setIsClickedReply(true);
-                if (props.setIsClickedChannelUtility) {
-                  props.setIsClickedChannelUtility(false);
-                }
-              }}
-            >
-              <div className="text-xs font-bold text-bold-blue ml-1 mr-2 hover:underline">
-                {props.message.childCount}{" "}
-                {props.message.childCount > 1 ? "replies" : "reply"}
-              </div>
-              {isHoverViewReply ? (
-                <>
-                  <div className="text-xs text-gray-500 flex-grow">
-                    View reply
-                  </div>
-                  <ChevronRight className="w-4 h-4" />
-                </>
-              ) : (
-                <div className="text-xs text-gray-500">
-                  Last reply at 11:10 10/10/2023
-                </div>
-              )}
-            </div>
-          ) : (
-            <></>
-          )}
         </div>
       </div>
 
@@ -147,19 +165,25 @@ export default function Message(props) {
 
         {/* Pin */}
         <div
-          className="relative hover:bg-gray-200 p-1.5" 
+          className="relative hover:bg-gray-200 p-1.5"
           onMouseEnter={() => setIsHoveredPin(true)}
           onMouseLeave={() => setIsHoveredPin(false)}
           onClick={() => props.PinMessage(props.message.id)}
         >
-          <Pin className={`w-4 h-4 text-gray-600 ${props.message.isPined ? "text-red-500" : ""}`} />
+          <Pin
+            className={`w-4 h-4 text-gray-600 ${
+              props.message.isPined ? "text-red-500" : ""
+            }`}
+          />
 
           {isHoveredPin && (
             <>
               <div className="absolute z-20 w-2 h-2 right-2.5 bottom-9 bg-black transform rotate-45"></div>
 
               <div className="absolute flex justify-center items-center w-28 h-6 z-20 bottom-10 -right-6 bg-black text-white text-xs rounded-md">
-                <span>{props.message.isPined ? "Unpin message" : "Pin message"}</span>
+                <span>
+                  {props.message.isPined ? "Unpin message" : "Pin message"}
+                </span>
               </div>
             </>
           )}
@@ -194,6 +218,9 @@ export default function Message(props) {
             props.setIsClickedReply(true);
             props.setMessage(props.message);
             localStorage.setItem("idMessage", props.message.id);
+            if (props.setIsClickedChannelUtility) {
+              props.setIsClickedChannelUtility(false);
+            }
           }}
           onMouseEnter={() => setIsHoveredReply(true)}
           onMouseLeave={() => setIsHoveredReply(false)}

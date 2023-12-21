@@ -8,10 +8,16 @@ import { getMessages } from "../../../api";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { InfiniteScroll } from "@/components/InfinityScroll";
 import useHubStore from "../../../storages/useHubStore";
-import { SendMessage, UpdateMessage, DeleteMessage, SendEmoji, PinMessage } from "@/utils/hubs";
+import useJump from "../../../storages/useJump";
+import {
+  SendMessage,
+  UpdateMessage,
+  DeleteMessage,
+  SendEmoji,
+  PinMessage,
+} from "@/utils/hubs";
 import useChannelStore from "@/storages/useChannelStore";
 import { getUserById } from "@/api";
-
 
 // Do có dùng key là id channel bên routes nên khi chuyển channel sẽ re-render
 // mỗi component có một “key” duy nhất, Khi một component được cập nhật, React sẽ so sánh key hiện tại với
@@ -25,6 +31,9 @@ export default function ChannelChatBoxContent(props) {
   const [forceScroll, setForceScroll] = useState({});
   const [isNewMessage, setIsNewMessage] = useState(false);
   const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
+  const [pinMessages, setPinMessages] = useState([]); // Lưu lại tin nhắn pin của channel
+  // const {jumpId} = useJump()
+  const [jumpId, setJumpId] = useState(null)
   const scrollDivRef = useRef();
   const {
     messageParent,
@@ -34,34 +43,6 @@ export default function ChannelChatBoxContent(props) {
     isClickedChannelUtility,
     setIsClickedChannelUtility,
   } = useChannelStore();
-
-  //Kết nối với hub
-  useEffect(() => {
-    // check access token is valid or not expired
-    if (!localStorage.getItem("token")) {
-      setHub(null);
-      return;
-    }
-    async function connect() {
-      const connection = new HubConnectionBuilder()
-        .withUrl(`https://api.firar.live/chatHub`, {
-          accessTokenFactory: () => {
-            return localStorage.getItem("token");
-          },
-        })
-        .withAutomaticReconnect()
-        .configureLogging(LogLevel.Information)
-        .build();
-      try {
-        await connection.start();
-        console.log("connect success");
-        setHub(connection);
-      } catch (e) {
-        console.log("error", e);
-      }
-    }
-    connect();
-  }, []);
 
   //Lấy thông tin user
   async function fetchData() {
@@ -77,14 +58,8 @@ export default function ChannelChatBoxContent(props) {
     async function fetchData() {
       const now = new Date();
       const timeCursor = encodeURIComponent(now.toISOString());
-      console.log("timeCursor", timeCursor);
-      console.log("now: ", now);
-      const data = await getMessages(channelId, 20);
-      // Sắp xếp tin nhắn theo thời gian
-      const sortedData = data.sort(
-        (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
-      );
-      setMessages(sortedData);
+      const data = await getMessages(channelId, 15);
+      setMessages(data.reverse());
     }
     fetchData();
   }, [channelId]);
@@ -97,13 +72,24 @@ export default function ChannelChatBoxContent(props) {
     const timeFirst = messages[0].sendAt;
     const now = new Date(timeFirst);
     const timeCursor = encodeURIComponent(now.toISOString());
-    const data = await getMessages(channelId, 10, timeCursor);
-    // Sắp xếp tin nhắn theo thời gian
-    const sortedData = data.sort(
-      (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
-    );
+    const data = await getMessages(channelId, 6, timeCursor);
 
-    setMessages((prev) => [...sortedData, ...prev]);
+    setMessages((prev) => [...data.reverse(), ...prev]);
+    return data.length
+  };
+
+  // Lấy thêm tin nhắn khi kéo xuống dưới
+  const fetchMoreDataBottom = async () => {
+    if (messages.length === 0) {
+      return;
+    }
+    const timeLast = messages[messages.length - 1].sendAt;
+    let now = new Date(timeLast);
+    now.setMilliseconds(now.getMilliseconds() + 10)
+    const timeCursor = encodeURIComponent(now.toISOString());
+    const data = await getMessages(channelId, 6, timeCursor, false);
+    setMessages((prev) => [...prev, ...data.reverse()]);
+    return data.length
   };
 
   // Hub nhận tin nhắn mới
@@ -123,10 +109,13 @@ export default function ChannelChatBoxContent(props) {
           const parentMessageIndex = messages.findIndex(
             (m) => m.id === newMessage.parentId
           );
-          if (newMessage.receiverId === channelId && parentMessageIndex !== -1) {
+          if (
+            newMessage.receiverId === channelId &&
+            parentMessageIndex !== -1
+          ) {
             // If the message has a parent in the current set of messages
             const parentMessage = { ...messages[parentMessageIndex] }; // Create a new copy of the parent message
-            
+
             if (message.parentId === localStorage.getItem("idMessage")) {
               setMessagesChild((messagesChild) => [...messagesChild, message]);
             }
@@ -151,7 +140,7 @@ export default function ChannelChatBoxContent(props) {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub, channelId]);
+  }, [hub]);
 
   // Hub nhận tin nhắn update
   useEffect(() => {
@@ -166,17 +155,44 @@ export default function ChannelChatBoxContent(props) {
             )
           );
         } else {
-          setMessagesChild(messagesChild => messagesChild.map((messageChild) => {
-            if (messageChild.id === message_updated.id) {
-              return message_updated;
-            } else {
-              return messageChild;
-            }
-          }));
+          setMessagesChild((messagesChild) =>
+            messagesChild.map((messageChild) => {
+              if (messageChild.id === message_updated.id) {
+                return message_updated;
+              } else {
+                return messageChild;
+              }
+            })
+          );
         }
         // Lưu lại tin nhắn để hiển thị trong reply box
         if (message_updated.id === localStorage.getItem("idMessage")) {
           setMessageParent(message_updated);
+        }
+        // Lưu tin nhắn pinned
+        if (message_updated.isPined) {
+          setPinMessages((pinMessages) => {
+            const index = pinMessages.findIndex(
+              (pinMessage) => pinMessage.id === message_updated.id
+            );
+            if (index !== -1) {
+              // Nếu tin nhắn đã được ghim, cập nhật nó
+              return pinMessages.map((pinMessage) =>
+                pinMessage.id === message_updated.id
+                  ? message_updated
+                  : pinMessage
+              );
+            } else {
+              // Nếu tin nhắn chưa được ghim, thêm nó vào danh sách
+              return [message_updated, ...pinMessages];
+            }
+          });
+        } else {
+          setPinMessages((pinMessages) =>
+            pinMessages.filter(
+              (pinMessage) => pinMessage.id !== message_updated.id
+            )
+          );
         }
         //setIsNewMessage(true);
       });
@@ -186,7 +202,7 @@ export default function ChannelChatBoxContent(props) {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub, channelId]);
+  }, [hub]);
 
   // Hub nhận tin nhắn delete
   useEffect(() => {
@@ -204,8 +220,10 @@ export default function ChannelChatBoxContent(props) {
               if (message.id === message_deleted.parentId) {
                 message.childCount -= 1;
                 setMessageParent(message);
-                setMessagesChild(messagesChild => 
-                  messagesChild.filter((messageChild) => messageChild.id !== message_deleted.id)
+                setMessagesChild((messagesChild) =>
+                  messagesChild.filter(
+                    (messageChild) => messageChild.id !== message_deleted.id
+                  )
                 );
               }
               return message;
@@ -213,6 +231,12 @@ export default function ChannelChatBoxContent(props) {
             return messagesNew;
           });
         }
+        // Lưu tin nhắn pinned
+        setPinMessages((pinMessages) =>
+          pinMessages.filter(
+            (pinMessage) => pinMessage.id !== message_deleted.id
+          )
+        );
         if (message_deleted.id === localStorage.getItem("idMessage")) {
           setMessageParent(null);
           setIsClickedReply(false);
@@ -255,12 +279,15 @@ export default function ChannelChatBoxContent(props) {
       >
         <InfiniteScroll
           getMore={fetchMoreData}
+          getMoreBottom={fetchMoreDataBottom}
           invokeHeight={5}
           scrollDivRef={scrollDivRef}
-          className="flex flex-col justify-start min-w-[400px] h-full overflow-y-scroll pb-4"
+          className="flex flex-col gap-1 justify-start min-w-[400px] h-full overflow-y-scroll pb-4"
+          jump={jumpId}
         >
           {messages.map((message, index) => (
             <Message
+              id={`message-${message.id}`}
               key={message.id}
               message={message}
               setMessage={setMessageParent}
@@ -273,14 +300,15 @@ export default function ChannelChatBoxContent(props) {
                 UpdateMessage(hub, idMessage, message, true)
               }
               SendEmoji={(emoji) => SendEmoji(hub, message.id, emoji)}
-              PinMessage={(messageId) => PinMessage(hub, messageId, !message.isPined)}
+              PinMessage={(messageId) =>
+                PinMessage(hub, messageId, !message.isPined)
+              }
             />
           ))}
-          {/* <div ref={messagesEndRef} /> */}
         </InfiniteScroll>
 
         <ChatBox
-          SendMessage={(message) =>
+          SendMessage={(message, files) =>
             SendMessage(
               hub,
               channelId,
@@ -289,7 +317,8 @@ export default function ChannelChatBoxContent(props) {
               setIsNewMessage,
               user,
               scrollToBottom,
-              true
+              true,
+              files
             )
           }
         />
@@ -308,9 +337,16 @@ export default function ChannelChatBoxContent(props) {
           setIsClickedChannelUtility={props.setIsClickedChannelUtility}
         />
       )}
+
       {props.isClickedChannelUtility && (
         <ChannelUtility
-          setIsClickedChannelUtility={props.setIsClickedChannelUtility} conversationId={channelId} isChannel={true}
+          setIsClickedChannelUtility={props.setIsClickedChannelUtility}
+          conversationId={channelId}
+          isChannel={true}
+          setPinMessages={setPinMessages}
+          pinMessages={pinMessages}
+          setMessages={setMessages}
+          setJump={setJumpId}
         />
       )}
     </div>

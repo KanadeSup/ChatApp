@@ -1,18 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import convertTime from "../utils/convertTime";
 import useHubStore from "../storages/useHubStore";
+import useJump from "../storages/useJump";
 import { PinMessage } from "../utils/hubs";
+import { getMessageJump } from "../api";
+
 export default function PinnedMessage(props) {
   const [isHoverUnpin, setIsHoverUnpin] = useState(false);
   const { hub } = useHubStore();
+  const {setJumpId} = useJump()
+  async function fetchData() {
+    const data = await getMessageJump(props.message.id);
+    // sort data by sendAt
+    data.sort(function (a, b) {
+      return new Date(a.sendAt) - new Date(b.sendAt);
+    });
+    props.setMessages(data);
+    console.log(props.setJump)
+    props.setJump(props.message.id)
+    console.log("data jump:", data);
+    console.log("data nhan:", props.message);
+  }
+
   return (
-    <div className="mx-3 border-gray-300">
+    <div className="mx-4 border-gray-300">
       <div
-        className="flex w-full my-2 border bg-gray-100 rounded-md p-3 mb-4"
+        className="flex w-full border bg-white rounded-md p-3"
         style={{ fontFamily: "'Roboto', Arial, sans-serif" }}
       >
-        <Avatar className="w-7 h-7 mr-2">
+        <Avatar className="w-10 h-10 mr-2">
           <AvatarImage src={props.message.senderAvatar} alt="@shadcn" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
@@ -22,9 +39,10 @@ export default function PinnedMessage(props) {
             <span className="font-bold text-sm">
               {props.message.senderName}
             </span>
-            {}
+    
             <div className="flex relative">
-              <button className="text-[11px] px-1 my-0.5 rounded-sm bg-gray-200 text-gray-500 hover:text-gray-700">
+              <button className="text-[11px] px-1 my-0.5 rounded-sm bg-gray-200 text-gray-500 hover:text-gray-700"
+              onClick={() => fetchData()}>
                 Jump
               </button>
               <svg
@@ -33,7 +51,14 @@ export default function PinnedMessage(props) {
                 xmlns="http://www.w3.org/2000/svg"
                 onMouseEnter={() => setIsHoverUnpin(true)}
                 onMouseLeave={() => setIsHoverUnpin(false)}
-                onClick={() => {PinMessage(hub, props.message.id, false); props.setPinMessages(props.pinMessages.filter((message) => message.id !== props.message.id))}}
+                onClick={() => {
+                  PinMessage(hub, props.message.id, false);
+                  props.setPinMessages(
+                    props.pinMessages.filter(
+                      (message) => message.id !== props.message.id
+                    )
+                  );
+                }}
               >
                 <path
                   d="M7 17L16.8995 7.10051"
@@ -61,8 +86,10 @@ export default function PinnedMessage(props) {
           </div>
 
           <div className="flex flex-col">
-            <span className="text-sm text-gray-700" dangerouslySetInnerHTML={{__html: props.message.content}}>
-            </span>
+            <span
+              className="text-sm text-gray-700"
+              dangerouslySetInnerHTML={{ __html: props.message.content }}
+            ></span>
             <span className="text-gray-500 text-xs mt-3">
               {convertTime(props.message.sendAt)}
             </span>

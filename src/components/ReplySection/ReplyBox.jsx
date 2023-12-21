@@ -12,7 +12,6 @@ import {
   SendEmoji
 } from "@/utils/hubs";
 import { getMessagesColleague } from "../../api";
-import { is } from "date-fns/locale";
 
 export default function ReplyBox(props) {
   // const { message, setMessage } = useColleagueStore();
@@ -49,7 +48,7 @@ export default function ReplyBox(props) {
 
   return (
     <div
-      style={{ height: "calc(100vh - 5.5rem)" }}
+      style={{ height: "calc(100vh - 6rem)" }}
       className="flex flex-col overflow-y-scroll gap-1"
     >
       <MessageReply message={props.message} setMessage={props.setMessage} messageHead={true}/>

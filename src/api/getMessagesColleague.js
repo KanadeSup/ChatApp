@@ -1,6 +1,6 @@
 import myFetch from "./myFetch";
 
-export default async function getMessagesColleague(conversationId, time, count, parentId, isChannel) {
+export default async function getMessagesColleague(conversationId, time, count, parentId, isChannel, isBefore) {
    let params = `Count=${count}`;
    if (time) {
       params += `&TimeCursor=${time}`;
@@ -13,6 +13,9 @@ export default async function getMessagesColleague(conversationId, time, count, 
    }
    if (parentId) {
       params += `&ParentId=${parentId}`;
+   }
+   if (isBefore === false) {
+      params += `&IsBefore=${false}`
    }
    
    const res = await myFetch({

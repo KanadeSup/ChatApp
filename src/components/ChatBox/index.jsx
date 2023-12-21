@@ -4,6 +4,7 @@ import { Placeholder } from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 import { Extension } from "@tiptap/core";
 import { Paperclip, X, FileUp } from "lucide-react";
+import { uploadFiles } from "../../api";
 import {
   Bold,
   Italic,
@@ -12,6 +13,8 @@ import {
 } from "lucide-react";
 import React from "react";
 import { useRef, useState } from "react";
+
+
 
 const DisableEnter = Extension.create({
   addKeyboardShortcuts() {
@@ -42,27 +45,33 @@ const ChatBox = React.forwardRef((props) => {
   });
   const ref = useRef(null);
   const refFile = useRef(null);
+  const [isHaveFile, setIsHaveFile] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const handleFileUpload = (event) => {
+
+  const handleFileUpload = async (event) => {
     setSelectedFiles([...event.target.files]);
-    console.log("file: ", event.target.files);
+    setIsHaveFile(true);
+    
+    // const files = Array.from(event.target.files);
+    // const res = await uploadFiles(files);
+    // console.log("res: ", res);
   };
 
   function handleRemoveFile(index) {
     const newFiles = [...selectedFiles];
     newFiles.splice(index, 1);
     setSelectedFiles(newFiles);
+    if (newFiles.length === 0) setIsHaveFile(false);
   }
 
   return (
     <div
-      //ref={ref}
       className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2"
     >
       {/* Format bar */}
       <div className="flex">
         <button
-          className="hover:bg-red-400 w-7 h-7 rounded text-lg flex justify-center items-center"
+          className="hover:bg-red-400 active:bg-red-600 w-7 h-7 rounded text-lg flex justify-center items-center"
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <Bold strokeWidth={3} className="p-1" />
@@ -84,7 +93,7 @@ const ChatBox = React.forwardRef((props) => {
 
         {/* Up file */}
         <FileUp
-          className="w-7 h-7 p-1"
+          className="w-7 h-7 p-1.5 cursor-pointer text-slate-700"
           onClick={() => refFile.current.click()}
         />
         <input
@@ -116,8 +125,22 @@ const ChatBox = React.forwardRef((props) => {
           onClick={() => {
             const contentHtml = editor.getHTML();
             const content = ref.current.textContent;
+
+            if (isHaveFile) {
+              async function SendFiles() {
+                const res = await uploadFiles(selectedFiles);
+                console.log("res: ", res);
+                props.SendMessage(contentHtml, res);
+                editor.commands.clearContent(true);
+                setSelectedFiles([]);
+                setIsHaveFile(false);
+                return;
+              }
+              SendFiles();
+            }
+
             if (content) {
-              props.SendMessage(contentHtml);
+              props.SendMessage(contentHtml, null);
               editor.commands.clearContent(true);
             }
           }}

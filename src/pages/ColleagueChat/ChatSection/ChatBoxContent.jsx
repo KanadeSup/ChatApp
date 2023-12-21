@@ -30,7 +30,7 @@ export default function ChatBoxContent() {
     const timeFirst = messages[0].sendAt;
     const now = new Date(timeFirst);
     const timeCursor = encodeURIComponent(now.toISOString());
-    const data = await getMessagesColleague(conversationId, timeCursor, 20);
+    const data = await getMessagesColleague(conversationId, timeCursor, 10);
     // Sắp xếp tin nhắn theo thời gian
     const sortedData = data.sort(
       (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
@@ -89,7 +89,7 @@ export default function ChatBoxContent() {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub, conversationId]);
+  }, [hub]);
 
   if (!conversationId) {
     return <p>there is no chat here</p>;
@@ -110,7 +110,7 @@ export default function ChatBoxContent() {
     async function fetchData() {
       // const now = new Date();
       // const timeCursor = encodeURIComponent(now.toISOString());
-      const data = await getMessagesColleague(conversationId, null, 10);
+      const data = await getMessagesColleague(conversationId, null, 20);
       // Sắp xếp tin nhắn theo thời gian
       const sortedData = data.sort(
         (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
@@ -154,7 +154,7 @@ export default function ChatBoxContent() {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub, conversationId]);
+  }, [hub]);
 
   // Hub nhận tin nhắn delete
   useEffect(() => {
@@ -204,7 +204,7 @@ export default function ChatBoxContent() {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub, conversationId]);
+  }, [hub]);
 
   //Hub nhận emoji
   useEffect(() => {
@@ -226,7 +226,7 @@ export default function ChatBoxContent() {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub, conversationId]);
+  }, [hub]);
 
   // Hub nhận lỗi
   useEffect(() => {
@@ -247,7 +247,7 @@ export default function ChatBoxContent() {
   };
 
   useEffect(() => {
-    scrollDivRef.current.scrollTop = scrollDivRef.current.scrollHeight;
+    scrollDivRef.current.scroll({top: scrollDivRef.current.scrollHeight, behavior:"smooth"})
   }, [forceScroll]);
 
 
@@ -261,7 +261,7 @@ export default function ChatBoxContent() {
           getMore={fetchMoreData}
           invokeHeight={5}
           scrollDivRef={scrollDivRef}
-          className="flex flex-col justify-start overflow-y-scroll h-full min-w-[400px] py-2"
+          className="flex flex-col justify-start overflow-y-scroll h-full min-w-[400px] py-2 gap-1"
         >
           {messages.map((message, index) => (
             <Message
@@ -281,7 +281,7 @@ export default function ChatBoxContent() {
           ))}
         </InfiniteScroll>
         <ChatBox
-          SendMessage={(message) =>
+          SendMessage={(message, files) =>
             SendMessage(
               hub,
               conversationId,
@@ -290,7 +290,8 @@ export default function ChatBoxContent() {
               setIsNewMessage,
               user,
               scrollToBottom,
-              false
+              false,
+              files
             )
           }
         />

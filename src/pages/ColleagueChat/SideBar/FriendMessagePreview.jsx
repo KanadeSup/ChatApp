@@ -40,7 +40,7 @@ export default function FriendMessagePreview(props) {
         </div>
         <div className="ml-1 flex-1">
           <div className="flex items-center justify-between relative bottom-0.5">
-            <p className={`${props.isRead ? "" : "font-bold"} text-sm truncate w-24`}>
+            <p className={`${props.isRead ? "" : "font-bold"} text-sm truncate w-36`}>
               {props.name}
             </p>
             <p
@@ -48,7 +48,7 @@ export default function FriendMessagePreview(props) {
                 props.isRead ? "" : "font-bold"
               } text-xs text-gray-600`}
             >
-              {convertTime(props.time)}
+              {timeDifferent(props.time)}
             </p>
           </div>
           <p
