@@ -3,13 +3,13 @@ export default function Assets(props) {
     <div className="flex flex-col">
       {/* Media */}
       <div
-        className="flex flex-row pl-9 py-2 cursor-pointer group text-gray-600 hover:bg-bold-blue hover:text-white"
+        className="flex flex-row pl-9 py-2 cursor-pointer group text-gray-600 hover:bg-slate-100"
         onClick={() => props.setSelectedOption("media")}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 32 32"
-          className="w-6 h-6 p-1 text-gray-600 group-hover:text-white"
+          className="w-6 h-6 p-1 text-gray-600 "
         >
           <path
             fill="currentColor"
@@ -22,7 +22,7 @@ export default function Assets(props) {
       </div>
       {/* Files */}
       <div
-        className="flex flex-row pl-9 py-2 cursor-pointer group text-gray-600 hover:bg-bold-blue hover:text-white"
+        className="flex flex-row pl-9 py-2 cursor-pointer group text-gray-600 hover:bg-slate-100"
         onClick={() => props.setSelectedOption("files")}
       >
         <svg
@@ -41,14 +41,14 @@ export default function Assets(props) {
       </div>
       {/* Links */}
       <div
-        className="flex flex-row pl-9 py-2 cursor-pointer group text-gray-600 hover:bg-bold-blue hover:text-white"
+        className="flex flex-row pl-9 py-2 cursor-pointer group text-gray-600 hover:bg-slate-100"
         onClick={() => props.setSelectedOption("links")}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          className="w-6 h-6 p-1 stroke-gray-600 group-hover:stroke-white group-hover:text-white"
+          className="w-6 h-6 p-1 stroke-gray-600 "
         >
           <g strokeLinecap="round" strokeWidth="1.5">
             <path d="M15.197 3.355c1.673-1.68 4.25-1.816 5.757-.305 1.506 1.512 1.37 4.1-.303 5.78l-2.424 2.433M10.047 14c-1.507-1.512-1.37-4.1.302-5.779L12.5 6.062"></path>

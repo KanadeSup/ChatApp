@@ -2,12 +2,11 @@
 
 async function UpdateMessage(hub, messageId, content, isChannel) {
     if (hub) {
-        const data = await hub.invoke("UpdateMessageAsync", {
+        await hub.invoke("UpdateMessageAsync", {
             id: messageId,
             Content: content,
             IsChannel: isChannel,
         });
-        console.log("UpdateMessageAsync: ", data);
     } else {
         console.error("Hub is not connected");
     }

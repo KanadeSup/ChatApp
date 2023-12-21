@@ -40,10 +40,9 @@ export default function SignUp() {
     switch (e.target.name) {
       case "email":
         if (!ValidateEmail(e.target.value)) {
-          setErrorSyntax({
+          setErrorSyntax((errorSyntax) => ({
             ...errorSyntax,
-            email: "Email is invalid",
-          });
+            email: "Email is invalid"}));
         } else {
           setErrorSyntax({
             ...errorSyntax,
@@ -66,7 +65,7 @@ export default function SignUp() {
         break;
       case "password":
         if (
-          e.target.value !== formState.repassword &&
+          e.target.value !== formState.repassword ||
           formState.repassword !== ""
         ) {
           setErrorSyntax((errorSyntax) => ({
@@ -88,10 +87,9 @@ export default function SignUp() {
         break;
       case "repassword":
         if (e.target.value !== formState.password && e.target.value !== "") {
-          setErrorSyntax({
+          setErrorSyntax((errorSyntax) => ({
             ...errorSyntax,
-            repassword: "RePassword is not match",
-          });
+            repassword: "RePassword is not match"}));
         } else {
           setErrorSyntax({
             ...errorSyntax,
@@ -150,8 +148,8 @@ export default function SignUp() {
   }
 
   useEffect(() => {
-    setVisibleSubmit(ValidateSubmit(errorSyntax));
-  }, [errorSyntax]);
+    setVisibleSubmit(() => ValidateSubmit(errorSyntax));
+  }, [errorSyntax, formState]);
 
   return (
     <div className="bg-gradient-to-r from-gray-200 to-gray-400 flex items-center flex-col h-screen">
