@@ -13,6 +13,8 @@ import {
 import React from "react";
 import { useRef, useState } from "react";
 
+
+
 const DisableEnter = Extension.create({
   addKeyboardShortcuts() {
     return {
@@ -56,13 +58,12 @@ const ChatBox = React.forwardRef((props) => {
 
   return (
     <div
-      //ref={ref}
       className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2"
     >
       {/* Format bar */}
       <div className="flex">
         <button
-          className="hover:bg-red-400 w-7 h-7 rounded text-lg flex justify-center items-center"
+          className="hover:bg-red-400 active:bg-red-600 w-7 h-7 rounded text-lg flex justify-center items-center"
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <Bold strokeWidth={3} className="p-1" />
@@ -84,7 +85,7 @@ const ChatBox = React.forwardRef((props) => {
 
         {/* Up file */}
         <FileUp
-          className="w-7 h-7 p-1"
+          className="w-7 h-7 p-1.5 cursor-pointer text-slate-700"
           onClick={() => refFile.current.click()}
         />
         <input
