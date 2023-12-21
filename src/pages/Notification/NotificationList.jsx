@@ -2,7 +2,7 @@ import { Bell } from "lucide-react";
 import NotificationItem from "./NotificationItem";
 import { Switch } from "@/components/ui/switch" 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import getNotifications from "../../api/notification/getNotifications";
 
 const categories = [
@@ -22,13 +22,15 @@ export default function ({ setNotification }) {
    const [notifications, setNotifications] = useState(null)
    const [unread, setUnread] = useState(false)
    const {notificationId} = useParams()
+   const {workspaceId} = useParams()
+   const navigate = useNavigate()
+
    useEffect(() => {
       async function fetchData() {
          const res = await getNotifications()
          if(!res.ok) throw new Error('Cannot get Notification data');
          const data = res.data
          setNotifications(data)
-         console.log(data)
          data.map(noti=>{
             if(notificationId === noti.id) setNotification(noti)
          })
@@ -78,7 +80,17 @@ export default function ({ setNotification }) {
                      <NotificationItem 
                         key={noti.id}
                         notification={noti}
-                        onClick={e=>setNotification(noti)}
+                        onClick={e=>{
+                           if(MESSAGE.includes(noti.type)) {
+                              console.log(noti)
+                              const detail = JSON.parse(noti.data.Detail)
+                              if(!detail.IsChannel) {
+                                 navigate(workspaceId ? `/${workspaceId}/colleague-chat/${detail.UserId}` : `/colleague-chat/${detail.UserId}`)
+                                 return
+                              }
+                           }
+                           setNotification(noti)
+                        }}
                      />
                   )
                }) : ""
