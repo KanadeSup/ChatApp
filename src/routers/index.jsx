@@ -7,6 +7,7 @@ import notification from './notification.jsx'
 import channel from './channel.jsx'
 import { Button } from "/components/ui/button"
 import Homepage from '/pages/Homepage'
+import meeting from "./meeting.jsx";
 
 
 function ErrorPage() {
@@ -50,6 +51,7 @@ export default createBrowserRouter([
          ...userSetting,
          ...notification,
          ...channel,
+         ...meeting,
       ]
    },
 ])

@@ -30,7 +30,7 @@ export default function ChatBoxContent() {
     const timeFirst = messages[0].sendAt;
     const now = new Date(timeFirst);
     const timeCursor = encodeURIComponent(now.toISOString());
-    const data = await getMessagesColleague(conversationId, timeCursor, 20);
+    const data = await getMessagesColleague(conversationId, timeCursor, 10);
     // Sắp xếp tin nhắn theo thời gian
     const sortedData = data.sort(
       (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
@@ -110,7 +110,7 @@ export default function ChatBoxContent() {
     async function fetchData() {
       // const now = new Date();
       // const timeCursor = encodeURIComponent(now.toISOString());
-      const data = await getMessagesColleague(conversationId, null, 10);
+      const data = await getMessagesColleague(conversationId, null, 20);
       // Sắp xếp tin nhắn theo thời gian
       const sortedData = data.sort(
         (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
@@ -247,7 +247,7 @@ export default function ChatBoxContent() {
   };
 
   useEffect(() => {
-    scrollDivRef.current.scrollTop = scrollDivRef.current.scrollHeight;
+    scrollDivRef.current.scroll({top: scrollDivRef.current.scrollHeight, behavior:"smooth"})
   }, [forceScroll]);
 
 

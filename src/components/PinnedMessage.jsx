@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import convertTime from "../utils/convertTime";
 import useHubStore from "../storages/useHubStore";
+import useJump from "../storages/useJump";
 import { PinMessage } from "../utils/hubs";
 import { getMessageJump } from "../api";
+
 export default function PinnedMessage(props) {
   const [isHoverUnpin, setIsHoverUnpin] = useState(false);
   const { hub } = useHubStore();
-
+  const {setJumpId} = useJump()
   async function fetchData() {
     const data = await getMessageJump(props.message.id);
     // sort data by sendAt
@@ -15,6 +17,8 @@ export default function PinnedMessage(props) {
       return new Date(a.sendAt) - new Date(b.sendAt);
     });
     props.setMessages(data);
+    console.log(props.setJump)
+    props.setJump(props.message.id)
     console.log("data jump:", data);
     console.log("data nhan:", props.message);
   }

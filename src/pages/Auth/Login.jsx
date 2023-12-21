@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Loader2, User } from "lucide-react";
 import OneSignal from "react-onesignal";
 
-function loginOneSignal(uid) {
-  OneSignal.logout();
-  OneSignal.login(uid);
+async function loginOneSignal(uid) {
+  await OneSignal.logout();
+  await OneSignal.login(uid);
 }
 export default function Login() {
   const [email, setEmail] = useState("");
