@@ -9,17 +9,10 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
    const [scrollBottom, setScrollBottom] = useState(0);
    const loaderRef = useRef()
    const endMessageRef = useRef()
-
    useEffect(() => {
       if (children.length === 0){
          loaderRef.current.classList.add("hidden")
          return;
-      }
-      
-      if(!lockScroll) {
-         loaderRef.current.classList.remove("hidden")
-      } else {
-         loaderRef.current.classList.add("hidden")
       }
 
       if (children.length === numberMessage) return;
@@ -40,9 +33,9 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
    useEffect(() => {
       if (page === 0) return;
       if (page === 1) {
-         if(Math.abs(scrollDivRef.current.scrollHeight - scrollDivRef.current.clientHeight) < 200) {
+         loaderRef.current.classList.remove("hidden")
+         if(Math.abs(scrollDivRef.current.scrollHeight - scrollDivRef.current.clientHeight) < 200){
             loaderRef.current.classList.add("hidden")
-            loaderRef.current.classList.add("hidden");
             setLockScroll(true)
          }
          scrollDivRef.current.scrollTop = scrollDivRef.current.scrollHeight
@@ -71,6 +64,7 @@ function InfiniteScroll({ children, getMore, invokeHeight = 10, bottomSensitive 
          if(nData === 0) {
             loaderRef.current.classList.add("hidden")
             endMessageRef.current.classList.remove("hidden")
+            return
          }
          setPage((prev) => prev + 1);
          setPrevScrollHeight(scrollDiv.scrollHeight);

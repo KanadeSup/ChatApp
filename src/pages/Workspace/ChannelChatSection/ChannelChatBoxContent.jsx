@@ -72,6 +72,7 @@ export default function ChannelChatBoxContent(props) {
     const data = await getMessages(channelId, 6, timeCursor);
 
     setMessages((prev) => [...data.reverse(), ...prev]);
+    return data.length
   };
 
   // Hub nhận tin nhắn mới
@@ -267,6 +268,7 @@ export default function ChannelChatBoxContent(props) {
         >
           {messages.map((message, index) => (
             <Message
+              id={message.id}
               key={message.id}
               message={message}
               setMessage={setMessageParent}
