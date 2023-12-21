@@ -27,6 +27,7 @@ export default function Message(props) {
 
   return (
     <div
+      id={props.id}
       className="mx-2 relative group"
       onMouseLeave={() => setShowEmoij(false)}
     >

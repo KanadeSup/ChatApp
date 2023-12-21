@@ -8,6 +8,7 @@ import { getMessages } from "../../../api";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { InfiniteScroll } from "@/components/InfinityScroll";
 import useHubStore from "../../../storages/useHubStore";
+import useJump from "../../../storages/useJump";
 import {
   SendMessage,
   UpdateMessage,
@@ -31,6 +32,8 @@ export default function ChannelChatBoxContent(props) {
   const [isNewMessage, setIsNewMessage] = useState(false);
   const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
   const [pinMessages, setPinMessages] = useState([]); // Lưu lại tin nhắn pin của channel
+  // const {jumpId} = useJump()
+  const [jumpId, setJumpId] = useState(null)
   const scrollDivRef = useRef();
   const {
     messageParent,
@@ -72,6 +75,7 @@ export default function ChannelChatBoxContent(props) {
     const data = await getMessages(channelId, 6, timeCursor);
 
     setMessages((prev) => [...data.reverse(), ...prev]);
+    return data.length
   };
 
   // Lấy thêm tin nhắn khi kéo xuống dưới
@@ -80,10 +84,12 @@ export default function ChannelChatBoxContent(props) {
       return;
     }
     const timeLast = messages[messages.length - 1].sendAt;
-    const now = new Date(timeLast);
+    let now = new Date(timeLast);
+    now.setMilliseconds(now.getMilliseconds() + 10)
     const timeCursor = encodeURIComponent(now.toISOString());
     const data = await getMessages(channelId, 6, timeCursor, false);
-    setMessages((prev) => [...prev, ...data]);
+    setMessages((prev) => [...prev, ...data.reverse()]);
+    return data.length
   };
 
   // Hub nhận tin nhắn mới
@@ -273,12 +279,15 @@ export default function ChannelChatBoxContent(props) {
       >
         <InfiniteScroll
           getMore={fetchMoreData}
+          getMoreBottom={fetchMoreDataBottom}
           invokeHeight={5}
           scrollDivRef={scrollDivRef}
           className="flex flex-col gap-1 justify-start min-w-[400px] h-full overflow-y-scroll pb-4"
+          jump={jumpId}
         >
           {messages.map((message, index) => (
             <Message
+              id={`message-${message.id}`}
               key={message.id}
               message={message}
               setMessage={setMessageParent}
@@ -328,6 +337,7 @@ export default function ChannelChatBoxContent(props) {
           setIsClickedChannelUtility={props.setIsClickedChannelUtility}
         />
       )}
+
       {props.isClickedChannelUtility && (
         <ChannelUtility
           setIsClickedChannelUtility={props.setIsClickedChannelUtility}
@@ -336,6 +346,7 @@ export default function ChannelChatBoxContent(props) {
           setPinMessages={setPinMessages}
           pinMessages={pinMessages}
           setMessages={setMessages}
+          setJump={setJumpId}
         />
       )}
     </div>

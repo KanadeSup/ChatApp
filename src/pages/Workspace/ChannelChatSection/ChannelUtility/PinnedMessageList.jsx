@@ -49,6 +49,7 @@ export default function PinnedMessageList(props) {
               setPinMessages={props.setPinMessages}
               pinMessages={props.pinMessages}
               setMessages={props.setMessages}
+              setJump={props.setJump}
             />
           ))
         )}
