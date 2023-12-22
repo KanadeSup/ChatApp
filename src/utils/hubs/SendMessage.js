@@ -29,6 +29,7 @@ async function SendMessage(
                 IsChannel: true,
                 Files: filesId,
             });
+            scrollToBottom();
         }
         console.log("send message channel: ", message, hub);
         console.log("channel id: ", conversationId);
@@ -36,27 +37,27 @@ async function SendMessage(
     }
 
     if (hub) {
-        const message = await hub.invoke("SendMessageAsync", {
+        const newMessage = await hub.invoke("SendMessageAsync", {
             ReceiverId: conversationId,
             Content: message,
             IsChannel: isChannel,
             Files: filesId,
         });
+        console.log("send message conver: ", newMessage);
         setIsNewMessage(true);
         scrollToBottom();
-        const message2 = {
-            id: message.id,
-            sendAt: new Date().toISOString(),
-            senderName: user.firstName + " " + user.lastName ? user.lastName : "",
-            senderId: localStorage.getItem("userId"),
-            content: message,
-            senderAvatar: user.picture,
-            childCount: 0,
-            reactionCount: {},
-            files: files,
-        };
-        setMessages((messages) => [...messages, message2]);
-        console.log("send message: ", data);
+        // const message2 = {
+        //     id: newMessage.id,
+        //     sendAt: new Date().toISOString(),
+        //     senderName: user.firstName + " " + user.lastName ? user.lastName : "",
+        //     senderId: localStorage.getItem("userId"),
+        //     content: message,
+        //     senderAvatar: user.picture,
+        //     childCount: 0,
+        //     reactionCount: {},
+        //     files: files,
+        // };
+        setMessages((messages) => [...messages, newMessage]);
     } else {
         console.error("Hub is not connected");
     }

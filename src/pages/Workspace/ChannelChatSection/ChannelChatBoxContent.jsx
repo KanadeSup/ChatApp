@@ -88,6 +88,9 @@ export default function ChannelChatBoxContent(props) {
       const now = new Date();
       const timeCursor = encodeURIComponent(now.toISOString());
       const data = await getMessages(channelId, 15);
+      if (data.length === 0) {
+        return;
+      }
       setMessages(data.reverse());
     }
     fetchData();
@@ -103,6 +106,9 @@ export default function ChannelChatBoxContent(props) {
     const timeCursor = encodeURIComponent(now.toISOString());
     const data = await getMessages(channelId, 6, timeCursor);
 
+    if (data.length === 0) {
+      return 0;
+    }
     setMessages((prev) => [...data.reverse(), ...prev]);
     return data.length
   };
@@ -117,17 +123,18 @@ export default function ChannelChatBoxContent(props) {
     now.setMilliseconds(now.getMilliseconds() + 10)
     const timeCursor = encodeURIComponent(now.toISOString());
     const data = await getMessages(channelId, 6, timeCursor, false);
+    if (data.length === 0) {
+      return 0;
+    }
     setMessages((prev) => [...prev, ...data.reverse()]);
     return data.length
   };
 
   // Hub nhận tin nhắn mới
   useEffect(() => {
-    console.log("Nhan tin nhawn chat box", hub);
     if (hub) {
       hub.off("receive_message");
       hub.on("receive_message", (message) => {
-        console.log("message đã nhận: ", message);
         //setIsNewMessage(true);
         if (message.receiverId !== channelId) {
           return;
@@ -298,7 +305,7 @@ export default function ChannelChatBoxContent(props) {
   };
 
   useEffect(() => {
-    scrollDivRef.current.scrollTop = scrollDivRef.current.scrollHeight;
+    scrollDivRef.current.scroll({top: scrollDivRef.current.scrollHeight, behavior:"smooth"})
   }, [forceScroll]);
 
   return (

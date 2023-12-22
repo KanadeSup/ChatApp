@@ -9,10 +9,11 @@ import {
   Bold,
   Italic,
   Underline as UnderlineIcon,
-  SendHorizontal,
 } from "lucide-react";
 import React from "react";
 import { useRef, useState } from "react";
+import { IoIosSend } from "react-icons/io";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const DisableEnter = Extension.create({
   addKeyboardShortcuts() {
@@ -46,14 +47,12 @@ const ChatBox = React.forwardRef((props) => {
   const [isHaveFile, setIsHaveFile] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isHoverUpload, setIsHoverUpload] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+
   const handleFileUpload = async (event) => {
     console.log("event: ", event.target.value);
     setSelectedFiles([...event.target.files]);
     setIsHaveFile(true);
-
-    // const files = Array.from(event.target.files);
-    // const res = await uploadFiles(files);
-    // console.log("res: ", res);
   };
 
   function handleRemoveFile(e, index) {
@@ -61,6 +60,36 @@ const ChatBox = React.forwardRef((props) => {
     newFiles.splice(index, 1);
     setSelectedFiles(newFiles);
     if (newFiles.length === 0) setIsHaveFile(false);
+  }
+
+  async function handleSend() {
+    if (isSending) return; // Nếu đang gửi, không làm gì cả
+    setIsSending(true); // Đặt trạng thái gửi thành true
+  
+    const contentHtml = editor.getHTML();
+    const content = ref.current.textContent;
+  
+    if (isHaveFile) {
+      try {
+        const res = await uploadFiles(selectedFiles);
+        console.log("res: ", res);
+        await props.SendMessage(contentHtml, res);
+        editor.commands.clearContent(true);
+        setSelectedFiles([]);
+        setIsHaveFile(false);
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (content) {
+      try {
+        await props.SendMessage(contentHtml, null);
+        editor.commands.clearContent(true);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  
+    setIsSending(false); // Đặt trạng thái gửi thành false khi hoàn tất
   }
 
   return (
@@ -118,45 +147,30 @@ const ChatBox = React.forwardRef((props) => {
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            const contentHtml = editor.getHTML();
-            const content = ref.current.textContent;
-            if (content) {
-              props.SendMessage(contentHtml);
-              editor.commands.clearContent(true);
-            }
+            handleSend();
           }
         }}
         className="outline-none mt-1 mb-2 relative max-w-[calc(100vw-25rem)]"
         ref={ref}
       >
         <EditorContent className="pr-10" editor={editor} spellCheck="false" />
-        <SendHorizontal
+        <button
+          className="absolute cursor-pointer w-8 h-6 flex items-center justify-center rounded-sm bg-green-700 top-0 right-0 hover:bg-green-600"
+          disabled={isSending}
           onClick={() => {
-            const contentHtml = editor.getHTML();
-            const content = ref.current.textContent;
-
-            if (isHaveFile) {
-              async function SendFiles() {
-                const res = await uploadFiles(selectedFiles);
-                console.log("res: ", res);
-                props.SendMessage(contentHtml, res);
-                editor.commands.clearContent(true);
-                setSelectedFiles([]);
-                setIsHaveFile(false);
-                return;
-              }
-              SendFiles();
-              return;
-            }
-
-            if (content) {
-              props.SendMessage(contentHtml, null);
-              editor.commands.clearContent(true);
-            }
+            handleSend();
           }}
-          strokeWidth={1.25}
-          className="absolute cursor-pointer top-0 right-0"
-        />
+        >
+          {isSending ? (
+            <AiOutlineLoading3Quarters
+            strokeWidth={1.25}
+            className="cursor-pointer top-0 right-0 text-white mr-0.5 animate-spin"
+          />) : (
+            <IoIosSend
+            strokeWidth={1.25}
+            className="cursor-pointer top-0 right-0 text-white mr-0.5 rotate-45" />
+          )}
+        </button>
       </div>
       {/* Hiển thị các file upload */}
       <div className="flex flex-row my-2 gap-4 flex-wrap">
