@@ -10,13 +10,14 @@ import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { toCharacters } from "/utils/ParseName";
 import { Suspense, useEffect, useState } from "react";
 import { getWorkspace, updateWorkspace } from "/api";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import useInfo from "../../storages/useInfo";
 
 export default function () {
    const { toast } = useToast();
-   const [workspace, setWorkspace] = useState(null);
+   const { workspace, setWorkspace } = useInfo();
    const [name, setName] = useState("");
    const [description, setDescription] = useState("");
    const [logo, setLogo] = useState("");
@@ -29,8 +30,12 @@ export default function () {
 
    useEffect(() => {
       const fetchData = async () => {
-         const data = await getWorkspace(workspaceId);
-         setWorkspace(data);
+         let data;
+         if (workspace) data = workspace;
+         else {
+            data = await getWorkspace(workspaceId);
+            setWorkspace(data);
+         }
          setName(data.name);
          setDescription(data.description);
          setLogo(data.avatarUrl);
@@ -59,21 +64,50 @@ export default function () {
             document.querySelector(".submit-but").setAttribute("disabled", "");
             document.querySelector(".reset-but").setAttribute("disabled", "");
             const logoObj = document.querySelector(".workspace-logo").files[0];
-            await updateWorkspace(workspaceId, logoObj, name, description);
+            const res = await updateWorkspace(workspaceId, logoObj, name, description);
             document.querySelector(".loader").classList.add("hidden");
             document.querySelector(".submit-but").removeAttribute("disabled");
             document.querySelector(".reset-but").removeAttribute("disabled");
-            setDefaultValue({
-               name: name.trim(),
-               description: description.trim(),
-               logo: logo,
-            });
+            if(res.ok) {
+               setDefaultValue({
+                  name: name.trim(),
+                  description: description.trim(),
+                  logo: logo,
+               });
+               const modifiedWorkspace = {...workspace}
+               modifiedWorkspace.logo = logo
+               modifiedWorkspace.name = name
+               modifiedWorkspace.description = description
+               setWorkspace(modifiedWorkspace)
+               toast({
+                  duration: 1000,
+                  title: (
+                     <p className="text-green-600 flex items-center">
+                        <Check className="w-6 h-6 stroke-green-600 mr-2" />
+                        Update successfully!
+                     </p>
+                  ),
+               });
+               return
+            }
+            if(res.status === 403) {
+               toast({
+                  duration: 1000,
+                  title: (
+                     <p className="text-red-600 flex items-center">
+                        <X className="w-6 h-6 stroke-red-600 mr-2" />
+                        You don't have permission to do this action
+                     </p>
+                  ),
+               });
+               return
+            }
             toast({
                duration: 1000,
                title: (
-                  <p className="text-green-600 flex items-center">
-                     <Check className="w-6 h-6 stroke-green-600 mr-2" />
-                     Update successfully!
+                  <p className="text-red-600 flex items-center">
+                     <X className="w-6 h-6 stroke-red-600 mr-2" />
+                     Something went wrong, please try again
                   </p>
                ),
             });

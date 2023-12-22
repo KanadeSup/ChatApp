@@ -15,21 +15,37 @@ import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { getUserById } from "../api";
 import OneSignal from "react-onesignal";
+import useInfo from "../storages/useInfo";
+import { getWorkspace } from "../api";
 
 function showMenu(event) {
    document.querySelector(".user-menu").classList.toggle("hidden");
 }
 export default function (props) {
-   const [user, setUser] = useState({});
+   // const [user, setUser] = useState({});
    const { workspaceId } = useParams();
+   const { workspace, user, setWorkspace, setUser } = useInfo();
    const utilites = Object.keys(props);
    const navigate = useNavigate();
    useEffect(() => {
-      const userId = localStorage.getItem("userId");
-      getUserById(userId).then((data) => {
-         setUser(data);
-      });
+      async function fetchWorkspace() {
+         if(workspace === null && workspaceId) {
+            const data = await getWorkspace(workspaceId)
+            setWorkspace(data)
+         }
+      }
+      fetchWorkspace()
+
+      async function fetchUser() {
+         if(user === null) {
+            const userId = localStorage.getItem("userId");
+            const data = await getUserById(userId)
+            setUser(data)
+         }
+      }
+      fetchUser()
    }, []);
+
    function handleLogout() {
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
@@ -81,17 +97,14 @@ export default function (props) {
                case "workspace":
                   return (
                      <div key={utility} className="w-12 h-12 bg-gray-200 rounded border border-gray-300 cursor-pointer overflow-hidden">
-                        <Suspense>
-                           <Await resolve={props.workspace}>
-                              {(workspace) => {
-                                 return (
-                                    <NavLink to={`/Workspace/${workspace.id}`}>
-                                       <img src={workspace.avatarUrl} className="w-12 h-12 rounded" />
-                                    </NavLink>
-                                 );
-                              }}
-                           </Await>
-                        </Suspense>
+                        <NavLink to={`/Workspace/${workspace?.id}`}>
+                           <Avatar className="w-12 h-12 rounded">
+                              <AvatarImage src={workspace?.avatarUrl} className="w-12 h-12 rounded"/>
+                              <AvatarFallback className="w-12 h-12 rounded">
+
+                              </AvatarFallback>
+                           </Avatar>
+                        </NavLink>
                      </div>
                   );
                case "logo":
@@ -105,19 +118,18 @@ export default function (props) {
                   );
             }
          })}
-
          {/* Avatar */}
          <DropdownMenu>
             <DropdownMenuTrigger className="mt-auto outline-none mb-3">
                <Avatar className="rounded w-12 h-12">
-                  <AvatarImage className="rounded" src={user.picture} />
+                  <AvatarImage className="rounded" src={user?.picture} />
                   <AvatarFallback className="rounded-lg border border-gray-500 bg-gray-200">
                      <User2 className="stroke-gray-800" />
                   </AvatarFallback>
                </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="absolute left-6 bottom-1 w-48">
-               <DropdownMenuLabel> {user.username} </DropdownMenuLabel>
+               <DropdownMenuLabel> {user?.username} </DropdownMenuLabel>
                <DropdownMenuSeparator />
                <Link to={workspaceId ? `/${workspaceId}/UserSetting` : "/UserSetting"}>
                   <DropdownMenuItem className="cursor-pointer">
