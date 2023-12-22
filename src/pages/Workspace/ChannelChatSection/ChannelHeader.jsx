@@ -1,6 +1,5 @@
 import { Hash, MoreVertical, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useEffect } from "react";
 
 export default function ChannelHeader(props) {
    return (

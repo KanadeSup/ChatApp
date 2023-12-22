@@ -9,12 +9,13 @@ import { getUserById } from "../../../api";
 import useColleagueStore from "@/storages/useColleagueStore";
 import useHubStore from "@/storages/useHubStore";
 import { InfiniteScroll } from "@/components/InfinityScroll";
-import { SendMessage, UpdateMessage, DeleteMessage, SendEmoji, PinMessage } from "@/utils/hubs";
+import { SendMessage, UpdateMessage, DeleteMessage, SendEmoji, PinMessage, DeleteFileColleague } from "@/utils/hubs";
 
 export default function ChatBoxContent() {
   const { conversationId } = useParams();
   const { hub, setHub } = useHubStore();
   const [messages, setMessages] = useState([]);
+  console.log("messages chatbox: ", messages);
   const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
   const { isNewMessage, setIsNewMessage } = useIsNewMessage(); // Cập nhập danh sách hiển thị tin nhắn ở sideBar
   const [user, setUser] = useState(null);
@@ -277,6 +278,7 @@ export default function ChatBoxContent() {
               }
               SendEmoji={(emoji) => SendEmoji(hub, message.id, emoji)}
               PinMessage={(messageId) => PinMessage(hub, messageId, !message.isPined)}
+              DeleteFile={(fileId) => DeleteFileColleague(hub, fileId, message.id, setMessages, setIsClickedReply, false)}
             />
           ))}
         </InfiniteScroll>

@@ -78,6 +78,7 @@ export default function MessageReply(props) {
         </div>
       </div>
 
+      {/*-- Message Head dont have hover --*/}
       {props.messageHead ? (
         ""
       ) : (

@@ -8,13 +8,13 @@ import { getMessages } from "../../../api";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { InfiniteScroll } from "@/components/InfinityScroll";
 import useHubStore from "../../../storages/useHubStore";
-import useJump from "../../../storages/useJump";
 import {
   SendMessage,
   UpdateMessage,
   DeleteMessage,
   SendEmoji,
   PinMessage,
+  DeleteFile
 } from "@/utils/hubs";
 import useChannelStore from "@/storages/useChannelStore";
 import { getUserById } from "@/api";
@@ -24,6 +24,7 @@ import { getUserById } from "@/api";
 // key trước đó để xem component có thay đổi hay không. Nếu key không thay đổi, React sẽ cập nhật component hiện tại thay vì tạo lại từ đầu
 
 export default function ChannelChatBoxContent(props) {
+  console.log("ChannelChatBoxContent");
   const { channelId } = useParams();
   const { hub, setHub } = useHubStore();
   const [messages, setMessages] = useState([]);
@@ -43,6 +44,34 @@ export default function ChannelChatBoxContent(props) {
     isClickedChannelUtility,
     setIsClickedChannelUtility,
   } = useChannelStore();
+
+  //Kết nối với hub
+  useEffect(() => {
+    // check access token is valid or not expired
+    if (!localStorage.getItem("token")) {
+      setHub(null);
+      return;
+    }
+    async function connect() {
+      const connection = new HubConnectionBuilder()
+        .withUrl(`https://api.firar.live/chatHub`, {
+          accessTokenFactory: () => {
+            return localStorage.getItem("token");
+          },
+        })
+        .withAutomaticReconnect()
+        .configureLogging(LogLevel.Information)
+        .build();
+      try {
+        await connection.start();
+        console.log("connect success");
+        setHub(connection);
+      } catch (e) {
+        console.log("error", e);
+      }
+    }
+    connect();
+  }, []);
 
   //Lấy thông tin user
   async function fetchData() {
@@ -94,6 +123,7 @@ export default function ChannelChatBoxContent(props) {
 
   // Hub nhận tin nhắn mới
   useEffect(() => {
+    console.log("Nhan tin nhawn chat box", hub);
     if (hub) {
       hub.off("receive_message");
       hub.on("receive_message", (message) => {
@@ -140,7 +170,7 @@ export default function ChannelChatBoxContent(props) {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub]);
+  }, [hub, channelId]);
 
   // Hub nhận tin nhắn update
   useEffect(() => {
@@ -148,13 +178,13 @@ export default function ChannelChatBoxContent(props) {
       hub.off("update_message");
       hub.on("update_message", (message_updated) => {
         console.log("đã chạy update message:", message_updated);
-        if (message_updated.parentId === null) {
+        if (message_updated.parentId === null) {  // Nếu tin nhắn không có parentId
           setMessages((messages) =>
             messages.map((message) =>
               message.id === message_updated.id ? message_updated : message
             )
           );
-        } else {
+        } else { // Nếu tin nhắn có parentId
           setMessagesChild((messagesChild) =>
             messagesChild.map((messageChild) => {
               if (messageChild.id === message_updated.id) {
@@ -202,7 +232,7 @@ export default function ChannelChatBoxContent(props) {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub]);
+  }, [hub, channelId]);
 
   // Hub nhận tin nhắn delete
   useEffect(() => {
@@ -260,7 +290,7 @@ export default function ChannelChatBoxContent(props) {
         hub.off("error");
       };
     }
-  }, [hub]);
+  }, [hub, channelId]);
 
   // scroll to bottom
   const scrollToBottom = () => {
@@ -303,6 +333,7 @@ export default function ChannelChatBoxContent(props) {
               PinMessage={(messageId) =>
                 PinMessage(hub, messageId, !message.isPined)
               }
+              DeleteFile={(fileId) => DeleteFile(hub, fileId)}
             />
           ))}
         </InfiniteScroll>

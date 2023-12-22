@@ -5,7 +5,7 @@ import useHubStore from "../storages/useHubStore";
 import useJump from "../storages/useJump";
 import { PinMessage } from "../utils/hubs";
 import { getMessageJump } from "../api";
-
+import { typeFile, imgFile } from "../utils/supportImgFile";
 export default function PinnedMessage(props) {
   const [isHoverUnpin, setIsHoverUnpin] = useState(false);
   const { hub } = useHubStore();

@@ -9,7 +9,7 @@ export default function (props) {
   const [selectedOption, setSelectedOption] = useState("");
   return (
     <div className="flex flex-col w-2/5 flex-shrink-0 border shadow">
-      {selectedOption === "" && <ChannelOption setSelectedOption={setSelectedOption} />}
+      {selectedOption === "" && <ChannelOption setSelectedOption={setSelectedOption} setIsClickedChannelUtility={props.setIsClickedChannelUtility} />}
       {selectedOption === "pinnedMessageList" && <PinnedMessageList setJump={props.setJump} setSelectedOption={setSelectedOption} conversationId={props.conversationId} isChannel={props.isChannel} setPinMessages={props.setPinMessages} pinMessages={props.pinMessages} setMessages={props.setMessages}/>}
       {selectedOption === "allMember" && <AllMember setSelectedOption={setSelectedOption}/>}
       {selectedOption === "media" && <Media setSelectedOption={setSelectedOption}/>}
