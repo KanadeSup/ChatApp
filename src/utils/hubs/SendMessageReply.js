@@ -24,14 +24,14 @@ async function SendMessageReply(
     }
     if (hub) {
         console.log("conversationId reply: ", conversationId);
-        const data = await hub.invoke("SendMessageAsync", {
+        const message = await hub.invoke("SendMessageAsync", {
             ReceiverId: conversationId,
             Content: content,
             IsChannel: isChannel,
             ReplyTo: message.id,
         });
         const messageChild = {
-            id: data,
+            id: message.id,
             sendAt: new Date().toISOString(),
             senderName: user.firstName + " " + user.lastName,
             senderId: localStorage.getItem("userId"),

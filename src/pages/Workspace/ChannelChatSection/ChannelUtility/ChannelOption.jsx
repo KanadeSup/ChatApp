@@ -2,12 +2,14 @@ import { useState } from "react";
 import Assets from "./Assets";
 import { GoPin } from "react-icons/go";
 import { IoPeopleOutline } from "react-icons/io5";
+import { IoClose } from "react-icons/io5";
 export default function ChannelOption(props) {
   const [showAssets, setShowAssets] = useState(false);
   return (
     <>
-      <div className="font-medium py-2 px-5 border-b-2 border-gray-300 text-slate-700 text-base">
+      <div className="flex  justify-between items-center font-medium py-2 px-5 border-b-2 border-gray-300 text-slate-700 text-base">
         # channel 1
+        <IoClose className="cursor-pointer w-5 h-5" onClick={() => props.setIsClickedChannelUtility(false)}/>
       </div>
 
       {/* Pinned Message */}
