@@ -9,12 +9,11 @@ import {
   Bold,
   Italic,
   Underline as UnderlineIcon,
-  SendHorizontal,
 } from "lucide-react";
 import React from "react";
 import { useRef, useState } from "react";
-
-
+import { IoIosSend } from "react-icons/io";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const DisableEnter = Extension.create({
   addKeyboardShortcuts() {
@@ -47,27 +46,54 @@ const ChatBox = React.forwardRef((props) => {
   const refFile = useRef(null);
   const [isHaveFile, setIsHaveFile] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [isHoverUpload, setIsHoverUpload] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   const handleFileUpload = async (event) => {
+    console.log("event: ", event.target.value);
     setSelectedFiles([...event.target.files]);
     setIsHaveFile(true);
-    
-    // const files = Array.from(event.target.files);
-    // const res = await uploadFiles(files);
-    // console.log("res: ", res);
   };
 
-  function handleRemoveFile(index) {
+  function handleRemoveFile(e, index) {
     const newFiles = [...selectedFiles];
     newFiles.splice(index, 1);
     setSelectedFiles(newFiles);
     if (newFiles.length === 0) setIsHaveFile(false);
   }
 
+  async function handleSend() {
+    if (isSending) return; // Nếu đang gửi, không làm gì cả
+    setIsSending(true); // Đặt trạng thái gửi thành true
+  
+    const contentHtml = editor.getHTML();
+    const content = ref.current.textContent;
+  
+    if (isHaveFile) {
+      try {
+        const res = await uploadFiles(selectedFiles);
+        console.log("res: ", res);
+        await props.SendMessage(contentHtml, res);
+        editor.commands.clearContent(true);
+        setSelectedFiles([]);
+        setIsHaveFile(false);
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (content) {
+      try {
+        await props.SendMessage(contentHtml, null);
+        editor.commands.clearContent(true);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  
+    setIsSending(false); // Đặt trạng thái gửi thành false khi hoàn tất
+  }
+
   return (
-    <div
-      className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2"
-    >
+    <div className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2">
       {/* Format bar */}
       <div className="flex">
         <button
@@ -92,61 +118,59 @@ const ChatBox = React.forwardRef((props) => {
         </button>
 
         {/* Up file */}
-        <FileUp
-          className="w-7 h-7 p-1.5 cursor-pointer text-slate-700"
-          onClick={() => refFile.current.click()}
-        />
-        <input
-          type="file"
-          ref={refFile}
-          style={{ display: "none" }}
-          multiple
-          onChange={handleFileUpload}
-        />
+        <div className="relative">
+          <FileUp
+            className="w-7 h-7 p-1.5 cursor-pointer text-slate-700"
+            onClick={() => refFile.current.click()}
+            onMouseEnter={() => setIsHoverUpload(true)}
+            onMouseLeave={() => setIsHoverUpload(false)}
+          />
+          <input
+            type="file"
+            ref={refFile}
+            style={{ display: "none" }}
+            multiple
+            onChange={handleFileUpload}
+          />
+          {isHoverUpload && (
+            <>
+              <div className="absolute z-20 w-2 h-2 right-2.5 bottom-9 bg-black transform rotate-45"></div>
+              <div className="absolute flex items-center justify-center h-6 text-xs w-32 -top-9 -left-5 rounded-sm bg-black text-white">
+                Upload file {`(<30mb)`}
+              </div>
+            </>
+          )}
+        </div>
       </div>
       {/* Chatbox */}
       <div
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            const contentHtml = editor.getHTML();
-            const content = ref.current.textContent;
-            if (content) {
-              props.SendMessage(contentHtml);
-              editor.commands.clearContent(true);
-            }
+            handleSend();
           }
         }}
         className="outline-none mt-1 mb-2 relative max-w-[calc(100vw-25rem)]"
         ref={ref}
       >
         <EditorContent className="pr-10" editor={editor} spellCheck="false" />
-        <SendHorizontal
+        <button
+          className="absolute cursor-pointer w-8 h-6 flex items-center justify-center rounded-sm bg-green-700 top-0 right-0 hover:bg-green-600"
+          disabled={isSending}
           onClick={() => {
-            const contentHtml = editor.getHTML();
-            const content = ref.current.textContent;
-
-            if (isHaveFile) {
-              async function SendFiles() {
-                const res = await uploadFiles(selectedFiles);
-                console.log("res: ", res);
-                props.SendMessage(contentHtml, res);
-                editor.commands.clearContent(true);
-                setSelectedFiles([]);
-                setIsHaveFile(false);
-                return;
-              }
-              SendFiles();
-            }
-
-            if (content) {
-              props.SendMessage(contentHtml, null);
-              editor.commands.clearContent(true);
-            }
+            handleSend();
           }}
-          strokeWidth={1.25}
-          className="absolute cursor-pointer top-0 right-0"
-        />
+        >
+          {isSending ? (
+            <AiOutlineLoading3Quarters
+            strokeWidth={1.25}
+            className="cursor-pointer top-0 right-0 text-white mr-0.5 animate-spin"
+          />) : (
+            <IoIosSend
+            strokeWidth={1.25}
+            className="cursor-pointer top-0 right-0 text-white mr-0.5 rotate-45" />
+          )}
+        </button>
       </div>
       {/* Hiển thị các file upload */}
       <div className="flex flex-row my-2 gap-4 flex-wrap">
@@ -154,14 +178,19 @@ const ChatBox = React.forwardRef((props) => {
           <div key={index}>
             <div className="relative flex flex-row justify-start px-4 py-2 border rounded-lg w-56">
               <img
-                src="https://chat.zalo.me/assets/icon-word.d7db8ecee5824ba530a5b74c5dd69110.svg"
+                src="https://chat.zalo.me/assets/icon-file-empty.6796cfae2f36f6d44242f7af6104f2bb.svg"
                 alt=""
                 className="w-8 h-8"
               />
               <div className="flex flex-col justify-center ml-2">
-                <span className="font-semibold text-base truncate w-44 pr-2">{file.name}</span>
+                <span className="font-semibold text-base truncate w-44 pr-2">
+                  {file.name}
+                </span>
               </div>
-              <X className="absolute -top-1.5 -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer" onClick={() => handleRemoveFile(index)}/>
+              <X
+                className="absolute -top-1.5 -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer"
+                onClick={(e) => handleRemoveFile(e, index)}
+              />
             </div>
           </div>
         ))}

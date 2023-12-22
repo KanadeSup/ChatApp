@@ -13,37 +13,51 @@ async function SendMessage(
     isChannel,
     files
 ) {
+    console.log("files: ", files);
+    let filesId = [];
+    if (files) {
+        files.forEach((file) => {
+            filesId.push(file.id);
+        });
+    }
+
     if (isChannel) {
         if (hub) {
             await hub.invoke("SendMessageAsync", {
                 ReceiverId: conversationId,
                 Content: message,
                 IsChannel: true,
-                Files: files,
+                Files: filesId,
             });
+            scrollToBottom();
         }
+        console.log("send message channel: ", message, hub);
+        console.log("channel id: ", conversationId);
         return;
     }
 
     if (hub) {
-        const data = await hub.invoke("SendMessageAsync", {
+        const newMessage = await hub.invoke("SendMessageAsync", {
             ReceiverId: conversationId,
             Content: message,
             IsChannel: isChannel,
+            Files: filesId,
         });
+        console.log("send message conver: ", newMessage);
         setIsNewMessage(true);
         scrollToBottom();
-        const message2 = {
-            id: data,
-            sendAt: new Date().toISOString(),
-            senderName: user.firstName + " " + user.lastName ? user.lastName : "",
-            senderId: localStorage.getItem("userId"),
-            content: message,
-            senderAvatar: user.picture,
-            childCount: 0,
-            reactionCount: {}
-        };
-        setMessages((messages) => [...messages, message2]);
+        // const message2 = {
+        //     id: newMessage.id,
+        //     sendAt: new Date().toISOString(),
+        //     senderName: user.firstName + " " + user.lastName ? user.lastName : "",
+        //     senderId: localStorage.getItem("userId"),
+        //     content: message,
+        //     senderAvatar: user.picture,
+        //     childCount: 0,
+        //     reactionCount: {},
+        //     files: files,
+        // };
+        setMessages((messages) => [...messages, newMessage]);
     } else {
         console.error("Hub is not connected");
     }

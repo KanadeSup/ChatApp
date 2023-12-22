@@ -9,17 +9,32 @@ import { getUserById } from "../../../api";
 import useColleagueStore from "@/storages/useColleagueStore";
 import useHubStore from "@/storages/useHubStore";
 import { InfiniteScroll } from "@/components/InfinityScroll";
-import { SendMessage, UpdateMessage, DeleteMessage, SendEmoji, PinMessage } from "@/utils/hubs";
+import {
+  SendMessage,
+  UpdateMessage,
+  DeleteMessage,
+  SendEmoji,
+  PinMessage,
+  DeleteFileColleague,
+} from "@/utils/hubs";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function ChatBoxContent() {
   const { conversationId } = useParams();
   const { hub, setHub } = useHubStore();
   const [messages, setMessages] = useState([]);
+  console.log("messages chatbox: ", messages);
   const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
   const { isNewMessage, setIsNewMessage } = useIsNewMessage(); // Cập nhập danh sách hiển thị tin nhắn ở sideBar
   const [user, setUser] = useState(null);
-  const { isClickedReply, setIsClickedReply, setIsNewChat, message, setMessage } =
-    useColleagueStore();
+  const {
+    isClickedReply,
+    setIsClickedReply,
+    setIsNewChat,
+    message,
+    setMessage,
+  } = useColleagueStore();
   const [forceScroll, setForceScroll] = useState({});
   const scrollDivRef = useRef();
 
@@ -64,9 +79,12 @@ export default function ChatBoxContent() {
           ) {
             // If the message has a parent in the current set of messages
             const parentMessage = { ...messages[parentMessageIndex] }; // Create a new copy of the parent message
-        
+
             if (message.parentId === localStorage.getItem("idMessage")) {
-              setMessagesChild((messagesChild) => [...messagesChild, newMessage,]);
+              setMessagesChild((messagesChild) => [
+                ...messagesChild,
+                newMessage,
+              ]);
             }
             parentMessage.childCount += 1;
 
@@ -91,10 +109,6 @@ export default function ChatBoxContent() {
     }
   }, [hub]);
 
-  if (!conversationId) {
-    return <p>there is no chat here</p>;
-  }
-
   //Lấy thông tin user
   async function fetchData() {
     const data = await getUserById(localStorage.getItem("userId"));
@@ -110,13 +124,11 @@ export default function ChatBoxContent() {
     async function fetchData() {
       // const now = new Date();
       // const timeCursor = encodeURIComponent(now.toISOString());
-      const data = await getMessagesColleague(conversationId, null, 20);
+      const data = await getMessagesColleague(conversationId, null, 15);
       // Sắp xếp tin nhắn theo thời gian
-      const sortedData = data.sort(
-        (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
-      );
-
-      setMessages(sortedData);
+      if (data.length > 0) {
+        setMessages(data.reverse());
+      }
     }
     fetchData();
   }, [conversationId]);
@@ -134,13 +146,15 @@ export default function ChatBoxContent() {
             )
           );
         } else {
-          setMessagesChild(messagesChild => messagesChild.map((messageChild) => {
-            if (messageChild.id === message_updated.id) {
-              return message_updated;
-            } else {
-              return messageChild;
-            }
-          }));
+          setMessagesChild((messagesChild) =>
+            messagesChild.map((messageChild) => {
+              if (messageChild.id === message_updated.id) {
+                return message_updated;
+              } else {
+                return messageChild;
+              }
+            })
+          );
         }
         // Lưu lại tin nhắn để hiển thị trong reply box
         if (message_updated.id === localStorage.getItem("idMessage")) {
@@ -187,10 +201,9 @@ export default function ChatBoxContent() {
               // Replace the old parent message with the updated one
               messages[parentMessageIndex] = parentMessage;
               return messages;
-            } 
+            }
             return messages;
           });
-          
         }
         if (message_deleted.id === localStorage.getItem("idMessage")) {
           setMessage(null);
@@ -247,15 +260,35 @@ export default function ChatBoxContent() {
   };
 
   useEffect(() => {
-    scrollDivRef.current.scroll({top: scrollDivRef.current.scrollHeight, behavior:"smooth"})
+    if (scrollDivRef.current) {
+      scrollDivRef.current.scroll({
+        top: scrollDivRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   }, [forceScroll]);
 
+  // if (messages.length === 0) {
+  //   console.log("messages null");
+  //   return (
+  //     <div className="flex flex-col justify-center items-center h-full">
+  //       <Avatar>
+  //         <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+  //         <AvatarFallback>CN</AvatarFallback>
+  //       </Avatar>
+  //       <span>{user?.firstName }</span>
+  //       <p className="text-gray-500 text-lg font-semibold">
+  //         Bắt đầu cuộc trò chuyện
+  //       </p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex flex-row">
       <div
         style={{ height: "calc(100vh - 3rem)" }}
-        className="flex flex-col w-full" 
+        className="flex flex-col w-full"
       >
         <InfiniteScroll
           getMore={fetchMoreData}
@@ -265,6 +298,7 @@ export default function ChatBoxContent() {
         >
           {messages.map((message, index) => (
             <Message
+              id={`message-${message.id}`}
               key={index}
               message={message}
               setMessage={setMessage}
@@ -276,10 +310,23 @@ export default function ChatBoxContent() {
                 UpdateMessage(hub, idMessage, message, false)
               }
               SendEmoji={(emoji) => SendEmoji(hub, message.id, emoji)}
-              PinMessage={(messageId) => PinMessage(hub, messageId, !message.isPined)}
+              PinMessage={(messageId) =>
+                PinMessage(hub, messageId, !message.isPined)
+              }
+              DeleteFile={(fileId) =>
+                DeleteFileColleague(
+                  hub,
+                  fileId,
+                  message.id,
+                  setMessages,
+                  setIsClickedReply,
+                  false
+                )
+              }
             />
           ))}
         </InfiniteScroll>
+
         <ChatBox
           SendMessage={(message, files) =>
             SendMessage(
