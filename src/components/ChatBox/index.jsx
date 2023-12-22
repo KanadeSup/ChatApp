@@ -14,8 +14,6 @@ import {
 import React from "react";
 import { useRef, useState } from "react";
 
-
-
 const DisableEnter = Extension.create({
   addKeyboardShortcuts() {
     return {
@@ -47,11 +45,12 @@ const ChatBox = React.forwardRef((props) => {
   const refFile = useRef(null);
   const [isHaveFile, setIsHaveFile] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [isHoverUpload, setIsHoverUpload] = useState(false);
   const handleFileUpload = async (event) => {
     console.log("event: ", event.target.value);
     setSelectedFiles([...event.target.files]);
     setIsHaveFile(true);
-    
+
     // const files = Array.from(event.target.files);
     // const res = await uploadFiles(files);
     // console.log("res: ", res);
@@ -65,9 +64,7 @@ const ChatBox = React.forwardRef((props) => {
   }
 
   return (
-    <div
-      className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2"
-    >
+    <div className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2">
       {/* Format bar */}
       <div className="flex">
         <button
@@ -92,17 +89,29 @@ const ChatBox = React.forwardRef((props) => {
         </button>
 
         {/* Up file */}
-        <FileUp
-          className="w-7 h-7 p-1.5 cursor-pointer text-slate-700"
-          onClick={() => refFile.current.click()}
-        />
-        <input
-          type="file"
-          ref={refFile}
-          style={{ display: "none" }}
-          multiple
-          onChange={handleFileUpload}
-        />
+        <div className="relative">
+          <FileUp
+            className="w-7 h-7 p-1.5 cursor-pointer text-slate-700"
+            onClick={() => refFile.current.click()}
+            onMouseEnter={() => setIsHoverUpload(true)}
+            onMouseLeave={() => setIsHoverUpload(false)}
+          />
+          <input
+            type="file"
+            ref={refFile}
+            style={{ display: "none" }}
+            multiple
+            onChange={handleFileUpload}
+          />
+          {isHoverUpload && (
+            <>
+              <div className="absolute z-20 w-2 h-2 right-2.5 bottom-9 bg-black transform rotate-45"></div>
+              <div className="absolute flex items-center justify-center h-6 text-xs w-32 -top-9 -left-5 rounded-sm bg-black text-white">
+                Upload file {`(<30mb)`}
+              </div>
+            </>
+          )}
+        </div>
       </div>
       {/* Chatbox */}
       <div
@@ -140,7 +149,6 @@ const ChatBox = React.forwardRef((props) => {
               return;
             }
 
-
             if (content) {
               props.SendMessage(contentHtml, null);
               editor.commands.clearContent(true);
@@ -156,14 +164,19 @@ const ChatBox = React.forwardRef((props) => {
           <div key={index}>
             <div className="relative flex flex-row justify-start px-4 py-2 border rounded-lg w-56">
               <img
-                src="https://chat.zalo.me/assets/icon-word.d7db8ecee5824ba530a5b74c5dd69110.svg"
+                src="https://chat.zalo.me/assets/icon-file-empty.6796cfae2f36f6d44242f7af6104f2bb.svg"
                 alt=""
                 className="w-8 h-8"
               />
               <div className="flex flex-col justify-center ml-2">
-                <span className="font-semibold text-base truncate w-44 pr-2">{file.name}</span>
+                <span className="font-semibold text-base truncate w-44 pr-2">
+                  {file.name}
+                </span>
               </div>
-              <X className="absolute -top-1.5 -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer" onClick={(e) => handleRemoveFile(e, index)}/>
+              <X
+                className="absolute -top-1.5 -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer"
+                onClick={(e) => handleRemoveFile(e, index)}
+              />
             </div>
           </div>
         ))}

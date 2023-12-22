@@ -8,13 +8,13 @@ import { getMessages } from "../../../api";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { InfiniteScroll } from "@/components/InfinityScroll";
 import useHubStore from "../../../storages/useHubStore";
-import useJump from "../../../storages/useJump";
 import {
   SendMessage,
   UpdateMessage,
   DeleteMessage,
   SendEmoji,
   PinMessage,
+  DeleteFile
 } from "@/utils/hubs";
 import useChannelStore from "@/storages/useChannelStore";
 import { getUserById } from "@/api";
@@ -178,13 +178,13 @@ export default function ChannelChatBoxContent(props) {
       hub.off("update_message");
       hub.on("update_message", (message_updated) => {
         console.log("đã chạy update message:", message_updated);
-        if (message_updated.parentId === null) {
+        if (message_updated.parentId === null) {  // Nếu tin nhắn không có parentId
           setMessages((messages) =>
             messages.map((message) =>
               message.id === message_updated.id ? message_updated : message
             )
           );
-        } else {
+        } else { // Nếu tin nhắn có parentId
           setMessagesChild((messagesChild) =>
             messagesChild.map((messageChild) => {
               if (messageChild.id === message_updated.id) {
@@ -333,6 +333,7 @@ export default function ChannelChatBoxContent(props) {
               PinMessage={(messageId) =>
                 PinMessage(hub, messageId, !message.isPined)
               }
+              DeleteFile={(fileId) => DeleteFile(hub, fileId)}
             />
           ))}
         </InfiniteScroll>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Emoji from "/components/Emoij";
 import {
   ChevronRight,
@@ -8,7 +8,6 @@ import {
   Reply,
   Trash2,
   Pencil,
-  PinIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import convertTime from "../utils/convertTime";
@@ -16,6 +15,7 @@ import timeDifference from "../utils/timeDifferent";
 import ChatBoxEdit from "@/components/ChatBoxEdit";
 import { BsFillPinAngleFill } from "react-icons/bs";
 import FileCard from "./FileCard";
+import { GoTriangleRight } from "react-icons/go";
 
 export default function Message(props) {
   const [showEmoij, setShowEmoij] = useState(false);
@@ -25,6 +25,8 @@ export default function Message(props) {
   const [isHoveredDelete, setIsHoveredDelete] = useState(false);
   const [isHoverViewReply, setIsHoverViewReply] = useState(false);
   const [editMessage, setEditMessage] = useState(false);
+  const [isOpenFile, setIsOpenFile] = useState(true);
+  const refContent = useRef(null);
 
   return (
     <div
@@ -32,7 +34,11 @@ export default function Message(props) {
       className="mx-2 relative group"
       onMouseLeave={() => setShowEmoij(false)}
     >
-      <div className={`flex flex-col  rounded-md ${props.message.isPined ? 'bg-[rgb(254,249,236)]' : 'hover:bg-gray-100'}`}>
+      <div
+        className={`flex flex-col  rounded-md ${
+          props.message.isPined ? "bg-[rgb(254,249,236)]" : "hover:bg-gray-100"
+        }`}
+      >
         {props.message.isPined && (
           <div className="pt-1 mx-9 flex gap-2 items-center">
             <BsFillPinAngleFill className="w-3 h-3 text-yellow-600" />
@@ -67,7 +73,6 @@ export default function Message(props) {
                 )} */}
               </span>
             </div>
-
             {/*-- Content --*/}
             {editMessage ? (
               <ChatBoxEdit
@@ -78,6 +83,7 @@ export default function Message(props) {
             ) : (
               <>
                 <div
+                  ref={refContent}
                   className="text-[15px] mt-1 leading-relaxed w-full break-all"
                   dangerouslySetInnerHTML={{ __html: props.message.content }}
                 ></div>
@@ -88,19 +94,49 @@ export default function Message(props) {
                 )}
               </>
             )}
-
             {/*-- Files --*/}
-            <div>
-              {props.message.files && (
-                <div className="flex flex-row flex-wrap gap-2 mt-1">
-                  {props.message.files.map((file) => (
-                    <FileCard key={file.id} file={file} />
-                  ))}
-                  </div>
-              )}
-                
-            </div>
+            {props.message.files?.length > 0 && (
+              <div>
+                <div className="flex items-center text-slate-600 text-sm gap-1">
+                  <span>{props.message.files.length} files</span>{" "}
+                  <GoTriangleRight
+                    className={`w-4 h-4 cursor-pointer hover:bg-gray-200 rounded-full ${
+                      isOpenFile ? "rotate-90" : ""
+                    }`}
+                    onClick={() => setIsOpenFile(!isOpenFile)}
+                  />
+                </div>
 
+                {isOpenFile && (
+                  <div className="flex flex-row flex-wrap gap-2 mt-1">
+                    {props.message.files.map((file) => (
+                      <FileCard
+                        key={file.index}
+                        file={file}
+                        DeleteFile={(fileId) => {
+                          if (refContent.current.textContent === "" && props.message.files.length === 1)
+                          {
+                            console.log("da chay delete message");
+                            props.DeleteMessage(props.message.id);
+                            return;
+                          }
+                          props.DeleteFile(fileId);
+                        }}
+                        // DeleteMessage={() => {
+                        //   console.log("content: ", refContent.current.textContent);
+                        //   console.log("files: ", props.message.files.length);
+                        //   if (refContent.current.textContent === "" && props.message.files.length === 1)
+                        //   {
+                        //     console.log("da chay delete message");
+                        //     props.DeleteMessage(props.message.id);
+                        //   }
+                        // }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             {/*-- List Emoij --*/}
             <div className="flex justify-start flex-wrap items-center pt-1 gap-2">
               {props.message.reactionCount &&
