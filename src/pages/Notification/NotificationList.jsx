@@ -4,7 +4,7 @@ import { Switch } from "@/components/ui/switch"
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import getNotifications from "../../api/notification/getNotifications";
-
+import { Skeleton } from "@/components/ui/skeleton"
 const categories = [
    "All",
    "General",
@@ -39,8 +39,8 @@ export default function ({ setNotification }) {
    }, [])
    return (
       // header
-      <div className="h-screen w-96 bg-gray-50 border-r flex-shrink-0 flex flex-col">
-         <div className="text-md flex justify-between items-center py-3 px-3 h-12 bg-gray-50 mt-1">
+      <div className="h-screen w-96 border-r flex-shrink-0 flex flex-col">
+         <div className="text-md flex justify-between items-center py-3 px-3 h-12 mt-1">
             <span className="font-bold text-neutral-800 text-xl">Notification</span>
             <div className="flex items-center gap-1">
               <span className="text-sm font-bold"> unread </span>
@@ -93,7 +93,19 @@ export default function ({ setNotification }) {
                         }}
                      />
                   )
-               }) : ""
+               }) : (
+                  <div className="space-y-5 mt-5 px-2">
+                     {
+                        [
+                           <Skeleton key={1} className="w-full h-12"/>,
+                           <Skeleton key={2} className="w-full h-12"/>,
+                           <Skeleton key={3} className="w-full h-12"/>,
+                           <Skeleton key={4} className="w-full h-12"/>,
+                           <Skeleton key={5} className="w-full h-12"/>
+                        ]
+                     }
+                  </div>
+               )
          }
          </div>
       </div>
