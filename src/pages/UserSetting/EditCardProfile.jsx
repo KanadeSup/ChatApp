@@ -11,8 +11,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { useNavigate } from "react-router-dom";
 import updateUserAvatar from "../../api/user/updateUserAvatar";
+import useInfo from "../../storages/useInfo";
 
-export default function ({ user, isUpdate, setIsUpdate }) {
+export default function ({ user, isUpdate, setIsUpdate, setUser }) {
    const [firstName, setFirstName] = useState();
    const [lastName, setLastName] = useState();
    const [gender, setGender] = useState();
@@ -23,33 +24,38 @@ export default function ({ user, isUpdate, setIsUpdate }) {
    const [file, setFile] = useState();
    const [isLoading, setIsLoading] = useState(false);
    const navigate = useNavigate();
-
+   const [open, setOpen] = useState(false)
    useEffect(() => {
-      const fetchUser = async () => {
-         const data = await getUserById(localStorage.getItem("userId"));
-         setFirstName(data.firstName);
-         setLastName(data.lastName);
-         setGender(data.gender);
-         setPhone(data.phone);
-         setBirthDay(data.birthDay);
-         setEmail(data.email);
-         setAvatar(data.picture)
-      };
-      fetchUser();
+      setFirstName(user.firstName);
+      setLastName(user.lastName);
+      setGender(user.gender);
+      setPhone(user.phone);
+      setBirthDay(user.birthDay);
+      setEmail(user.email);
+      setAvatar(user.picture);
    }, []);
 
    async function handleSave() {
-      console.log("click: ", firstName, lastName, gender, phone, birthDay);
       setIsLoading(true);
       await updateUser(user.id, firstName, lastName, gender, phone, email, birthDay);
-      if(file) await updateUserAvatar(user.id, file)
+      if (file) await updateUserAvatar(user.id, file);
       setIsLoading(false);
       navigate("/UserSetting/Profile");
       setIsUpdate(!isUpdate);
+      const modifiedUser = { ...user };
+      modifiedUser.firstName = firstName;
+      modifiedUser.lastName = lastName;
+      modifiedUser.gender = gender;
+      modifiedUser.phone = phone;
+      modifiedUser.email = email;
+      modifiedUser.birthDay = birthDay;
+      modifiedUser.picture = avatar;
+      setUser(modifiedUser);
+      setOpen(false)
    }
 
    return (
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
          <DialogTrigger asChild>
             <Button variant="outline" size="icon" className="ml-auto self-start w-7 h-7 absolute top-2 right-2">
                <Pencil className="stroke-gray-500 w-4 h-4" />
@@ -69,26 +75,26 @@ export default function ({ user, isUpdate, setIsUpdate }) {
                         type="file"
                         className="hidden"
                         onChange={(e) => {
-                           if(e.target.files[0] && e.target.files[0].type.split("/")[0] === "image") {
-                              const imgFile = e.target.files[0]
-                              const reader = new FileReader()
-                              reader.onload = function(e) {
-                                 const img = document.createElement("img")
-                                 img.onload = function(e) {
-                                    const canvas = document.createElement("canvas")
-                                    const ctx = canvas.getContext("2d")
-                                    canvas.width = 100 
-                                    canvas.height = 100
-                                    ctx.drawImage(img,0,0,100,100)
-                                    setAvatar(canvas.toDataURL(imgFile.type))
-                                    canvas.toBlob(blob=>{
-                                       const file = new File([blob], "avatar")
-                                       setFile(file)
-                                    })
-                                 }
+                           if (e.target.files[0] && e.target.files[0].type.split("/")[0] === "image") {
+                              const imgFile = e.target.files[0];
+                              const reader = new FileReader();
+                              reader.onload = function (e) {
+                                 const img = document.createElement("img");
+                                 img.onload = function (e) {
+                                    const canvas = document.createElement("canvas");
+                                    const ctx = canvas.getContext("2d");
+                                    canvas.width = 100;
+                                    canvas.height = 100;
+                                    ctx.drawImage(img, 0, 0, 100, 100);
+                                    setAvatar(canvas.toDataURL(imgFile.type));
+                                    canvas.toBlob((blob) => {
+                                       const file = new File([blob], "avatar");
+                                       setFile(file);
+                                    });
+                                 };
                                  img.src = e.target.result;
-                              }
-                              reader.readAsDataURL(imgFile)
+                              };
+                              reader.readAsDataURL(imgFile);
                               // setAvatar(URL.createObjectURL(e.target.files[0]));
                               // setFile(e.target.files[0])
                            }
@@ -139,16 +145,16 @@ export default function ({ user, isUpdate, setIsUpdate }) {
                <DialogClose asChild>
                   <Button variant="secondary"> Cancel </Button>
                </DialogClose>
-               {
-                  isLoading ? (
-                     <Button disabled className="w-20" >
-                        <Loader2  />
-                     
-                     </Button>
-                  ) : (
-                     <Button className="w-20" onClick={handleSave}> Save </Button>
-                  )
-               }
+               {isLoading ? (
+                  <Button disabled className="w-20">
+                     <Loader2 className="animate-spin" />
+                  </Button>
+               ) : (
+                  <Button className="w-20" onClick={handleSave}>
+                     {" "}
+                     Save{" "}
+                  </Button>
+               )}
             </DialogFooter>
          </DialogContent>
       </Dialog>

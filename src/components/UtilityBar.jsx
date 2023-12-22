@@ -129,7 +129,7 @@ export default function (props) {
                </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="absolute left-6 bottom-1 w-48">
-               <DropdownMenuLabel> {user?.username} </DropdownMenuLabel>
+               <DropdownMenuLabel  className="truncate"> {user?.username} </DropdownMenuLabel>
                <DropdownMenuSeparator />
                <Link to={workspaceId ? `/${workspaceId}/UserSetting` : "/UserSetting"}>
                   <DropdownMenuItem className="cursor-pointer">
