@@ -1,7 +1,7 @@
 import myFetch from "./myFetch"
 
 export default async (id, logo, name, description) => {
-   const res = await myFetch({
+   const workspaceRes = await myFetch({
       path: `Workspace/${id}`,
       method: "PUT",
       headers: {
@@ -13,13 +13,28 @@ export default async (id, logo, name, description) => {
          "description": description.trim()
       })
    })
-   if(!logo || logo.size === 0) return
-   console.log(logo)
+   if(!logo || logo.size === 0) return {
+      data: null,
+      status: workspaceRes.status,
+      ok: workspaceRes.ok
+   }
    const formData = new FormData()
    formData.append("Avatar", logo, "image")
-   await myFetch({
+   const avatarRes = await myFetch({
       path: `Workspace/${id}/avatar`,
       method: "PUT",
       body: formData
    })
+   if(!workspaceRes.ok || !avatarRes.ok) {
+      return {
+         data: null,
+         status: workspaceRes.status,
+         ok: false
+      }
+   }
+   return {
+      data: null,
+      status: workspaceRes.status,
+      ok: true
+   }
 };

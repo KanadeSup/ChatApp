@@ -49,8 +49,14 @@ export default function ChannelList({ fetcher, name, avatar, setChannelName }) {
       fetchData()
    },[fetcherData,formCId])
    if(channelList === null) return (
-      <div className="w-full flex justify-center h-full items-center">
-         <Loader2 className="animate-spin w-10 h-10 stroke-gray-400"/>
+      <div className="px-2 py-3 flex flex-col gap-1">
+         <Skeleton className="w-48 h-9"/>
+         <Skeleton className="w-full h-9"/>
+         <Skeleton className="w-40 h-9"/>
+         <Skeleton className="w-full h-9"/>
+         <Skeleton className="w-40 h-9"/>
+         <Skeleton className="w-52 h-9"/>
+         <Skeleton className="w-full h-9"/>
       </div>
    )
    return (

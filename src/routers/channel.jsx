@@ -12,7 +12,8 @@ const deleteChannelAction = async function({ request, params }) {
    const { workspaceId, channelId } = params
    const formData = await request.formData();
    const res = await deleteChannel(workspaceId, channelId)
-   return redirect(`/Workspace/${workspaceId}`)
+   if(res.ok) return redirect(`/Workspace/${workspaceId}`)
+   return res
 }
 async function channelRolesLoader({params}) {
    const { channelId } = params

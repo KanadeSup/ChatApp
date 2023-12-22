@@ -14,9 +14,9 @@ import WorkspaceMemberDialog from "./WorkspaceMemberDialog"
 import { useEffect, useState } from "react"
 import { getMemberList as getWorkspaceMemberList } from "../../api/workspace"
 import { deleteMember, GetMemberList as getChannelMemberList, getUnchannelMembers } from "../../api/channel"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Check, Contact, Loader2, User, X } from "lucide-react"
+import { Check, Contact, Loader2, LogOut, User, X } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
    AlertDialog,
@@ -32,6 +32,7 @@ import {
 import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import ProfileDialog from "../../components/ProfileDiaglog";
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function() {
    const { workspaceId, channelId } = useParams()
@@ -43,6 +44,7 @@ export default function() {
    const [load, setLoad] = useState({})
    const [search, setSearch] = useState("")
    const userId = localStorage.getItem("userId")
+   const navigate = useNavigate()
    function forceLoad() {
       setLoad({});
    }
@@ -86,7 +88,7 @@ export default function() {
                </TableHeader>
                <TableBody>
                   {
-                     channelMembers ? 
+                     channelMembers.length !==0 ? 
                      channelMembers
                      .filter(member=> search === "" ? true: member.username.toLowerCase().includes(search.toLowerCase()))
                      .map(member=>(
@@ -113,12 +115,15 @@ export default function() {
                                  open[member.id] = undefined
                                  setOpen({...open})
                               }}>
-                                 <X className={`stroke-red-500 stroke-[3] cursor-pointer ${userId == member.id ? "invisible" : ""}`}
-                                    onClick= {e=>{
-                                       open[member.id] = true
-                                       setOpen({...open})
-                                    }}
-                                 />
+                                 {
+                                    <X className={`stroke-red-500 stroke-[3] cursor-pointer ${userId == member.id ? "invisible" : ""}`}
+                                       onClick= {e=>{
+                                          open[member.id] = true
+                                          setOpen({...open})
+                                       }}
+                                    />
+                                 }
+                                 
                                  <AlertDialogContent>
                                     <AlertDialogHeader>
                                        <AlertDialogTitle> Are you sure? </AlertDialogTitle>
@@ -168,7 +173,7 @@ export default function() {
                                        >
                                           <Button type="submit" className={`submit-${member.id}`}>
                                              <Loader2 className={`w-4 h-4 animate-spin mr-2 hidden loader-${member.id}`} />
-                                             Kick
+                                             Ok
                                           </Button>
                                        </form>
                                     </AlertDialogFooter>
@@ -176,7 +181,31 @@ export default function() {
                               </AlertDialog>
                            </TableCell>
                         </TableRow>
-                     )) : ""
+                     )) : (
+                        [
+                           (
+                              <TableRow key={1}>
+                                 <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                 <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                 <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                              </TableRow>
+                           ),
+                           (
+                              <TableRow key={2}>
+                                 <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                 <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                 <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                              </TableRow>
+                           ),
+                           (
+                              <TableRow key={3}>
+                                 <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                 <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                 <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                              </TableRow>
+                           )
+                        ]
+                     )
                   }
                </TableBody>
             </Table>

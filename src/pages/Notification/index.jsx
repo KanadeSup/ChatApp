@@ -8,16 +8,12 @@ import { useParams } from "react-router-dom";
 
 export default function () {
    const [notification, setNotification] = useState(null);
-   const [workspace, setWorkspace] = useState(null);
-   const { workspaceId } = useParams();
-   useEffect(() => {
-      if(!workspaceId) return
-      const data = getWorkspace(workspaceId);
-      setWorkspace(data);
-   }, []);
+   const {workspaceId } = useParams()
    return (
       <div className="flex">
-         {workspace ? <UtilityBar workspace={workspace} colleague notification /> : <UtilityBar logo colleague notification />}
+         {
+            workspaceId ? <UtilityBar workspace colleague notification /> : <UtilityBar logo colleague notification />
+         }
          <NotificationList setNotification={setNotification} />
          {notification ? <NotificationDetail notification={notification} /> : <NotificationDetailEmpty />}
       </div>

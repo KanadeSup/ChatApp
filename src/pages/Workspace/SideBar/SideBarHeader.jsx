@@ -22,13 +22,7 @@ export default function SideBarHeader({ fetcher, workspace }) {
          <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center h-14 border-b border-b-gray-300 justify-between px-4 cursor-pointer rounded-none rounded-b-md focus-visible:ring-0 focus-visible:ring-offset-0">
                <h2 className="text-lg font-semibold tracking-tight">
-                  <Suspense>
-                     <Await resolve={workspace}>
-                        {
-                           workspace => <p>{ workspace.name }</p>
-                        }
-                     </Await>
-                  </Suspense>
+                  <p>{ workspace ? workspace.name : "" }</p>
                </h2>
                <ChevronDown className="w-4 h-4"/>
             </Button>

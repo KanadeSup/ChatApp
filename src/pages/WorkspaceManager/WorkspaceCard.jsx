@@ -10,13 +10,16 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toCharacters } from "/utils/ParseName";
 import { User, User2 } from "lucide-react";
+import useInfo from "../../storages/useInfo";
 
 export default function ({ workspace }) {
    let { name, avatarUrl, members } = workspace;
+   const { setWorkspace } = useInfo()
    return (
       <Link
          to={`/Workspace/${workspace.id}`}
          className="w-full lg:w-[calc(100%/2-20px*1/2)] xl:w-[calc(100%/3-20px*2/3)] 2xl:w-[calc(25%-20px*3/4)] group"
+         onClick={e=> setWorkspace(workspace)}
       >
          <Card className="group-hover:border-black border-[2px] transition-colors h-60">
             <CardHeader className="flex">

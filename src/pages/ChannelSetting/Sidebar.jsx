@@ -1,5 +1,5 @@
-import { NavLink, useNavigation, useParams } from 'react-router-dom'
-import { Loader2 } from "lucide-react"
+import { NavLink, useActionData, useNavigation, useParams } from 'react-router-dom'
+import { Loader2, X } from "lucide-react"
 import { AccountSvg } from '/assets/img/SettingSvg'
 import { buttonVariants, Button } from "@/components/ui/button"
 import { Form } from "react-router-dom"
@@ -14,6 +14,9 @@ import {
    AlertDialogTitle,
    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { useEffect } from 'react'
+import { useToast } from "@/components/ui/use-toast"
+import { Toaster } from "@/components/ui/toaster"
 
 function AcceptButton({ state }) {
    if (state !== "idle") return (
@@ -35,6 +38,29 @@ function CancelButton({ state }) {
 export default function({ items }) {
    const navigation = useNavigation()
    const { workspaceId, channelId } = useParams()
+   const actionData = useActionData()
+   const {toast} = useToast()
+   useEffect(() => {
+      console.log(actionData)
+      if(!actionData) return
+      if(actionData.status === 403) {
+         toast({
+            title: 
+               <p className="flex">
+                  <X className="stroke-red-600 mr-2" />
+                  <span className="text-red-600"> You don't have permission to delete workspace </span>
+               </p>
+         })
+         return
+      }
+      toast({
+         title: 
+            <p className="flex">
+               <X className="stroke-red-600 mr-2" />
+               <span className="text-red-600"> Something went wrong please try again </span>
+            </p>
+      })
+   },[actionData])
    return(
       <nav className="flex-shrink-0 w-full flex lg:flex-col lg:w-[13%] items-stretch gap-1">
          {
@@ -85,6 +111,7 @@ export default function({ items }) {
                </AlertDialogFooter>
             </AlertDialogContent>
          </AlertDialog>
+         <Toaster />
       </nav>
    )
 }
