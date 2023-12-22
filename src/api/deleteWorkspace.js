@@ -11,4 +11,9 @@ export default async (id) => {
          "workspace-id": id,
       },
    })
+   return {
+      data: null,
+      status: res.status,
+      ok: res.ok
+   }
 };
