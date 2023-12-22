@@ -165,6 +165,10 @@ export default function () {
                                                    open[member.id] = false;
                                                    setOpen({ ...open });
                                                    if (data.ok) {
+                                                      if(userId === member.id) {
+                                                         navigate("/Workspace")
+                                                         return
+                                                      }
                                                       toast({
                                                          title: (
                                                             <p className="flex">

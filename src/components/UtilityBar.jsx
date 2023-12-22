@@ -17,16 +17,29 @@ import { getUserById } from "../api";
 import OneSignal from "react-onesignal";
 import useInfo from "../storages/useInfo";
 import { getWorkspace } from "../api";
+import getUnreadCount from "../api/notification/getUnreadCount";
+import useNotification from "../storages/useNotification";
 
 function showMenu(event) {
    document.querySelector(".user-menu").classList.toggle("hidden");
 }
 export default function (props) {
-   // const [user, setUser] = useState({});
    const { workspaceId } = useParams();
    const { workspace, user, setWorkspace, setUser } = useInfo();
+   const {unreadCount, setUnreadCount} = useNotification()
    const utilites = Object.keys(props);
    const navigate = useNavigate();
+
+   useEffect(()=> {
+      async function fetchData() {
+         const res = await getUnreadCount()
+         if(!res.ok) return
+         if(res.data === unreadCount) return
+         setUnreadCount(res.data)
+      }  
+      fetchData()
+   })
+
    useEffect(() => {
       async function fetchWorkspace() {
          if(workspace === null && workspaceId) {
@@ -67,7 +80,7 @@ export default function (props) {
                            to={workspaceId ? `/${workspaceId}/colleague-chat` : "/colleague-chat"}
                            className={({ isActive }) =>
                               [
-                                 isActive ? "before:animate-vline-expand" : "before:h-0 before:group-hover:h-5 hover:bg-gray-300",
+                                 isActive ? "before:animate-vline-expand" : "before:h-0 before:group-hover:h-5 hover:bg-gray-100",
                                  "before:block before:w-1 before:bg-black before:absolute before:left-0 before:rounded-r-full before:transition-all",
                                  "flex w-12 h-12 items-center justify-center rounded",
                               ].join(" ")
@@ -84,19 +97,24 @@ export default function (props) {
                            to={workspaceId ? `/${workspaceId}/Notification` : "/Notification"}
                            className={({ isActive }) =>
                               [
-                                 isActive ? "before:animate-vline-expand" : "before:h-0 before:group-hover:h-5 hover:bg-gray-300",
+                                 isActive ? "before:animate-vline-expand" : "before:h-0 before:group-hover:h-5 hover:bg-gray-100",
                                  "before:block before:w-1 before:bg-black before:absolute before:left-0 before:rounded-r-full before:transition-all",
                                  "flex w-12 h-12 items-center justify-center rounded",
                               ].join(" ")
                            }
                         >
-                           <Bell className="w-7 h-7" />
+                           <div className="relative">
+                              <Bell className="w-7 h-7" />
+                              <div className="bg-green-600 absolute right-[-8px] bottom-[-3px] text-[10px] text-white rounded px-1 font-bold"> 
+                                 {unreadCount !== 0 ? unreadCount : ""} 
+                              </div>
+                           </div>
                         </NavLink>
                      </div>
                   );
                case "workspace":
                   return (
-                     <div key={utility} className="w-12 h-12 bg-gray-200 rounded border border-gray-300 cursor-pointer overflow-hidden">
+                     <div key={utility} className="w-12 h-12 bg-gray-200 rounded border border-gray-300 cursor-pointer overflow-hidden mt-2">
                         <NavLink to={`/Workspace/${workspace?.id}`}>
                            <Avatar className="w-12 h-12 rounded">
                               <AvatarImage src={workspace?.avatarUrl} className="w-12 h-12 rounded"/>
