@@ -15,6 +15,7 @@ export default async function getMessagesColleague(conversationId, time, count, 
       params += `&ParentId=${parentId}`;
    }
    if (isBefore === false) {
+      console.log("isBefore: feofgii", isBefore)
       params += `&IsBefore=${false}`
    }
    
