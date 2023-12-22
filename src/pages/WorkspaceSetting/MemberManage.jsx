@@ -10,6 +10,8 @@ import { Suspense, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton"
+
 import {
    AlertDialog,
    AlertDialogAction,
@@ -80,7 +82,9 @@ export default function () {
                      </TableRow>
                   </TableHeader>
                   <TableBody>
-                     {memberList
+                     {
+                     memberList.length !== 0 ?
+                     memberList
                         .filter((member) => (search === "" ? true : member.username.toLowerCase().includes(search.toLowerCase())))
                         .map((member) => {
                            return (
@@ -124,7 +128,7 @@ export default function () {
                                                 }}
                                           />:
                                           <X
-                                             className={`stroke-red-600 stroke-[3] cursor-pointer}`}
+                                             className={`stroke-red-600 stroke-[3] cursor-pointer w-6 h-6}`}
                                              onClick={(e) => {
                                                 open[member.id] = true;
                                                 setOpen({ ...open });
@@ -157,10 +161,6 @@ export default function () {
                                                    const data = await deleteMember(workspaceId, member.id);
                                                    document.querySelector(`.submit-${member.id}`).disabled = false;
                                                    document.querySelector(`.loader-${member.id}`).classList.add("hidden");
-                                                   if(userId === member.id) {
-                                                      navigate("/Workspace")
-                                                      return
-                                                   }
                                                    forceLoad();
                                                    open[member.id] = false;
                                                    setOpen({ ...open });
@@ -198,7 +198,7 @@ export default function () {
                                              >
                                                 <Button type="submit" className={`submit-${member.id}`}>
                                                    <Loader2 className={`loader-${member.id} w-4 h-4 mr-2 animate-spin hidden`} />
-                                                   Kick Member
+                                                   Ok
                                                 </Button>
                                              </form>
                                           </AlertDialogFooter>
@@ -206,8 +206,34 @@ export default function () {
                                     </AlertDialog>
                                  </TableCell>
                               </TableRow>
-                           );
-                        })}
+                           )
+                        }): (
+                           [
+                              (
+                                 <TableRow key={1}>
+                                    <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                    <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                    <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                 </TableRow>
+                              ),
+                              (
+                                 <TableRow key={2}>
+                                    <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                    <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                    <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                 </TableRow>
+                              ),
+                              (
+                                 <TableRow key={3}>
+                                    <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                    <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                    <TableCell><Skeleton className="w-full h-9"/></TableCell>
+                                 </TableRow>
+                              )
+                           ]
+                           
+                        )
+                        }
                   </TableBody>
                </Table>
             </div>

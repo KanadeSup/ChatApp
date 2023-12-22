@@ -25,7 +25,7 @@ export default function () {
    }, []);
    return (
       <div className="flex flex-row min-h-screen items-stretch">
-         {workspace ? <UtilityBar workspace={workspace} colleague notification /> : <UtilityBar logo colleague notification />}
+         {workspaceId ? <UtilityBar workspace colleague notification /> : <UtilityBar logo colleague notification />}
          <div className="pl-10 pt-6 w-full">
             <div className="w-full">
                <div className="space-y-0.5">
