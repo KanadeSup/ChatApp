@@ -50,8 +50,8 @@ export default function() {
    }
    useEffect(()=> {
       async function fetchData() {
-         const workspaceMemberList = await getUnchannelMembers(workspaceId, channelId)
-         const channelMemberList = await getChannelMemberList(channelId)
+         let workspaceMemberList = await getUnchannelMembers(workspaceId, channelId)
+         let channelMemberList = await getChannelMemberList(channelId)
          setWorkspaceMembers(workspaceMemberList.data)
          setChannelMembers(channelMemberList)
          Object.keys(open).forEach(key=>open[key] = undefined)
@@ -157,6 +157,16 @@ export default function() {
                                                       <p className="flex">
                                                          <X className="stroke-red-600 mr-2" />
                                                          <span className="text-red-600"> You don't have permission to kick member </span>
+                                                      </p>
+                                                })
+                                                return
+                                             }
+                                             if(data.status === 400) {
+                                                toast({
+                                                   title: 
+                                                      <p className="flex">
+                                                         <X className="stroke-red-600 mr-2" />
+                                                         <span className="text-red-600"> {data.data.title} </span>
                                                       </p>
                                                 })
                                                 return

@@ -54,7 +54,7 @@ export default function () {
             <div className="flex mt-10 flex-wrap gap-5 w-full">
                <Suspense fallback={skeletonCard()}>
                   <Await resolve={data.wList}>
-                     {(wList) =>
+                     {(wList) => 
                         wList
                         .filter((workspace) => search === "" ? true : workspace.name.includes(search))
                         .map((workspace) => <WCard key={workspace.id} workspace={workspace} />)

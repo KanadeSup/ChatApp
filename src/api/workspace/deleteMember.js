@@ -11,8 +11,9 @@ export default async (wid, uid) => {
       },
       body: JSON.stringify([uid])
    })
+   const data = await res.json()
    return {
-      data: null,
+      data: data,
       status: res.status,
       ok: res.ok,
    }

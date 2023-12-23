@@ -20,16 +20,12 @@ import { getWorkspace } from "../api";
 import getUnreadCount from "../api/notification/getUnreadCount";
 import useNotification from "../storages/useNotification";
 
-function showMenu(event) {
-   document.querySelector(".user-menu").classList.toggle("hidden");
-}
 export default function (props) {
    const { workspaceId } = useParams();
    const { workspace, user, setWorkspace, setUser } = useInfo();
    const {unreadCount, setUnreadCount} = useNotification()
    const utilites = Object.keys(props);
    const navigate = useNavigate();
-
    useEffect(()=> {
       async function fetchData() {
          const res = await getUnreadCount()
@@ -39,7 +35,7 @@ export default function (props) {
       }  
       fetchData()
    })
-
+   
    useEffect(() => {
       async function fetchWorkspace() {
          if(workspace === null && workspaceId) {

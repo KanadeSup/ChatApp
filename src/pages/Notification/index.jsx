@@ -8,14 +8,15 @@ import { useParams } from "react-router-dom";
 
 export default function () {
    const [notification, setNotification] = useState(null);
+   const [forceLoad, setForceLoad] = useState({});
    const {workspaceId } = useParams()
    return (
       <div className="flex">
          {
             workspaceId ? <UtilityBar workspace colleague notification /> : <UtilityBar logo colleague notification />
          }
-         <NotificationList setNotification={setNotification} />
-         {notification ? <NotificationDetail notification={notification} /> : <NotificationDetailEmpty />}
+         <NotificationList setNotification={setNotification} forceLoad={forceLoad} setForceLoad={setForceLoad} />
+         {notification ? <NotificationDetail notification={notification} setNotification={setNotification} setForceLoad={setForceLoad} /> : <NotificationDetailEmpty />}
       </div>
    );
 }

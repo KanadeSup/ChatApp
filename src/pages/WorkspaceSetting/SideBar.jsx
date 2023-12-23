@@ -1,4 +1,4 @@
-import { NavLink, useActionData, useNavigation, useParams } from 'react-router-dom'
+import { NavLink, useActionData, useNavigate, useNavigation, useParams } from 'react-router-dom'
 import { Loader2, X } from "lucide-react"
 import { AccountSvg } from '/assets/img/SettingSvg'
 import { buttonVariants, Button } from "@/components/ui/button"
@@ -17,6 +17,7 @@ import {
 import { useEffect } from 'react'
 import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
+import leaveWorkspace from '../../api/workspace/leaveWorkspace'
 
 function AcceptButton({ state }) {
    if (state !== "idle") return (
@@ -40,6 +41,7 @@ export default function({ items }) {
    const navigation = useNavigation()
    const { workspaceId } = useParams()
    const actionData = useActionData()
+   const navigate = useNavigate()
    useEffect(() => {
       if(!actionData) return
       if(actionData.status === 403) {
@@ -88,6 +90,70 @@ export default function({ items }) {
                   [
                      buttonVariants({variant: "ghost"}).replace("justify-center",""),
                      "justify-start hover:bg-transparent hover:underline text-red-500 hover:text-red-500 cursor-pointer font-extrabold text-lg"
+                  ].join(" ")
+               }>
+                  Leave workspace
+               </span>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+               <AlertDialogHeader>
+                  <AlertDialogTitle> Are you sure to leave workspace </AlertDialogTitle>
+                  <AlertDialogDescription>
+                     This action cannot be undone. After this action you cannot access to this workspace
+                  </AlertDialogDescription>
+               </AlertDialogHeader>
+               <AlertDialogFooter>
+                  <Form
+                     onSubmit={async e=> {
+                        e.preventDefault()
+                        document.querySelector(".leave-but").disabled = true
+                        document.querySelector(".leave-cancel-but").disabled = true
+                        document.querySelector(".leave-loader").classList.toggle("hidden")
+                        const res = await leaveWorkspace(workspaceId)
+                        if(res.ok) {
+                           navigate("/Workspace")
+                           return
+                        }
+                        document.querySelector(".leave-but").disabled = false
+                        document.querySelector(".leave-cancel-but").disabled = false
+                        document.querySelector(".leave-loader").classList.toggle("hidden")
+                        if(res.status === 400) {
+                           toast({
+                              title: 
+                                 <p className="flex">
+                                    <X className="stroke-red-600 mr-2" />
+                                    <span className="text-red-600"> {res.data.title}  </span>
+                                 </p>
+                           })
+                           return
+                        }
+                        toast({
+                           title: 
+                              <p className="flex">
+                                 <X className="stroke-red-600 mr-2" />
+                                 <span className="text-red-600"> Something when wrong please try again </span>
+                              </p>
+                        })
+                     }}
+                  >
+                     <input type="hidden" value={workspaceId} name="workspaceid"/>
+                     <AlertDialogCancel className="leave-cancel-but mr-2">
+                        Cancel
+                     </AlertDialogCancel>
+                     <Button type="submit" className="leave-but">
+                        <Loader2 className='leave-loader mr-2 animate-spin w-4 h-4 hidden'/>
+                        Leave 
+                     </Button>
+                  </Form>
+               </AlertDialogFooter>
+            </AlertDialogContent>
+         </AlertDialog>
+         <AlertDialog>
+            <AlertDialogTrigger asChild modal="false">
+               <span className={
+                  [
+                     buttonVariants({variant: "ghost"}).replace("justify-center",""),
+                     "justify-start hover:bg-transparent hover:underline text-red-500 font-extrabold hover:text-red-500 cursor-pointer text-lg"
                   ].join(" ")
                }>
                   Delete Workspace
