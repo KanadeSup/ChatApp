@@ -1,7 +1,7 @@
 async function DeleteFileColleague(hub, fileId, messageId, setMessages, setIsClickedReply, isChannel) {
     const arrayId = []
     arrayId.push(fileId);
-    console.log("click delete file:", arrayId);
+    console.log("click delete file colleague:", arrayId);
     if (hub) {
         const data = await hub.invoke("DeleteFileAsync", arrayId);
         setMessages((currentMessages) => {

@@ -2,10 +2,11 @@ const typeFile = (name) => {
     const extension = name.split(".")[1]
         ? name.split(".").pop().slice(0, 3).toUpperCase()
         : "";
-    return ["PDF", "DOC", "XLS", "RAR", "ZIP"].includes(extension) ? "" : extension;
+    return ["PDF", "DOC", "XLS", "RAR", "ZIP", "MP3", "WAV", "MP4", "AVI", "MOV", "IMG", "PNG", "JPG"].includes(extension) ? "" : extension;
 };
 
-const imgFile = (name) => {
+const imgFile = (file) => {
+    const name = file.name;
     const typeFile = name.split(".")[1]
         ? name.split(".").pop().slice(0, 3).toUpperCase()
         : "";
@@ -22,6 +23,10 @@ const imgFile = (name) => {
             return "https://chat.zalo.me/assets/icon-music.296f2763390ba5423f405b18e670d471.svg";
         case "MP4" || "AVI" || "MOV":
             return "https://chat.zalo.me/assets/icon-video.651f286c9db0a8e1125cee5fd01269ba.svg";
+        case "IMG":
+        case "PNG":
+        case "JPG":
+            return file.url;
         default:
             return "https://chat.zalo.me/assets/icon-file-empty.6796cfae2f36f6d44242f7af6104f2bb.svg";
     }

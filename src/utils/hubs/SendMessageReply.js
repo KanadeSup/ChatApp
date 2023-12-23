@@ -9,8 +9,15 @@ async function SendMessageReply(
     setMessage,
     setMessagesChild,
     isChannel,
-
+    files
 ) {
+    let filesId = [];
+    if (files) {
+        files.forEach((file) => {
+            filesId.push(file.id);
+        });
+    }
+
     if (isChannel) {
         if (hub) {
             await hub.invoke("SendMessageAsync", {
@@ -18,10 +25,12 @@ async function SendMessageReply(
                 Content: content,
                 IsChannel: true,
                 ReplyTo: message.id,
+                Files: filesId,
             });
         }
         return;
     }
+
     if (hub) {
         console.log("conversationId reply: ", conversationId);
         const newMessageChild = await hub.invoke("SendMessageAsync", {
@@ -29,6 +38,7 @@ async function SendMessageReply(
             Content: content,
             IsChannel: isChannel,
             ReplyTo: message.id,
+            Files: filesId,
         });
         // const messageChild = {
         //     id: message.id,

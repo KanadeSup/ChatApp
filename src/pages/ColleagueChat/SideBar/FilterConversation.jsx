@@ -4,7 +4,7 @@ export default function FilterConversation(props) {
   const [isChanged, setIsChanged] = useState(false);
   return (
     <>
-      <div className="relative flex h-12 justify-start items-center px-1">
+      <div className="relative flex h-14 justify-start items-center px-1">
         <input
           type="text"
           className="h-8 rounded-md border w-full border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"

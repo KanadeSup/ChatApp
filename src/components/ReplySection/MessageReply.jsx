@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Emoji from "/components/Emoij";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import convertTime from "@/utils/convertTime";
 import { Pin, User2, SmilePlus, Trash2, Pencil } from "lucide-react";
 import ChatBoxEdit from "@/components/ChatBoxEdit";
+import FileCard from "@/components/FileCard";
+import { GoTriangleRight } from "react-icons/go";
 
 export default function MessageReply(props) {
   const [showEmoij, setShowEmoij] = useState(false);
@@ -11,6 +13,8 @@ export default function MessageReply(props) {
   const [isHoveredEdit, setIsHoveredEdit] = useState(false);
   const [isHoveredDelete, setIsHoveredDelete] = useState(false);
   const [editMessage, setEditMessage] = useState(false);
+  const [isOpenFile, setIsOpenFile] = useState(true);
+  const refContent = useRef(null);
 
   return (
     <div
@@ -48,6 +52,7 @@ export default function MessageReply(props) {
           ) : (
             <>
               <div
+                ref={refContent}
                 className="text-[15px] leading-relaxed w-full break-all"
                 dangerouslySetInnerHTML={{ __html: props.message.content }}
               ></div>
@@ -58,6 +63,42 @@ export default function MessageReply(props) {
               )}
             </>
           )}
+          {/*-- Files --*/}
+          {props.message.files?.length > 0 && (
+              <div>
+                <div className="flex items-center text-slate-600 text-sm gap-1">
+                  <span>{props.message.files.length} files</span>{" "}
+                  <GoTriangleRight
+                    className={`w-4 h-4 cursor-pointer hover:bg-gray-200 rounded-full ${
+                      isOpenFile ? "rotate-90" : ""
+                    }`}
+                    onClick={() => setIsOpenFile(!isOpenFile)}
+                  />
+                </div>
+
+                {isOpenFile && (
+                  <div className="flex flex-row flex-wrap gap-2 mt-1">
+                    {props.message.files.map((file) => (
+                      <FileCard
+                        key={file.index}
+                        file={file}
+                        allowDeletion={props.message.senderId === localStorage.getItem("userId")}
+                        DeleteFile={(fileId) => {
+                          if (refContent.current.textContent === "" && props.message.files.length === 1)
+                          {
+                            console.log("da chay delete message");
+                            props.DeleteMessage(props.message);
+                            return;
+                          }
+                          props.DeleteFile(fileId);
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
           {/*-- List Emoij --*/}
           <div className="flex justify-start flex-wrap items-center pt-1 gap-2">
             {props.message.reactionCount &&

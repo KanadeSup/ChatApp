@@ -24,7 +24,6 @@ export default function ChatBoxContent() {
   const { conversationId } = useParams();
   const { hub, setHub } = useHubStore();
   const [messages, setMessages] = useState([]);
-  console.log("messages chatbox: ", messages);
   const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
   const { isNewMessage, setIsNewMessage } = useIsNewMessage(); // Cập nhập danh sách hiển thị tin nhắn ở sideBar
   const [user, setUser] = useState(null);
@@ -68,8 +67,8 @@ export default function ChatBoxContent() {
         }
 
         setMessages((currentMessages) => {
-          const messages = [...currentMessages]; // Create a new copy of messages
-          const newMessage = { ...message }; // Copy the message object to avoid mutation
+          const messages = [...currentMessages]; 
+          const newMessage = { ...message }; 
           const parentMessageIndex = messages.findIndex(
             (m) => m.id === newMessage.parentId
           );
@@ -77,8 +76,8 @@ export default function ChatBoxContent() {
             newMessage.senderId === conversationId &&
             parentMessageIndex !== -1
           ) {
-            // If the message has a parent in the current set of messages
-            const parentMessage = { ...messages[parentMessageIndex] }; // Create a new copy of the parent message
+            
+            const parentMessage = { ...messages[parentMessageIndex] }; 
 
             if (message.parentId === localStorage.getItem("idMessage")) {
               setMessagesChild((messagesChild) => [
@@ -287,14 +286,14 @@ export default function ChatBoxContent() {
   return (
     <div className="flex flex-row">
       <div
-        style={{ height: "calc(100vh - 3rem)" }}
+        style={{ height: "calc(100vh - 3.5rem)" }}
         className="flex flex-col w-full"
       >
         <InfiniteScroll
           getMore={fetchMoreData}
           invokeHeight={5}
           scrollDivRef={scrollDivRef}
-          className="flex flex-col justify-start overflow-y-scroll h-full min-w-[400px] py-2 gap-1"
+          className="flex flex-col justify-start overflow-y-scroll h-full min-w-[400px] py-4 gap-1"
         >
           {messages.map((message, index) => (
             <Message

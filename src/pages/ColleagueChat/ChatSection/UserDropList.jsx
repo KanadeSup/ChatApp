@@ -29,7 +29,7 @@ export default function UserDropList(props) {
         props.dataSearch.data.map((user) => (
           <Link to={`/colleague-chat/${user.id}`} key={user.id}>
             <AvatarNameFilter
-              name={user.lastName + " " + user.firstName}
+              name={user.firstName + " " + (user.lastName? user.lastName : "")}
               avatar={user.picture}
               email={user.email}
             />
