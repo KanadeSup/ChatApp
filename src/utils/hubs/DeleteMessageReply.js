@@ -13,7 +13,7 @@ async function DeleteMessageReply(hub, childrenMessage, setMessage, setMessagesC
             childrenMessage.id,
             true
         );
-        console.log("Delete message: ", data);
+        console.log("Delete message reply: ", data);
         // Update setMessages
         setMessages((currentMessages) => {
             const messages = [...currentMessages];

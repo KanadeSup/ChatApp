@@ -14,14 +14,14 @@ export default function ChatBoxHeader(props) {
     fetchData();
   }, [props.conversationId]);
   return (
-    <div className="flex flex-row justify-between items-center bg-gray-50 h-12 shadow">
+    <div className="flex flex-row justify-between items-center bg-gray-50 h-14 shadow">
       <div className="flex flex-row justify-start items-center gap-1 px-5 ">
         <Avatar className='h-8 w-8'>
         <AvatarImage src={user?.picture} alt="@shadcn" />
         <AvatarFallback className="bg-gray-300 p-1"><User2 /></AvatarFallback>
       </Avatar>
         <div className="flex ml-1 items-center justify-between">
-          <p className="font-bold text-md">{user?.lastName} {" "} {user?.firstName}</p>
+          <p className="font-bold text-md">{user?.firstName} {" "} {user?.lastName}</p>
         </div>
       </div>
 

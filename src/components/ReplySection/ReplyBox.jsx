@@ -9,7 +9,9 @@ import {
   SendMessageReply,
   UpdateMessage,
   DeleteMessageReply,
-  SendEmoji
+  SendEmoji,
+  DeleteFile,
+  DeleteMessage,
 } from "@/utils/hubs";
 import { getMessagesColleague } from "../../api";
 
@@ -37,6 +39,7 @@ export default function ReplyBox(props) {
       );
       const reversedData = data.reverse();
       props.setMessagesChild(reversedData);
+      console.log("data con:", data);
     }
     fetchMessages();
     fetchData();
@@ -51,7 +54,21 @@ export default function ReplyBox(props) {
       style={{ height: "calc(100vh - 6rem)" }}
       className="flex flex-col overflow-y-scroll gap-1"
     >
-      <MessageReply message={props.message} setMessage={props.setMessage} messageHead={true}/>
+      <MessageReply
+        message={props.message}
+        setMessage={props.setMessage}
+        messageHead={true}
+        DeleteMessage={(childrenMessage) => {
+          DeleteMessage(
+            hub,
+            props.message.id,
+            props.setMessages,
+            props.setIsClickedReply,
+            props.isChannel
+          );
+        }}
+        DeleteFile={(fileId) => DeleteFile(hub, fileId)}
+      />
 
       <div className="flex items-center px-2">
         <span className="text-sm font-medium text-gray-600">
@@ -82,11 +99,12 @@ export default function ReplyBox(props) {
             SendEmoji={(emoji) => {
               SendEmoji(hub, message.id, emoji);
             }}
+            DeleteFile={(fileId) => DeleteFile(hub, fileId)}
           />
         ))}
       </div>
       <ChatBox
-        SendMessage={(content) =>
+        SendMessage={(content, files) =>
           SendMessageReply(
             hub,
             props.message,
@@ -96,7 +114,8 @@ export default function ReplyBox(props) {
             user,
             props.setMessage,
             props.setMessagesChild,
-            props.isChannel
+            props.isChannel,
+            files
           )
         }
       />

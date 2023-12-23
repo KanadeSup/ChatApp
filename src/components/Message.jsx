@@ -109,10 +109,11 @@ export default function Message(props) {
 
                 {isOpenFile && (
                   <div className="flex flex-row flex-wrap gap-2 mt-1">
-                    {props.message.files.map((file) => (
+                    {props.message.files.map((file, index) => (
                       <FileCard
                         key={file.index}
                         file={file}
+                        allowDeletion={props.message.senderId === localStorage.getItem("userId")}
                         DeleteFile={(fileId) => {
                           if (refContent.current.textContent === "" && props.message.files.length === 1)
                           {
@@ -122,15 +123,7 @@ export default function Message(props) {
                           }
                           props.DeleteFile(fileId);
                         }}
-                        // DeleteMessage={() => {
-                        //   console.log("content: ", refContent.current.textContent);
-                        //   console.log("files: ", props.message.files.length);
-                        //   if (refContent.current.textContent === "" && props.message.files.length === 1)
-                        //   {
-                        //     console.log("da chay delete message");
-                        //     props.DeleteMessage(props.message.id);
-                        //   }
-                        // }}
+              
                       />
                     ))}
                   </div>

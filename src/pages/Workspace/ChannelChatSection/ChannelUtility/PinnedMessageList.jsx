@@ -3,8 +3,6 @@ import { getPinMessages } from "@/api";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { SlArrowLeft } from "react-icons/sl";
-import { RiArrowLeftSLine } from "react-icons/ri";
-
 export default function PinnedMessageList(props) {
   const [isLoaded, setIsLoaded] = useState(true);
 

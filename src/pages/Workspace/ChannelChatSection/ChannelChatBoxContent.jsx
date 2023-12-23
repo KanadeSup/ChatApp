@@ -136,6 +136,7 @@ export default function ChannelChatBoxContent(props) {
       hub.off("receive_message");
       hub.on("receive_message", (message) => {
         //setIsNewMessage(true);
+        console.log("đã chạy receive message");
         if (message.receiverId !== channelId) {
           return;
         }
@@ -256,6 +257,7 @@ export default function ChannelChatBoxContent(props) {
             const messagesNew = messages.map((message) => {
               if (message.id === message_deleted.parentId) {
                 message.childCount -= 1;
+                console.log("message child count:", message.childCount);
                 setMessageParent(message);
                 setMessagesChild((messagesChild) =>
                   messagesChild.filter(

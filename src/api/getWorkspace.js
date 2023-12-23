@@ -12,7 +12,8 @@ export default async function (id) {
       }
    })
    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+      // throw new Error(`HTTP error! status: ${res.status}`);
+      return res
    }
    const workspace = await res.json()
    return workspace
