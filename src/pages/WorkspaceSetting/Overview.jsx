@@ -188,15 +188,6 @@ export default function () {
                </div>
                <Separator />
             </div>
-            <div>
-               <div className="space-y-1">
-                  <div className="flex justify-between">
-                     <Label className="text-md"> Hide Private Channel </Label>
-                     <Switch />
-                  </div>
-                  <p className="text-muted-foreground italic text-sm"> All member which is a not private channel member cannot see that channel </p>
-               </div>
-            </div>
             {/* Footer */}
             <div className="flex justify-end gap-5 pt-10">
                <Button

@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bell, MailPlus, MessageSquare, UserX } from "lucide-react";
+import { Bell, MailPlus, MessageSquare, UserX, X } from "lucide-react";
 
 const GENERAL = 1;
 const MESSAGE = 2;
@@ -25,24 +25,25 @@ export default function NotificationDetail({ notification }) {
             <h1 className="text-2xl font-bold"> {notification.title} </h1>
          </div>
          <div className="text-lg mt-2 flex-grow">
-            <ContentRender notificaiton={notification} />
+            <ContentRender notification={notification} />
          </div>
       </div>
    );
 }
-function ContentRender({ notificaiton }) {
-   if (notificaiton.type === WORKSPACE_INVITE) {
-      console.log(notificaiton);
-      return <WorkspaceInviteTemplate notificaiton={notificaiton} />;
+function ContentRender({ notification }) {
+   if (notification.type === WORKSPACE_INVITE) {
+      return <WorkspaceInviteTemplate notification={notification} />;
    }
-   return <div className="text-lg mt-2">{notificaiton.content}</div>;
+   if (notification.type === WORKSPACE_REMOVE) {
+      return <WorkspaceRemoveTemplate notification={notification} />;
+   }
+   return <div className="text-lg mt-2">{notification.content}</div>;
 }
-function WorkspaceInviteTemplate({ notificaiton }) {
-   const data = notificaiton.data;
+function WorkspaceInviteTemplate({ notification }) {
+   const data = notification.data;
    const detail = JSON.parse(data.Detail);
-   console.log(detail);
    return (
-      <div className="flex flex-col justify-center items-center gap-3 h-[calc(100vh-250px)] ">
+      <div className="flex flex-col justify-center items-center gap-3 h-[calc(100vh-200px)] ">
          <div className="text-xl flex gap-1 items-center mb-3 border-b pb-5">
             <span className="font-bold text-xl">{detail.InviterName}</span>
             invite you to his workspace
@@ -61,4 +62,37 @@ function WorkspaceInviteTemplate({ notificaiton }) {
          </div>
       </div>
    );
+}
+function WorkspaceRemoveTemplate({ notification }) {
+   const data = notification.data;
+   const detail = JSON.parse(data.Detail);
+   console.log(data)
+   return (
+      <div className="flex flex-col justify-center items-center gap-3 h-[calc(100vh-200px)] ">
+         <h1 className="text-2xl text-red-600 flex items-center"> 
+            <span className="flex items-center"><X className="stroke-[3] mr-2"/> You have been removed from &nbsp;</span>
+            <span className="font-bold text-2xl">
+               {detail.GroupName}
+            </span>
+         </h1>
+         <Avatar className="w-48 h-48">
+            <AvatarImage src={data.Avatar} className="w-48 h-48" />
+            <AvatarFallback></AvatarFallback>
+         </Avatar>
+         <div className="flex flex-col items-center">
+            <h1 className="text-2xl font-bold text-red-700"> Workspace </h1>
+            <h2 className="text-4xl font-medium text-gray-300"> {detail.GroupName} </h2>
+         </div>
+         <div className="text-lg flex flex-col gap-2">
+            You have been kick by &nbsp;
+            <span className="font-bold flex items-center gap-2">
+               <Avatar>
+                  <AvatarImage src={detail.RemoverAvatar} className="w-10 h-10" />
+                  <AvatarFallback></AvatarFallback>
+               </Avatar>
+               {detail.RemoverName}
+            </span>
+         </div>
+      </div>
+   )
 }
