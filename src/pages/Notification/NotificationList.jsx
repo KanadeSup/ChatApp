@@ -1,4 +1,4 @@
-import { Bell } from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import NotificationItem from "./NotificationItem";
 import { Switch } from "@/components/ui/switch";
 import { useEffect, useState } from "react";
@@ -6,32 +6,54 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import getNotifications from "../../api/notification/getNotifications";
 import { Skeleton } from "@/components/ui/skeleton";
 import readNotification from "../../api/notification/readNotification";
+import { Button } from "@/components/ui/button"
+import useNotification from "../../storages/useNotification";
+import deleteNotification from "../../api/notification/deleteNotification";
+
 const categories = ["All", "General", "Message", "Workspace", "Channel"];
 const ALL = "0";
 const GENERAL = "1";
 const MESSAGE = "2";
 const CHANNEL = "45";
 const WORKSPACE = "67";
-export default function ({ setNotification }) {
+export default function ({setNotification, forceLoad, setForceLoad }) {
    const [category, setCategory] = useState(categories[0]);
-   const [notifications, setNotifications] = useState(null);
+   const { notifications, setNotifications } = useNotification()
    const [unread, setUnread] = useState(false);
    const { notificationId } = useParams();
    const { workspaceId } = useParams();
    const navigate = useNavigate();
-
+   const [loadMore, setLoadMore] = useState(null)
+   const [isMutilpleDelete, setIsMutilpleDelete] = useState(false)
+   const [deletes, setDeletes] = useState([])
+   console.log(deletes)
    useEffect(() => {
       async function fetchData() {
-         const res = await getNotifications();
+         const nNotification = 20
+         document.querySelector(".load-more").disabled = true
+         let res;
+         if(loadMore === null)  {
+            res = await getNotifications(0, nNotification);
+         } else {
+            res = await getNotifications(notifications.length, nNotification);
+         }
+
+         document.querySelector(".load-more").disabled = false
          if (!res.ok) throw new Error("Cannot get Notification data");
          const data = res.data;
-         setNotifications(data);
+         document.querySelector(".load-more").classList.remove("hidden")
+         if(data.length < 20) {
+            document.querySelector(".load-more").classList.add("hidden")
+         }
+         if(loadMore === null) setNotifications([...data]);
+         else setNotifications([...notifications, ...data]);
          data.map((noti) => {
             if (notificationId === noti.id) setNotification(noti);
          });
       }
-      fetchData();
-   }, []);
+      fetchData(); 
+   }, [loadMore]);
+
    return (
       // header
       <div className="h-screen w-96 border-r flex-shrink-0 flex flex-col">
@@ -61,6 +83,7 @@ export default function ({ setNotification }) {
                </div>
             ))}
          </div>
+
          {/* notifications */}
          <div className="flex flex-col overflow-y-auto">
             {notifications ? (
@@ -77,7 +100,11 @@ export default function ({ setNotification }) {
                      return (
                         <NotificationItem
                            key={noti.id}
+                           selection={isMutilpleDelete}
+                           setDeletes={setDeletes}
+                           deletes={deletes}
                            notification={noti}
+                           setForceLoad={setForceLoad}
                            onClick={(e) => {
                               readNotification(noti.id);
                               notifications[idx].isRead = true
@@ -105,6 +132,50 @@ export default function ({ setNotification }) {
                   ]}
                </div>
             )}
+            <div className="flex justify-center px-2 items-center mt-2 mb-2">
+               <Button variant="outline" className="load-more hidden"
+                  onClick={e=>{setLoadMore({})}}
+               > 
+                  Load more 
+               </Button>
+            </div> 
+         </div>
+         <div className="flex justify-end border-t border-t-gray-500 py-2 pr-3 mt-auto">
+            {
+               !isMutilpleDelete ? (
+                  <Trash2 className="stroke-red-500 cursor-pointer"
+                     onClick={e=>{
+                        setIsMutilpleDelete(true)
+                     }}
+                  />
+               ) : (
+                  <div>
+                     <Button variant="secondary" className="mr-2" 
+                        onClick={e=>{
+                           setIsMutilpleDelete(false)
+                           setDeletes([])
+                        }}>
+                         Cancel 
+                     </Button>
+                     <Button
+                        className="button"
+                        onClick={async e=> {
+                           const res = await deleteNotification(deletes)
+                           if(!res.ok) return
+                           const notis = []
+                           for(let i = 0; i < notifications.length; i++) {
+                              if(deletes.includes(notifications[i].id)) continue
+                              notis.push(notifications[i])
+                           }
+                           setNotifications([...notis])
+                           setDeletes([])
+                        }}
+                     > 
+                        Remove
+                     </Button>
+                  </div>
+               )
+            }
          </div>
       </div>
    );

@@ -1,22 +1,16 @@
 import myFetch from '../myFetch'
 
-export default async function() {
+export default async function(ids) {
    const res = await myFetch({
       path: `Notification`,
-   })
-   if(!res.ok) {
-      return {
-         data: null,
-         status: res.status,
-         ok: res.ok,
-      }
-   }
-   const notifications = await res.json()
-   notifications.map(noti => {
-      noti["data"] = JSON.parse(noti["data"])
+      method: "DELETE",
+      headers: {
+         'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(ids)
    })
    return {
-      data: notifications,
+      data: null,
       status: res.status,
       ok: res.ok,
    }

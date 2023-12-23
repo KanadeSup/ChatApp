@@ -1,8 +1,9 @@
 import myFetch from '../myFetch'
 
-export default async function() {
+export default async function(offset, limit) {
    const res = await myFetch({
       path: `Notification`,
+      params: `Offset=${offset}&Limit=${limit}`
    })
    if(!res.ok) {
       return {
