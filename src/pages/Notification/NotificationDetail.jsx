@@ -16,6 +16,9 @@ import {
  } from "@/components/ui/alert-dialog"
  import { Button } from "@/components/ui/button"
 import useNotification from "../../storages/useNotification";
+import rejectWorkspaceInvite from "../../api/workspace/rejectWorkspaceInvite";
+import rejectChannelInvite from "../../api/channel/rejectChannelInvite";
+import acceptChannelInvite from "../../api/channel/acceptChannelInvite";
 
 const GENERAL = 1;
 const MESSAGE = 2;
@@ -23,7 +26,7 @@ const CHANNEL_INVITE = 4;
 const CHANNEL_REMOVE = 5;
 const WORKSPACE_INVITE = 6;
 const WORKSPACE_REMOVE = 7;
-export default function NotificationDetail({ notification, setNotification, setForceLoad }) {
+export default function NotificationDetail({ notification, setNotification }) {
    const navigate = useNavigate()
    const { notifications, setNotifications } = useNotification()
    return (
@@ -86,10 +89,13 @@ export default function NotificationDetail({ notification, setNotification, setF
 }
 function ContentRender({ notification, navigate, setNotification }) {
    if (notification.type === WORKSPACE_INVITE) {
-      return <WorkspaceInviteTemplate notification={notification} navigate={navigate}/>;
+      return <WorkspaceInviteTemplate notification={notification} navigate={navigate} setNotification={setNotification}/>;
    }
    if (notification.type === WORKSPACE_REMOVE) {
       return <WorkspaceRemoveTemplate notification={notification} />;
+   }
+   if (notification.type === CHANNEL_INVITE) {
+      return <ChannelInviteTemplate notification={notification} navigate={navigate} setNotification={setNotification}/>;
    }
    return <div className="text-lg mt-2">{notification.content}</div>;
 }
@@ -97,6 +103,7 @@ function ContentRender({ notification, navigate, setNotification }) {
 function WorkspaceInviteTemplate({ notification, setNotification, navigate }) {
    const data = notification.data;
    const detail = JSON.parse(data.Detail);
+   const { notifications, setNotifications } = useNotification()
    return (
       <div className="flex flex-col justify-center items-center gap-3 h-[calc(100vh-200px)] ">
          <div className="text-xl flex gap-1 items-center mb-3 border-b pb-5">
@@ -121,11 +128,12 @@ function WorkspaceInviteTemplate({ notification, setNotification, navigate }) {
                   document.querySelector(".reject-but").classList.replace("bg-red-700","bg-gray-400")
                   document.querySelector(".reject-but").classList.add("hover:bg-gray-400")
                   const res = await acceptWorkspaceInvite(detail.GroupId)
+                  await deleteNotification([notification.id])
                   if(res.ok) {
-                     await deleteNotification(notification.id)
                      navigate(`/Workspace/${detail.GroupId}`)
                      return
                   }
+                  setNotification(null)
                   document.querySelector(".accept-but").classList.replace("bg-gray-400","bg-green-700")
                   document.querySelector(".accept-but").classList.add("hover:bg-green-700")
                   document.querySelector(".reject-but").classList.replace("bg-gray-400","bg-red-700")
@@ -135,8 +143,20 @@ function WorkspaceInviteTemplate({ notification, setNotification, navigate }) {
                Accept
             </button>
             <button className="reject-but px-3 py-1 text-lg font-bold bg-red-700 hover:bg-red-600 rounded text-white"
-               onClick={e=> {
-
+               onClick={async e=> {
+                  console.log(detail)
+                  let res = await rejectWorkspaceInvite(detail.GroupId)
+                  if(!res.ok) return
+                  res = await deleteNotification([notification.id])
+                  if(!res.ok) return
+                  for(let i = 0; i < notifications.length; i++) {
+                     if(notifications[i].id === notification.id) {
+                        notifications.splice(i,1)
+                        break
+                     }
+                  }
+                  setNotifications([...notifications])
+                  setNotification(null)
                }}
             >
                Reject
@@ -145,6 +165,7 @@ function WorkspaceInviteTemplate({ notification, setNotification, navigate }) {
       </div>
    );
 }
+
 function WorkspaceRemoveTemplate({ notification }) {
    const data = notification.data;
    const detail = JSON.parse(data.Detail);
@@ -157,7 +178,7 @@ function WorkspaceRemoveTemplate({ notification }) {
             </span>
          </h1>
          <Avatar className="w-48 h-48">
-            <AvatarImage src={data.Avatar} className="w-48 h-48" />
+            <AvatarImage src={detail.GroupAvatar} className="w-48 h-48" />
             <AvatarFallback></AvatarFallback>
          </Avatar>
          <div className="flex flex-col items-center">
@@ -176,4 +197,72 @@ function WorkspaceRemoveTemplate({ notification }) {
          </div>
       </div>
    )
+}
+
+function ChannelInviteTemplate({ notification, setNotification, navigate }) {
+   const data = notification.data;
+   const detail = JSON.parse(data.Detail);
+   const { notifications, setNotifications } = useNotification()
+   return (
+      <div className="flex flex-col justify-center items-center gap-3 h-[calc(100vh-200px)] ">
+         <div className="text-xl flex gap-1 items-center mb-3 border-b pb-5">
+            <span className="font-bold text-xl">{detail.InviterName}</span>
+            invite you to his Channel
+         </div>
+         <Avatar className="w-48 h-48">
+            <AvatarImage src={detail.GroupAvatar} className="w-48 h-48" />
+            <AvatarFallback></AvatarFallback>
+         </Avatar>
+         <div className="flex flex-col items-center">
+            <h1 className="text-2xl font-bold"> Channel </h1>
+            <h2 className="text-4xl font-medium text-gray-500"> {detail.GroupName} </h2>
+         </div>
+         <div className="mt-3 flex gap-3">
+            <button className="accept-but px-3 py-1 text-lg font-bold bg-green-700 hover:bg-green-600 rounded text-white"
+               onClick={async e=> {
+                  document.querySelector(".accept-but").disabled = true
+                  document.querySelector(".accept-but").classList.replace("bg-green-700","bg-gray-400")
+                  document.querySelector(".accept-but").classList.add("hover:bg-gray-400")
+                  document.querySelector(".reject-but").classList.replace("bg-red-700","bg-gray-400")
+                  document.querySelector(".reject-but").classList.add("hover:bg-gray-400")
+                  const res = await acceptChannelInvite(detail.GroupId)
+                  await deleteNotification([notification.id])
+                  for(let i = 0; i < notifications.length; i++) {
+                     if(notifications[i].id === notification.id) {
+                        notifications.splice(i,1)
+                        break
+                     }
+                  }
+                  setNotifications([...notifications])
+                  setNotification(null)
+                  document.querySelector(".accept-but").classList.replace("bg-gray-400","bg-green-700")
+                  document.querySelector(".accept-but").classList.add("hover:bg-green-700")
+                  document.querySelector(".reject-but").classList.replace("bg-gray-400","bg-red-700")
+                  document.querySelector(".reject-but").classList.add("hover:bg-red-700")
+               }}
+            >
+               Accept
+            </button>
+            <button className="reject-but px-3 py-1 text-lg font-bold bg-red-700 hover:bg-red-600 rounded text-white"
+               onClick={async e=> {
+                  console.log(detail)
+                  let res = await rejectChannelInvite(detail.GroupId)
+                  if(!res.ok) return
+                  res = await deleteNotification([notification.id])
+                  if(!res.ok) return
+                  for(let i = 0; i < notifications.length; i++) {
+                     if(notifications[i].id === notification.id) {
+                        notifications.splice(i,1)
+                        break
+                     }
+                  }
+                  setNotifications([...notifications])
+                  setNotification(null)
+               }}
+            >
+               Reject
+            </button>
+         </div>
+      </div>
+   );
 }
