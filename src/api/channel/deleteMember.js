@@ -10,12 +10,6 @@ export default async (cid, uid) => {
       },
       body: JSON.stringify([uid])
    })
-   if(!res.ok) 
-      return {
-         data: null,
-         status: res.status,
-         ok: res.ok,
-      }
    const data = await res.json()
    return {
         data: data,

@@ -119,16 +119,8 @@ export default function () {
                                           <Contact className="stroke-blue-600 cursor-pointer" />
                                        </ProfileDialog>
                                        {
-                                          userId === member.id ?
-                                          <LogOut 
-                                             className={`stroke-red-600 stroke-[3] cursor-pointer w-5 h-5`}
-                                                onClick={(e) => {
-                                                   open[member.id] = true;
-                                                   setOpen({ ...open });
-                                                }}
-                                          />:
                                           <X
-                                             className={`stroke-red-600 stroke-[3] cursor-pointer w-6 h-6}`}
+                                             className={`stroke-red-600 stroke-[3] cursor-pointer w-6 h-6} ${userId === member.id ? "invisible" : ""}`}
                                              onClick={(e) => {
                                                 open[member.id] = true;
                                                 setOpen({ ...open });
@@ -185,6 +177,17 @@ export default function () {
                                                             <p className="flex">
                                                                <X className="stroke-red-600 mr-2" />
                                                                <span className="text-red-600">You don't have permission to kick member</span>
+                                                            </p>
+                                                         ),
+                                                      });
+                                                      return;
+                                                   }
+                                                   if (data.status === 400) {
+                                                      toast({
+                                                         title: (
+                                                            <p className="flex">
+                                                               <X className="stroke-red-600 mr-2" />
+                                                               <span className="text-red-600">{data.data.title}</span>
                                                             </p>
                                                          ),
                                                       });

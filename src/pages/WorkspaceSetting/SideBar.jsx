@@ -117,6 +117,16 @@ export default function({ items }) {
                         document.querySelector(".leave-but").disabled = false
                         document.querySelector(".leave-cancel-but").disabled = false
                         document.querySelector(".leave-loader").classList.toggle("hidden")
+                        if(res.status === 400) {
+                           toast({
+                              title: 
+                                 <p className="flex">
+                                    <X className="stroke-red-600 mr-2" />
+                                    <span className="text-red-600"> {res.data.title}  </span>
+                                 </p>
+                           })
+                           return
+                        }
                         toast({
                            title: 
                               <p className="flex">

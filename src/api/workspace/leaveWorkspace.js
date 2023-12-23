@@ -8,8 +8,9 @@ export default async (wid) => {
          "workspace-id": wid,
       },
    });
+   const data = await res.json()
    return {
-      data: null,
+      data: data,
       status: res.status,
       ok: res.ok,
    };

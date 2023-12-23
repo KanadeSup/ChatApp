@@ -161,6 +161,16 @@ export default function() {
                                                 })
                                                 return
                                              }
+                                             if(data.status === 400) {
+                                                toast({
+                                                   title: 
+                                                      <p className="flex">
+                                                         <X className="stroke-red-600 mr-2" />
+                                                         <span className="text-red-600"> {data.data.title} </span>
+                                                      </p>
+                                                })
+                                                return
+                                             }
                                              toast({
                                                 title: 
                                                    <p className="flex">
