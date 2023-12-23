@@ -25,7 +25,7 @@ export default function NewChatHeader(props) {
   return (
     <div
       className={
-        "h-12 flex flex-row relative justify-between items-center shadow " +
+        "h-14 flex flex-row relative justify-between items-center shadow " +
         (isFocus
           ? "border-b-2 border-bold-blue"
           : "border-b-2 border-transparent")
@@ -38,7 +38,7 @@ export default function NewChatHeader(props) {
             type="text"
             name="search"
             autoComplete="off"
-            placeholder="Enter name, email"
+            placeholder="Enter email"
             onChange={(e) => setSearchNewChat(e.target.value)}
             onFocus={() => setIsFocus(true)}
             onBlur={() => {

@@ -18,6 +18,7 @@ export default function () {
   useEffect(() => {
     async function fetchConversions() {
       const response = await getConversions("", 0, 10);
+      console.log("conversations: ", response);
       setConversations(response);
       setIsNewMessage(false);
       if (!conversationId && response.length > 0) {
@@ -35,7 +36,7 @@ export default function () {
       <SideBarHeader />
 
       <div
-        style={{ height: "calc(100vh - 3rem)" }}
+        style={{ height: "calc(100vh - 3.5rem)" }}
         className="flex flex-col flex-grow -z-10 justify-start overflow-y-auto space-y-1"
       >
         {conversations.length === 0 && (<p className="flex items-center justify-center h-10 font-medium text-gray-600">No one here</p>)}

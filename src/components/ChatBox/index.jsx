@@ -5,13 +5,14 @@ import StarterKit from "@tiptap/starter-kit";
 import { Extension } from "@tiptap/core";
 import { Paperclip, X, FileUp } from "lucide-react";
 import { uploadFiles } from "../../api";
+import InformDialog from "../InformDialog";
 import {
   Bold,
   Italic,
   Underline as UnderlineIcon,
 } from "lucide-react";
 import React from "react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { IoIosSend } from "react-icons/io";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
@@ -48,18 +49,33 @@ const ChatBox = React.forwardRef((props) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isHoverUpload, setIsHoverUpload] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [isOpenDialog, setIsOpenDialog] = useState(false);
 
   const handleFileUpload = async (event) => {
     console.log("event: ", event.target.value);
-    setSelectedFiles([...event.target.files]);
+    const allFiles = Array.from(event.target.files);
+    const newFiles = allFiles.filter(
+      file => file.size <= 30 * 1024 * 1024 // Kiểm tra kích thước file (<= 30MB)
+    );
+  
+    if (allFiles.length !== newFiles.length) {
+      // Nếu có file lớn hơn 30MB
+      setIsOpenDialog(true);
+    }
+  
+    setSelectedFiles(prevFiles => [...prevFiles, ...newFiles]);
     setIsHaveFile(true);
   };
+  
+    
+  
 
   function handleRemoveFile(e, index) {
     const newFiles = [...selectedFiles];
     newFiles.splice(index, 1);
     setSelectedFiles(newFiles);
     if (newFiles.length === 0) setIsHaveFile(false);
+    refFile.current.value = null;
   }
 
   async function handleSend() {
@@ -77,6 +93,7 @@ const ChatBox = React.forwardRef((props) => {
         editor.commands.clearContent(true);
         setSelectedFiles([]);
         setIsHaveFile(false);
+        refFile.current.value = null;
       } catch (error) {
         console.error(error);
       }
@@ -95,6 +112,7 @@ const ChatBox = React.forwardRef((props) => {
   return (
     <div className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2">
       {/* Format bar */}
+      { isOpenDialog && (<InformDialog setIsOpenDialog={setIsOpenDialog} title="File to large" content=" That file is too large and cannot be uploaded. The limit is 1 GB."/>)}
       <div className="flex">
         <button
           className="hover:bg-red-400 active:bg-red-600 w-7 h-7 rounded text-lg flex justify-center items-center"
