@@ -22,6 +22,9 @@ export default async (id, logo, name, description) => {
    formData.append("Avatar", logo, "image")
    const avatarRes = await myFetch({
       path: `Workspace/${id}/avatar`,
+      headers: {
+         "workspace-id" : id,
+      },
       method: "PUT",
       body: formData
    })

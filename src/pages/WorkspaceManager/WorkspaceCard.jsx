@@ -26,7 +26,7 @@ export default function ({ workspace }) {
                <Avatar className="rounded w-16 h-16 group-hover:border border-gray-300 transition-all">
                   <AvatarImage src={avatarUrl} />
                   <AvatarFallback className="rounded font-medium">
-                     {toCharacters(name).toUpperCase()}{" "}
+                     {toCharacters(name).toUpperCase()}
                   </AvatarFallback>
                </Avatar>
                <CardTitle className="font-medium text-xl text-ellipsis truncate">

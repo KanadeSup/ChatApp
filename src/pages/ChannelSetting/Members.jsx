@@ -50,8 +50,8 @@ export default function() {
    }
    useEffect(()=> {
       async function fetchData() {
-         const workspaceMemberList = await getUnchannelMembers(workspaceId, channelId)
-         const channelMemberList = await getChannelMemberList(channelId)
+         let workspaceMemberList = await getUnchannelMembers(workspaceId, channelId)
+         let channelMemberList = await getChannelMemberList(channelId)
          setWorkspaceMembers(workspaceMemberList.data)
          setChannelMembers(channelMemberList)
          Object.keys(open).forEach(key=>open[key] = undefined)

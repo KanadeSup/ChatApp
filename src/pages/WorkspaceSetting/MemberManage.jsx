@@ -43,7 +43,7 @@ export default function () {
    }
    useEffect(() => {
       async function fetchData() {
-         const data = await getMemberList(workspaceId);
+         let data = await getMemberList(workspaceId);
          setMemberList(data);
       }
       fetchData();

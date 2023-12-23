@@ -19,6 +19,7 @@ import useNotification from "../../storages/useNotification";
 import rejectWorkspaceInvite from "../../api/workspace/rejectWorkspaceInvite";
 import rejectChannelInvite from "../../api/channel/rejectChannelInvite";
 import acceptChannelInvite from "../../api/channel/acceptChannelInvite";
+import useInfo from "../../storages/useInfo";
 
 const GENERAL = 1;
 const MESSAGE = 2;
@@ -103,6 +104,7 @@ function ContentRender({ notification, navigate, setNotification }) {
 function WorkspaceInviteTemplate({ notification, setNotification, navigate }) {
    const data = notification.data;
    const detail = JSON.parse(data.Detail);
+   const { setWorkspace } = useInfo()
    const { notifications, setNotifications } = useNotification()
    return (
       <div className="flex flex-col justify-center items-center gap-3 h-[calc(100vh-200px)] ">
@@ -131,6 +133,7 @@ function WorkspaceInviteTemplate({ notification, setNotification, navigate }) {
                   await deleteNotification([notification.id])
                   if(res.ok) {
                      navigate(`/Workspace/${detail.GroupId}`)
+                     setWorkspace(null)
                      return
                   }
                   setNotification(null)
@@ -144,7 +147,6 @@ function WorkspaceInviteTemplate({ notification, setNotification, navigate }) {
             </button>
             <button className="reject-but px-3 py-1 text-lg font-bold bg-red-700 hover:bg-red-600 rounded text-white"
                onClick={async e=> {
-                  console.log(detail)
                   let res = await rejectWorkspaceInvite(detail.GroupId)
                   if(!res.ok) return
                   res = await deleteNotification([notification.id])
