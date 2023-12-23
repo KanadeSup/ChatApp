@@ -26,11 +26,7 @@ function Display(file) {
     return (
       <>
         <div className="relative">
-          <img
-            src={imgFile(file.name)}
-            alt=""
-            className="w-10 h-10 min-w-[40px]"
-          />
+          <img src={imgFile(file)} alt="" className="w-10 h-10 min-w-[40px]" />
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1 text-[10px] font-medium text-white">
             {typeFile(file.name)}
           </div>
@@ -49,8 +45,7 @@ function Display(file) {
   }
 }
 
-
-export default function FileCard({ file, DeleteFile }) {
+export default function FileCard({ file, DeleteFile, allowDeletion }) {
   const [isHover, setIsHover] = useState(false);
   const downloadFile = () => {
     const link = document.createElement("a");
@@ -74,7 +69,12 @@ export default function FileCard({ file, DeleteFile }) {
             onClick={downloadFile}
             className="h-6 w-6 p-1 text-gray-600 rounded-[1px] hover:bg-gray-200"
           />
-          <Trash2 onClick={() => DeleteFile(file.id)} className="h-6 w-6 p-1 hover:bg-gray-200 rounded-[1px] text-gray-600" />
+          {allowDeletion && (
+            <Trash2
+              onClick={() => DeleteFile(file.id)}
+              className="h-6 w-6 p-1 text-gray-600 rounded-[1px] hover:bg-gray-200"
+            />
+          )}
         </div>
       )}
     </div>

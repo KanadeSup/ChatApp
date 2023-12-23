@@ -66,7 +66,7 @@ export default function () {
                </Avatar>
                <div>
                   <h1 className="text-xl font-medium">
-                     {user.lastName} {user.firstName}
+                     {user.firstName} {user.lastName}
                   </h1>
                   <h2 className="italic text-md text-muted-foreground">{user.email}</h2>
                </div>
@@ -77,7 +77,7 @@ export default function () {
             <Label> Full name </Label>
             <span> : </span>
             <p>
-               {user.lastName} {user.firstName}
+               {user.firstName} {user.lastName}
             </p>
 
             <Label> Gender </Label>

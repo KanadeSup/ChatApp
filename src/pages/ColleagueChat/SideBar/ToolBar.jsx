@@ -6,8 +6,8 @@ export default function ToolbarIconComponent(props) {
   const [isHoveredNewChat, setIsHoveredNewChat] = useState(false);
   const { setIsNewChat } = useColleagueStore();
   return (
-    <div className="flex h-12 justify-end items-center bg-gray-50 border-b">
-      <div className="text-center w-full">Colleague chat</div>
+    <div className="flex h-14 rounded-b-md border-gray-300 justify-end items-center bg-gray-50 border-b">
+      <div className="mx-4 font-semibold text-lg w-full">Colleague chat</div>
       {/* Filter */}
       <div
         className="cursor-pointer relative"

@@ -8,10 +8,7 @@ export default function FriendMessagePreview(props) {
   const [isHover, setIsHover] = useState(false);
   const ref = useRef()
   const [shortMessage, setShortMessage] = useState()
-  // const shortMessage =
-  //   props.lastMessage.length > 15
-  //     ? props.lastMessage.substring(0, 12) + "..."
-  //     : props.lastMessage;
+
   useEffect(() => {
     if(ref.current) {
       ref.current.innerHTML = props.lastMessage
