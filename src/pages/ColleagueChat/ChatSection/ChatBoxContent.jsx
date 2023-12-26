@@ -169,6 +169,7 @@ export default function ChatBoxContent() {
     }
   }, [hub]);
 
+  
   // Hub nhận tin nhắn delete
   useEffect(() => {
     if (hub) {
