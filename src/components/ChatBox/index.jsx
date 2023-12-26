@@ -6,15 +6,13 @@ import { Extension } from "@tiptap/core";
 import { Paperclip, X, FileUp } from "lucide-react";
 import { uploadFiles } from "../../api";
 import InformDialog from "../InformDialog";
-import {
-  Bold,
-  Italic,
-  Underline as UnderlineIcon,
-} from "lucide-react";
+import { imgFile, typeFile } from "@/utils/supportImgFile";
+import { Bold, Italic, Underline as UnderlineIcon } from "lucide-react";
 import React from "react";
 import { useRef, useState, useEffect } from "react";
 import { IoIosSend } from "react-icons/io";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { Link } from '@tiptap/extension-link';
 
 const DisableEnter = Extension.create({
   addKeyboardShortcuts() {
@@ -23,6 +21,9 @@ const DisableEnter = Extension.create({
     };
   },
 });
+
+
+
 const extensions = [
   StarterKit,
   Placeholder.configure({
@@ -32,6 +33,14 @@ const extensions = [
   }),
   Underline,
   DisableEnter,
+  Link.configure({
+    HTMLAttributes: {
+      class: "text-bold-blue underline",
+      target: "_blank",
+    },
+    protocols: ["http", "https", "mailto", "tel", "ftp"],
+    validate: href => /^https?:\/\//.test(href),
+  }),
 ];
 
 const ChatBox = React.forwardRef((props) => {
@@ -55,20 +64,18 @@ const ChatBox = React.forwardRef((props) => {
     console.log("event: ", event.target.value);
     const allFiles = Array.from(event.target.files);
     const newFiles = allFiles.filter(
-      file => file.size <= 30 * 1024 * 1024 // Kiểm tra kích thước file (<= 30MB)
+      (file) => file.size <= 30 * 1024 * 1024 // Kiểm tra kích thước file (<= 30MB)
     );
-  
+    console.log("newFiles: ", newFiles);
+
     if (allFiles.length !== newFiles.length) {
       // Nếu có file lớn hơn 30MB
       setIsOpenDialog(true);
     }
-  
-    setSelectedFiles(prevFiles => [...prevFiles, ...newFiles]);
+
+    setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
     setIsHaveFile(true);
   };
-  
-    
-  
 
   function handleRemoveFile(e, index) {
     const newFiles = [...selectedFiles];
@@ -78,13 +85,28 @@ const ChatBox = React.forwardRef((props) => {
     refFile.current.value = null;
   }
 
+  function handlePaste(e) {
+    const { items } = e.clipboardData;
+    const files = [];
+    for (const item of items) {
+      if (item.kind === "file") {
+        const file = item.getAsFile();
+        files.push(file);
+      }
+    }
+    if (files.length > 0) {
+      setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+      setIsHaveFile(true);
+    }
+  }
+
   async function handleSend() {
     if (isSending) return; // Nếu đang gửi, không làm gì cả
     setIsSending(true); // Đặt trạng thái gửi thành true
-  
+
     const contentHtml = editor.getHTML();
     const content = ref.current.textContent;
-  
+
     if (isHaveFile) {
       try {
         const res = await uploadFiles(selectedFiles);
@@ -105,14 +127,20 @@ const ChatBox = React.forwardRef((props) => {
         console.error(error);
       }
     }
-  
+
     setIsSending(false); // Đặt trạng thái gửi thành false khi hoàn tất
   }
 
   return (
     <div className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2">
       {/* Format bar */}
-      { isOpenDialog && (<InformDialog setIsOpenDialog={setIsOpenDialog} title="File to large" content=" That file is too large and cannot be uploaded. The limit is 1 GB."/>)}
+      {isOpenDialog && (
+        <InformDialog
+          setIsOpenDialog={setIsOpenDialog}
+          title="File to large"
+          content=" That file is too large and cannot be uploaded. The limit is 30MB."
+        />
+      )}
       <div className="flex">
         <button
           className="hover:bg-red-400 active:bg-red-600 w-7 h-7 rounded text-lg flex justify-center items-center"
@@ -168,6 +196,7 @@ const ChatBox = React.forwardRef((props) => {
             handleSend();
           }
         }}
+        onPaste={handlePaste}
         className="outline-none mt-1 mb-2 relative max-w-[calc(100vw-25rem)]"
         ref={ref}
       >
@@ -181,35 +210,48 @@ const ChatBox = React.forwardRef((props) => {
         >
           {isSending ? (
             <AiOutlineLoading3Quarters
-            strokeWidth={1.25}
-            className="cursor-pointer top-0 right-0 text-white mr-0.5 animate-spin"
-          />) : (
+              strokeWidth={1.25}
+              className="cursor-pointer top-0 right-0 text-white mr-0.5 animate-spin"
+            />
+          ) : (
             <IoIosSend
-            strokeWidth={1.25}
-            className="cursor-pointer top-0 right-0 text-white mr-0.5 rotate-45" />
+              strokeWidth={1.25}
+              className="cursor-pointer top-0 right-0 text-white mr-0.5 rotate-45"
+            />
           )}
         </button>
       </div>
+
       {/* Hiển thị các file upload */}
       <div className="flex flex-row my-2 gap-4 flex-wrap">
         {selectedFiles.map((file, index) => (
           <div key={index}>
-            <div className="relative flex flex-row justify-start px-4 py-2 border rounded-lg w-56">
-              <img
-                src="https://chat.zalo.me/assets/icon-file-empty.6796cfae2f36f6d44242f7af6104f2bb.svg"
-                alt=""
-                className="w-8 h-8"
-              />
-              <div className="flex flex-col justify-center ml-2">
-                <span className="font-semibold text-base truncate w-44 pr-2">
-                  {file.name}
-                </span>
+            {file.type.startsWith("image/") ? (
+              <div className="relative border rounded-lg group">
+                <img src={URL.createObjectURL(file)} alt="" className="w-14 h-14 object-cover rounded-lg" />
+                <X
+                  className="absolute -top-1.5 invisible group-hover:visible -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer"
+                  onClick={(e) => handleRemoveFile(e, index)}
+                />
+                </div>
+            ) : (
+              <div className="relative flex flex-row justify-start px-4 py-2 border rounded-lg w-56 group">
+                <img
+                  src={imgFile(file.name, URL.createObjectURL(file))}
+                  alt=""
+                  className="w-10 h-10"
+                />
+                <div className="flex flex-col justify-center ml-2">
+                  <span className="font-semibold text-base truncate w-44 pr-2">
+                    {file.name}
+                  </span>
+                </div>
+                <X
+                  className="absolute -top-1.5 -right-2 w-4 h-4 p-0.5 invisible group-hover:visible bg-slate-600 text-white rounded-full cursor-pointer"
+                  onClick={(e) => handleRemoveFile(e, index)}
+                />
               </div>
-              <X
-                className="absolute -top-1.5 -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer"
-                onClick={(e) => handleRemoveFile(e, index)}
-              />
-            </div>
+            )}
           </div>
         ))}
       </div>

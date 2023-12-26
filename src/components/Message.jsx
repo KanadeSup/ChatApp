@@ -16,8 +16,19 @@ import ChatBoxEdit from "@/components/ChatBoxEdit";
 import { BsFillPinAngleFill } from "react-icons/bs";
 import FileCard from "./FileCard";
 import { GoTriangleRight } from "react-icons/go";
+import style from "./style.module.css"
+
+function handleContent(content) {
+  const doc = new DOMParser().parseFromString(content, "text/html");
+  doc.querySelectorAll("a").forEach(a => {
+    const url = new URL(a.href);
+    a.textContent = url.hostname;
+  });
+  return doc.body.innerHTML;
+}
 
 export default function Message(props) {
+  console.log("message", props.message);
   const [showEmoij, setShowEmoij] = useState(false);
   const [isHoveredPin, setIsHoveredPin] = useState(false);
   const [isHoveredEdit, setIsHoveredEdit] = useState(false);
@@ -35,7 +46,7 @@ export default function Message(props) {
       onMouseLeave={() => setShowEmoij(false)}
     >
       <div
-        className={`flex flex-col  rounded-md ${
+        className={style.messageDiv + ` flex flex-col  rounded-md ${
           props.message.isPined ? "bg-[rgb(254,249,236)]" : "hover:bg-gray-100"
         }`}
       >
@@ -85,7 +96,7 @@ export default function Message(props) {
                 <div
                   ref={refContent}
                   className="text-[15px] mt-1 leading-relaxed w-full break-all"
-                  dangerouslySetInnerHTML={{ __html: props.message.content }}
+                  dangerouslySetInnerHTML={{ __html: props.message.content}}
                 ></div>
                 {props.message.isEdited ? (
                   <div className="text-xs text-gray-500">(edited)</div>
