@@ -5,10 +5,9 @@ const typeFile = (name) => {
     return ["PDF", "DOC", "XLS", "RAR", "ZIP", "MP3", "WAV", "MP4", "AVI", "MOV", "IMG", "PNG", "JPG"].includes(extension) ? "" : extension;
 };
 
-const imgFile = (file) => {
-    const name = file.name;
-    const typeFile = name.split(".")[1]
-        ? name.split(".").pop().slice(0, 3).toUpperCase()
+const imgFile = (fileName, fileUrl) => {
+    const typeFile = fileName.split(".")[1]
+        ? fileName.split(".").pop().slice(0, 3).toUpperCase()
         : "";
     switch (typeFile) {
         case "DOC":
@@ -26,7 +25,7 @@ const imgFile = (file) => {
         case "IMG":
         case "PNG":
         case "JPG":
-            return file.url;
+            return fileUrl;
         default:
             return "https://chat.zalo.me/assets/icon-file-empty.6796cfae2f36f6d44242f7af6104f2bb.svg";
     }
