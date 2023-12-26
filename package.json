@@ -52,7 +52,7 @@
       "date-fns": "^2.30.0",
       "lucide-react": "^0.292.0",
       "mssql": "^10.0.1",
-      "peerjs": "^1.5.2",
+      "openvidu-browser": "^2.29.1",
       "react": "^18.2.0",
       "react-dom": "^18.2.0",
       "react-icons": "^4.12.0",

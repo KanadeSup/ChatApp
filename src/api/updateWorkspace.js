@@ -23,7 +23,7 @@ export default async (id, logo, name, description) => {
    const avatarRes = await myFetch({
       path: `Workspace/${id}/avatar`,
       headers: {
-         "workspace-id" : id,
+         "workspace-ids" : id,
       },
       method: "PUT",
       body: formData
