@@ -99,7 +99,7 @@ export default function PinnedMessage(props) {
               <div>
                 {props.message.files.map((file) => (
                   <div className="flex relative items-center mt-2 border rounded-xl p-2">
-                    <img src={imgFile(file)} className="w-8 h-8 mr-2" />
+                    <img src={imgFile(file.name, file.url)} className="w-8 h-8 mr-2" />
                     <span className="text-sm text-gray-700 truncate font-semibold">
                       {file.name}
                     </span>

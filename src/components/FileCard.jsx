@@ -26,7 +26,11 @@ function Display(file) {
     return (
       <>
         <div className="relative">
-          <img src={imgFile(file)} alt="" className="w-10 h-10 min-w-[40px]" />
+          <img
+            src={imgFile(file.name, file.url)}
+            alt=""
+            className="w-10 h-10 min-w-[40px]"
+          />
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1 text-[10px] font-medium text-white">
             {typeFile(file.name)}
           </div>
