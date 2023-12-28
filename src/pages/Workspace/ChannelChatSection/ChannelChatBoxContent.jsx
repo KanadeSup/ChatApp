@@ -18,6 +18,7 @@ import {
 } from "@/utils/hubs";
 import useChannelStore from "@/storages/useChannelStore";
 import { getUserById } from "@/api";
+import audio from "@/assets/bip.mp3";
 
 // Do có dùng key là id channel bên routes nên khi chuyển channel sẽ re-render
 // mỗi component có một “key” duy nhất, Khi một component được cập nhật, React sẽ so sánh key hiện tại với
@@ -36,6 +37,7 @@ export default function ChannelChatBoxContent(props) {
   // const {jumpId} = useJump()
   const [jumpId, setJumpId] = useState(null)
   const scrollDivRef = useRef();
+  const audioRef = useRef();
   const {
     messageParent,
     setMessageParent,
@@ -138,6 +140,7 @@ export default function ChannelChatBoxContent(props) {
         //setIsNewMessage(true);
         console.log("đã chạy receive message");
         if (message.receiverId !== channelId) {
+          audioRef.current.play();
           return;
         }
 
@@ -389,6 +392,9 @@ export default function ChannelChatBoxContent(props) {
           setJump={setJumpId}
         />
       )}
+      <audio ref={audioRef} preload="metadata">
+        <source type="audio/mpeg" src={audio} />
+      </audio>
     </div>
   );
 }

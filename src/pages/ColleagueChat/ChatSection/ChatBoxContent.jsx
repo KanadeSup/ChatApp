@@ -9,6 +9,7 @@ import { getUserById } from "../../../api";
 import useColleagueStore from "@/storages/useColleagueStore";
 import useHubStore from "@/storages/useHubStore";
 import { InfiniteScroll } from "@/components/InfinityScroll";
+import audio from "@/assets/bip.mp3";
 import {
   SendMessage,
   UpdateMessage,
@@ -18,7 +19,6 @@ import {
   DeleteFileColleague,
 } from "@/utils/hubs";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function ChatBoxContent() {
   const { conversationId } = useParams();
@@ -27,6 +27,7 @@ export default function ChatBoxContent() {
   const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
   const { isNewMessage, setIsNewMessage } = useIsNewMessage(); // Cập nhập danh sách hiển thị tin nhắn ở sideBar
   const [user, setUser] = useState(null);
+  const audioRef = useRef();
   const {
     isClickedReply,
     setIsClickedReply,
@@ -61,14 +62,16 @@ export default function ChatBoxContent() {
       hub.on("receive_message", (message) => {
         console.log("message đã nhận: ", message);
         setIsNewMessage(true);
-
-        if (message.senderId !== conversationId) {
+        console.log("conversationId", conversationId);
+        console.log("message.senderId", message.senderId);
+        if ((message.senderId !== conversationId) || (message.receiverId !== localStorage.getItem("userId"))) {
+          audioRef.current.play();
           return;
         }
 
         setMessages((currentMessages) => {
-          const messages = [...currentMessages]; 
-          const newMessage = { ...message }; 
+          const messages = [...currentMessages];
+          const newMessage = { ...message };
           const parentMessageIndex = messages.findIndex(
             (m) => m.id === newMessage.parentId
           );
@@ -76,8 +79,7 @@ export default function ChatBoxContent() {
             newMessage.senderId === conversationId &&
             parentMessageIndex !== -1
           ) {
-            
-            const parentMessage = { ...messages[parentMessageIndex] }; 
+            const parentMessage = { ...messages[parentMessageIndex] };
 
             if (message.parentId === localStorage.getItem("idMessage")) {
               setMessagesChild((messagesChild) => [
@@ -169,7 +171,6 @@ export default function ChatBoxContent() {
     }
   }, [hub]);
 
-  
   // Hub nhận tin nhắn delete
   useEffect(() => {
     if (hub) {
@@ -296,10 +297,10 @@ export default function ChatBoxContent() {
           scrollDivRef={scrollDivRef}
           className="flex flex-col justify-start overflow-y-scroll h-full min-w-[400px] py-4 gap-1"
         >
-          {messages.map((message, index) => (
+          {messages.map((message) => (
             <Message
               id={`message-${message.id}`}
-              key={index}
+              key={message.id}
               message={message}
               setMessage={setMessage}
               setIsClickedReply={setIsClickedReply}
@@ -356,6 +357,9 @@ export default function ChatBoxContent() {
           isChannel={false}
         />
       )}
+      <audio ref={audioRef} preload="metadata">
+        <source type="audio/mpeg" src={audio} />
+      </audio>
     </div>
   );
 }
