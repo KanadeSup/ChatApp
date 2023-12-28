@@ -6,6 +6,7 @@ import { Pin, User2, SmilePlus, Trash2, Pencil } from "lucide-react";
 import ChatBoxEdit from "@/components/ChatBoxEdit";
 import FileCard from "@/components/FileCard";
 import { GoTriangleRight } from "react-icons/go";
+import style from "@/components/style.module.css";
 
 export default function MessageReply(props) {
   const [showEmoij, setShowEmoij] = useState(false);
@@ -53,7 +54,7 @@ export default function MessageReply(props) {
             <>
               <div
                 ref={refContent}
-                className="text-[15px] leading-relaxed w-full break-all"
+                className={"text-[15px] leading-relaxed w-full break-all " + style.messageDiv}
                 dangerouslySetInnerHTML={{ __html: props.message.content }}
               ></div>
               {props.message.isEdited ? (
