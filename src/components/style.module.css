@@ -2,3 +2,15 @@
     text-decoration: none;
     color: rgb(18,100,163);
 }
+.messageDiv ul {
+    list-style-type: none;
+    list-style-type: disc;
+    margin-left: 20px;
+    padding: 0;
+}
+
+.messageDiv ol {
+    list-style-type: decimal;
+    margin-left: 20px;
+}
+
