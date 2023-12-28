@@ -2,7 +2,7 @@ import Meeting from "../pages/Meeting";
 
 export default [
    {
-      path: "/:workspaceId?/Meeting",
+      path: "/:deviceType?/Meeting",
       element: <Meeting />,
    },
 ]
