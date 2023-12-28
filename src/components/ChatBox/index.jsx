@@ -3,7 +3,7 @@ import { Underline } from "@tiptap/extension-underline";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 import { Extension } from "@tiptap/core";
-import { Paperclip, X, FileUp } from "lucide-react";
+import { X, FileUp, ListOrdered, List, WrapText } from "lucide-react";
 import { uploadFiles } from "../../api";
 import InformDialog from "../InformDialog";
 import { imgFile, typeFile } from "@/utils/supportImgFile";
@@ -12,7 +12,11 @@ import React from "react";
 import { useRef, useState, useEffect } from "react";
 import { IoIosSend } from "react-icons/io";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { Link } from '@tiptap/extension-link';
+import { Link } from "@tiptap/extension-link";
+import ListItem from "@tiptap/extension-list-item";
+import OrderedList from "@tiptap/extension-ordered-list";
+import BulletList from "@tiptap/extension-bullet-list";
+import style from "../style.module.css";
 
 const DisableEnter = Extension.create({
   addKeyboardShortcuts() {
@@ -21,8 +25,30 @@ const DisableEnter = Extension.create({
     };
   },
 });
+const convertEnterToShiftEnter = Extension.create({
+  addKeyboardShortcuts() {
+    return {
+      "Shift-Enter": ({ editor }) =>
+        editor.commands.first(({ commands }) => [
+          () => commands.splitListItem("listItem"), 
+          () => commands.newlineInCode(),
+          () => commands.createParagraphNear(),
+          () => commands.liftEmptyBlock(),
+          () => commands.splitBlock(),
+        ]),
+    };
+  },
+});
 
-
+const CustomBulletList = BulletList.extend({
+  addKeyboardShortcuts() {
+    return {
+      Enter: () => {
+        return true;
+      },
+    };
+  },
+});
 
 const extensions = [
   StarterKit,
@@ -32,14 +58,18 @@ const extensions = [
       "cursor-text before:content-[attr(data-placeholder)] before:absolute before:text-mauve-11 before:opacity-50 before-pointer-events-none",
   }),
   Underline,
+  convertEnterToShiftEnter,
   DisableEnter,
+  ListItem,
+  OrderedList,
+  CustomBulletList,
   Link.configure({
     HTMLAttributes: {
       class: "text-bold-blue underline",
       target: "_blank",
     },
     protocols: ["http", "https", "mailto", "tel", "ftp"],
-    validate: href => /^https?:\/\//.test(href),
+    validate: (href) => /^https?:\/\//.test(href),
   }),
 ];
 
@@ -143,24 +173,46 @@ const ChatBox = React.forwardRef((props) => {
       )}
       <div className="flex">
         <button
-          className="hover:bg-red-400 active:bg-red-600 w-7 h-7 rounded text-lg flex justify-center items-center"
+          className={"rounded hover:bg-gray-400 w-7 h-7 " + (editor?.isActive('bold') ? 'bg-gray-300' : '')}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <Bold strokeWidth={3} className="p-1" />
         </button>
 
         <button
-          className="hover:bg-red-400 w-7 h-7 rounded text-lg flex justify-center items-center"
+          className={"rounded hover:bg-gray-400 w-7 h-7 " + (editor?.isActive('italic') ? 'bg-gray-300' : '')}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
           <Italic className="p-1" />
         </button>
 
         <button
-          className="hover:bg-red-400 w-7 h-7 rounded text-lg flex justify-center items-center"
+          className={"rounded hover:bg-gray-400 w-7 h-7 " + (editor?.isActive('underline') ? 'bg-gray-300' : '')}
           onClick={() => editor.chain().focus().toggleUnderline().run()}
         >
           <UnderlineIcon className="p-1" />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          className={"rounded hover:bg-gray-400 w-7 h-7 " + (editor?.isActive('bulletList') ? 'bg-gray-300' : '')}
+        >
+          <List className="p-1" />
+        </button>
+        <button
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          className={"rounded hover:bg-gray-400 w-7 h-7 " + (editor?.isActive('orderedList') ? 'bg-gray-300' : '')}
+
+        >
+          <ListOrdered className="p-1" />
+        </button>
+
+        <button
+          className="rounded hover:bg-gray-400 w-7 h-7"
+          onClick={() => editor.chain().focus().splitListItem("listItem").run()}
+          disabled={!editor?.can().splitListItem('listItem')}
+        >
+          <WrapText className="p-1" />
         </button>
 
         {/* Up file */}
@@ -200,9 +252,13 @@ const ChatBox = React.forwardRef((props) => {
         className="outline-none mt-1 mb-2 relative max-w-[calc(100vw-25rem)]"
         ref={ref}
       >
-        <EditorContent className="pr-10" editor={editor} spellCheck="false" />
+        <EditorContent
+          className={style.messageDiv + " pr-10"}
+          editor={editor}
+          spellCheck="false"
+        />
         <button
-          className="absolute cursor-pointer w-8 h-6 flex items-center justify-center rounded-sm bg-green-700 top-0 right-0 hover:bg-green-600"
+          className="absolute cursor-pointer w-8 h-6 flex items-center justify-center rounded-sm bg-green-700 bottom-0 right-0 hover:bg-green-600"
           disabled={isSending}
           onClick={() => {
             handleSend();
@@ -211,12 +267,12 @@ const ChatBox = React.forwardRef((props) => {
           {isSending ? (
             <AiOutlineLoading3Quarters
               strokeWidth={1.25}
-              className="cursor-pointer top-0 right-0 text-white mr-0.5 animate-spin"
+              className="cursor-pointer text-white mr-0.5 animate-spin"
             />
           ) : (
             <IoIosSend
               strokeWidth={1.25}
-              className="cursor-pointer top-0 right-0 text-white mr-0.5 rotate-45"
+              className="cursor-pointer text-white mr-0.5 rotate-45"
             />
           )}
         </button>
@@ -228,12 +284,16 @@ const ChatBox = React.forwardRef((props) => {
           <div key={index}>
             {file.type.startsWith("image/") ? (
               <div className="relative border rounded-lg group">
-                <img src={URL.createObjectURL(file)} alt="" className="w-14 h-14 object-cover rounded-lg" />
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt=""
+                  className="w-14 h-14 object-cover rounded-lg"
+                />
                 <X
                   className="absolute -top-1.5 invisible group-hover:visible -right-2 w-4 h-4 p-0.5 bg-slate-600 text-white rounded-full cursor-pointer"
                   onClick={(e) => handleRemoveFile(e, index)}
                 />
-                </div>
+              </div>
             ) : (
               <div className="relative flex flex-row justify-start px-4 py-2 border rounded-lg w-56 group">
                 <img

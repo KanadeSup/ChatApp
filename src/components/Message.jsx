@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Emoji from "/components/Emoij";
 import {
   ChevronRight,
@@ -16,11 +16,12 @@ import ChatBoxEdit from "@/components/ChatBoxEdit";
 import { BsFillPinAngleFill } from "react-icons/bs";
 import FileCard from "./FileCard";
 import { GoTriangleRight } from "react-icons/go";
-import style from "./style.module.css"
+import style from "./style.module.css";
+import ViewLinkPreview from "./ViewLinkPreview";
 
 function handleContent(content) {
   const doc = new DOMParser().parseFromString(content, "text/html");
-  doc.querySelectorAll("a").forEach(a => {
+  doc.querySelectorAll("a").forEach((a) => {
     const url = new URL(a.href);
     a.textContent = url.hostname;
   });
@@ -28,7 +29,6 @@ function handleContent(content) {
 }
 
 export default function Message(props) {
-  console.log("message", props.message);
   const [showEmoij, setShowEmoij] = useState(false);
   const [isHoveredPin, setIsHoveredPin] = useState(false);
   const [isHoveredEdit, setIsHoveredEdit] = useState(false);
@@ -38,6 +38,14 @@ export default function Message(props) {
   const [editMessage, setEditMessage] = useState(false);
   const [isOpenFile, setIsOpenFile] = useState(true);
   const refContent = useRef(null);
+  const [links, setLinks] = useState([]);
+
+  useEffect(() => {
+    const parser = new DOMParser();
+    const htmlDoc = parser.parseFromString(props.message.content, "text/html");
+    const links = Array.from(htmlDoc.querySelectorAll("a")).map((a) => a.href);
+    setLinks(links);
+  }, [props.message.content]);
 
   return (
     <div
@@ -46,9 +54,14 @@ export default function Message(props) {
       onMouseLeave={() => setShowEmoij(false)}
     >
       <div
-        className={style.messageDiv + ` flex flex-col  rounded-md ${
-          props.message.isPined ? "bg-[rgb(254,249,236)]" : "hover:bg-gray-100"
-        }`}
+        className={
+          style.messageDiv +
+          ` flex flex-col  rounded-md ${
+            props.message.isPined
+              ? "bg-[rgb(254,249,236)]"
+              : "hover:bg-gray-100"
+          }`
+        }
       >
         {props.message.isPined && (
           <div className="pt-1 mx-9 flex gap-2 items-center">
@@ -76,7 +89,8 @@ export default function Message(props) {
                 {props.message.senderName}
               </span>
               <span className="text-gray-500 flex gap-2 font-medium text-xs ml-2 cursor-default">
-                {convertTime(props.message.sendAt)}{" "}
+                {/* {convertTime(props.message.sendAt)}{" "} */}
+                {timeDifference(props.message.sendAt)}
                 {/* {props.message.isPined && (
                   <span className="text-red-500 italic flex">
                     <PinIcon className="w-4 h-4" /> (pinned)
@@ -96,7 +110,7 @@ export default function Message(props) {
                 <div
                   ref={refContent}
                   className="text-[15px] mt-1 leading-relaxed w-full break-all"
-                  dangerouslySetInnerHTML={{ __html: props.message.content}}
+                  dangerouslySetInnerHTML={{ __html: props.message.content }}
                 ></div>
                 {props.message.isEdited ? (
                   <div className="text-xs text-gray-500">(edited)</div>
@@ -122,25 +136,37 @@ export default function Message(props) {
                   <div className="flex flex-row flex-wrap gap-2 mt-1">
                     {props.message.files.map((file, index) => (
                       <FileCard
-                        key={file.index}
+                        key={index}
                         file={file}
-                        allowDeletion={props.message.senderId === localStorage.getItem("userId")}
+                        allowDeletion={
+                          props.message.senderId ===
+                          localStorage.getItem("userId")
+                        }
                         DeleteFile={(fileId) => {
-                          if (refContent.current.textContent === "" && props.message.files.length === 1)
-                          {
+                          if (
+                            refContent.current.textContent === "" &&
+                            props.message.files.length === 1
+                          ) {
                             console.log("da chay delete message");
                             props.DeleteMessage(props.message.id);
                             return;
                           }
                           props.DeleteFile(fileId);
                         }}
-              
                       />
                     ))}
                   </div>
                 )}
               </div>
             )}
+            
+            {/* Link preview */}
+            <div className="flex flex-col gap-2">
+              {links.map((link, index) => (
+                <ViewLinkPreview key={index} url={link} className="w-4/5" />
+              ))}
+            </div>
+
             {/*-- List Emoij --*/}
             <div className="flex justify-start flex-wrap items-center pt-1 gap-2">
               {props.message.reactionCount &&
