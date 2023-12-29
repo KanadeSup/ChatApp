@@ -120,7 +120,7 @@ function MeetingRoom({ session, subcribers, setSubcribers, publisher, setPublish
                         <UserVideo
                            key={sub.id}
                            setParticipant={setParticipant}
-                           participant={publisher}
+                           participant={sub}
                            className={`h-full min-w-0 min-h-0 rounded-lg`}
                            isPublisher
                            setPinnedUser={setPinnedUser}
@@ -136,7 +136,7 @@ function MeetingRoom({ session, subcribers, setSubcribers, publisher, setPublish
                            subcribers.length > 0 && subcribers.length <= 3 ? "flex items-center" : ""
                         }`}
                         setParticipant={setParticipant}
-                        participant={publisher}
+                        participant={sub}
                         isPublisher
                         setPinnedUser={setPinnedUser}
                      />
