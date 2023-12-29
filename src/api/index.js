@@ -24,7 +24,7 @@ import getUserById from "./getUserById"
 import updateUser from "./updateUser"
 import getMessages from "./getMessages"
 import getMessagesColleague from "./getMessagesColleague"
-import getUserByEmail from "./user/getUserByEmail"
+import searchUser from "./user/searchUser"
 import getPinMessages from "./getPinMessages"
 import getMessageJump from "./getMessageJump"
 import uploadFiles from "./uploadFiles"
@@ -56,7 +56,7 @@ export {
    updateUser,
    getMessages,
    getMessagesColleague,
-   getUserByEmail,
+   searchUser,
    getPinMessages,
    getMessageJump,
    uploadFiles,
