@@ -9,8 +9,11 @@ export default function ViewLinkPreview({ url, className }) {
   useEffect(() => {
     setDataPreview(data);
     const getData = async () => {
-      console.log("da chayyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
-      if (data?.message || !data?.description || data?.description === "") {
+      if (data?.message)
+      {
+        return;
+      }
+      if (!data?.description || data?.description === "") {
         const response = await getLinkPreview(url);
         console.log("chay cai ton tien")
         if (!response.error) {
