@@ -147,7 +147,6 @@ export default function Message(props) {
                             refContent.current.textContent === "" &&
                             props.message.files.length === 1
                           ) {
-                            console.log("da chay delete message");
                             props.DeleteMessage(props.message.id);
                             return;
                           }
