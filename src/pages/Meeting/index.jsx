@@ -39,12 +39,13 @@ export default function () {
    }, []);
 
    function leaveSession() {
+      session.unpublish(publisherData.streamManager)
       if (session) session.disconnect();
       setOV(null);
       setSession(null);
-      setSubcribers([]);
+      setSubcriberDatas([]);
       setSessionId("");
-      setPublisher(null);
+      setPublisherData(null);
    }
 
    return (
@@ -105,7 +106,7 @@ export default function () {
                         videoSource: undefined, // The source of video. If undefined default webcam
                         publishAudio: false, // Whether you want to start publishing with your audio unmuted or not
                         publishVideo: false, // Whether you want to start publishing with your video enabled or not
-                        resolution: "640x400", // The resolution of your video
+                        resolution: "640x360", // The resolution of your video
                         frameRate: 30, // The frame rate of your video
                         insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
                         mirror: false, // Whether to mirror your local video or not
@@ -169,7 +170,7 @@ export default function () {
                         videoSource: undefined, // The source of video. If undefined default webcam
                         publishAudio: false, // Whether you want to start publishing with your audio unmuted or not
                         publishVideo: false, // Whether you want to start publishing with your video enabled or not
-                        resolution: "640x400", // The resolution of your video
+                        resolution: "640x360", // The resolution of your video
                         frameRate: 30, // The frame rate of your video
                         insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
                         mirror: false, // Whether to mirror your local video or not
