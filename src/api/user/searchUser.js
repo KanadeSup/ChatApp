@@ -1,8 +1,8 @@
 import myFetch from '/api/myFetch'
 
-export default async (email) => {
+export default async (value) => {
    const res = await myFetch({
-      path: `User/search/email/${email}/10`,
+      path: `User/search/${value}/15`,
    })
    if(!res.ok) {
       return {

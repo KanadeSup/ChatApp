@@ -1,10 +1,10 @@
 import UserDropList from "./UserDropList";
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import { getUserByEmail } from "@/api";
+import { searchUser } from "@/api";
 
 export default function NewChatHeader(props) {
-  const [searchNewChat, setSearchNewChat] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [isFocus, setIsFocus] = useState(false);
   const [dataSearch, setDataSearch] = useState([]);
 
@@ -12,15 +12,14 @@ export default function NewChatHeader(props) {
 
   useEffect(() => {
     if (timerId) clearTimeout(timerId); // if there's a timer, clear it
-    if (searchNewChat) {
+    if (searchValue) {
       const id = setTimeout(async () => {
-        const response = await getUserByEmail(searchNewChat);
+        const response = await searchUser(searchValue);
         setDataSearch(response);
       }, 200); 
       setTimerId(id); // save the timer id
     }
-    console.log("data search: ", dataSearch);
-  }, [searchNewChat]);
+  }, [searchValue]);
 
   return (
     <div
@@ -39,7 +38,7 @@ export default function NewChatHeader(props) {
             name="search"
             autoComplete="off"
             placeholder="Enter email"
-            onChange={(e) => setSearchNewChat(e.target.value)}
+            onChange={(e) => setSearchValue(e.target.value)}
             onFocus={() => setIsFocus(true)}
             onBlur={() => {
               setIsFocus(false);
