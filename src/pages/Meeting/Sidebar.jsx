@@ -14,11 +14,11 @@ function Sidebar() {
 
             {/* List meeting */}
             <div className="">
-                <div className="px-3 py-2 border-b border-b-gray-300 rounded-b-lg hover:bg-gray-100 cursor-pointer">
+                <div className="px-3 py-2 border-b border-b-gray-300 rounded-b-lg hover:bg-slate-50 cursor-pointer">
                     <h1 className="font-bold text-lg truncate"> New Meeting </h1>
                     <p className="text-gray-500"> This is descipriton about meeting, you can read for more information </p>
                 </div>
-                <div className="px-3 py-2 border-b border-b-gray-300 rounded-b-lg hover:bg-gray-100 cursor-pointer">
+                <div className="px-3 py-2 border-b border-b-gray-300 rounded-b-lg hover:bg-slate-50 cursor-pointer">
                     <h1 className="font-bold text-lg truncate"> New Meeting </h1>
                     <p className="text-gray-500"> This is descipriton about meeting, you can read for more information </p>
                 </div>

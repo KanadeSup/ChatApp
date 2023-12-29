@@ -61,7 +61,7 @@ export default function () {
    useEffect(() => {
       async function fetchData() {
          setUnaddedMembers(await getUnroleMember(channelId));
-         const permissions = await getChannelPermissions();
+         const permissions = await getChannelPermissions(channelId);
          setPermissionList(permissions);
          permissions.map((p) => (enablePermissionList[p.id] = p.isEnabled));
          setEnablePermissionList(enablePermissionList);
