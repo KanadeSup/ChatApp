@@ -41,7 +41,7 @@ export default function () {
    return (
       <div className="flex ">
          {/* Utility bar */}
-         {workspaceId ? <UtilityBar workspace colleague notification /> : <UtilityBar logo colleague notification />}
+         {workspaceId ? <UtilityBar workspace colleague notification meeting /> : <UtilityBar logo colleague notification />}
 
          {/* list friend */}
          {/* <SideBar isNewChat={isNewChat} setIsNewChat={setIsNewChat} /> */}

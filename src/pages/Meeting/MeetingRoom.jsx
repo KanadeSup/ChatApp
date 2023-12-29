@@ -112,17 +112,20 @@ function MeetingRoom({ session, subcribers, setSubcribers, publisher, setPublish
          ) : null}
 
          {/* Mobile Grid Layout */}
-         {deviceType?.toUpperCase() === "MOBILE" ? (
+         {deviceType?.toUpperCase() === "MOBILE" && pinnedUser === null ? (
             <div className="flex flex-col h-full min-h-0 min-w-0">
-               <div className="flex overflow-x-auto">
+               <div 
+                  className={`flex overflow-x-auto 
+                     ${subcribers.length > 3 ? "h-[50%]" : ""}
+                  `}
+               >
                   {
                      subcribers.slice(2).map(sub=>(
                         <UserVideo
                            key={sub.id}
                            setParticipant={setParticipant}
                            participant={sub}
-                           className={`h-full min-w-0 min-h-0 rounded-lg`}
-                           isPublisher
+                           className={`h-full min-w-0 min-h-0 rounded-lg flex-shrink-0`}
                            setPinnedUser={setPinnedUser}
                         />
                      ))
@@ -137,7 +140,6 @@ function MeetingRoom({ session, subcribers, setSubcribers, publisher, setPublish
                         }`}
                         setParticipant={setParticipant}
                         participant={sub}
-                        isPublisher
                         setPinnedUser={setPinnedUser}
                      />
                   ))
@@ -154,16 +156,56 @@ function MeetingRoom({ session, subcribers, setSubcribers, publisher, setPublish
             </div>
          ) : null}
 
+         {/* Mobile Pinned Layout */}
+         {deviceType?.toUpperCase() === "MOBILE" && pinnedUser !== null ? (
+            <div className="flex flex-col h-full min-h-0 min-w-0">
+               {/* Sub section */}
+               <div 
+                  className={`flex overflow-x-auto 
+                     ${subcribers.length > 3 ? "h-[50%]" : ""}
+                  `}
+               >
+                  {
+                     participants
+                     .filter((participant) => participant !== pinnedUser)
+                     .map(participant=>(
+                        <UserVideo
+                           key={participant.id}
+                           setParticipant={setParticipant}
+                           participant={participant}
+                           className={`h-full min-w-0 min-h-0 rounded-lg flex-shrink-0`}
+                           setPinnedUser={setPinnedUser}
+                        />
+                     ))
+                  }
+               </div>
+               
+               {/* pin section */}
+               <div 
+                  className="w-full h-full"
+               >
+                  <UserVideo
+                     key={pinnedUser.id}
+                     setParticipant={setParticipant}
+                     participant={pinnedUser}
+                     className={`h-full min-w-0 min-h-0 rounded-lg flex-shrink-0`}
+                     setPinnedUser={setPinnedUser}
+                  />
+               </div>
+            </div>
+         ): null}
+
+
          {/* toolbar */}
-         <div className="h-14 flex justify-center gap-5 items-center rounded mx-3 mb-3">
+         <div className={`flex justify-center items-center rounded py-2 ${deviceType?.toUpperCase() === "MOBILE" ? "gap-20" : "gap-5"}`}>
             {/* Logout */}
             <button
-               className="border border-gray-300 rounded-lg p-2 bg-red-500"
+               className={`border border-gray-300 rounded-lg p-2 bg-red-500`}
                onClick={(e) => {
                   leaveSession();
                }}
             >
-               <LogOut className="stroke-white stroke-[3]" />
+               <LogOut className={`stroke-white stroke-[3] ${deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""}`} />
             </button>
 
             {/* Mic */}
@@ -177,9 +219,9 @@ function MeetingRoom({ session, subcribers, setSubcribers, publisher, setPublish
                }}
             >
                {isMicEnable ? (
-                  <Mic className="stroke-white stroke-[2]" />
+                  <Mic className={`stroke-white stroke-[2] ${deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""}`} />
                ) : (
-                  <MicOff className="stroke-black stroke-[2]" />
+                  <MicOff className={`stroke-black stroke-[2] ${deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""}`} />
                )}
             </button>
 
@@ -192,9 +234,9 @@ function MeetingRoom({ session, subcribers, setSubcribers, publisher, setPublish
                }}
             >
                {isCamEnable ? (
-                  <Camera className="stroke-white stroke-[2]" />
+                  <Camera className={`stroke-white stroke-[2] ${deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""}`} />
                ) : (
-                  <CameraOff className="stroke-black stroke-[2]" />
+                  <CameraOff className={`stroke-black stroke-[2] ${deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""}` }/>
                )}
             </button>
          </div>

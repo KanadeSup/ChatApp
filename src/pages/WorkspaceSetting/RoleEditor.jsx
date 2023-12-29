@@ -28,6 +28,8 @@ import { getUnroleMember, getMemberByRole } from "/api/workspace";
 import MemberDialog from "./MemberDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import addRoleMembers from "/api/workspace/addRoleMembers";
+import { getMemberList } from "/api/workspace";
+
 
 const roleColors = [
    "#1ABC9C",
@@ -74,6 +76,7 @@ export default function () {
    const [search, setSearch] = useState("")
    const navigate = useNavigate();
    const { toast } = useToast();
+   
 
    const addMembers = (members) => {
       if (members.length === 0) return;
@@ -87,7 +90,14 @@ export default function () {
    useEffect(() => {
       async function fetchData() {
          const data = await getWorkspaceRoleById(workspaceId, roleId);
-         setUnaddedMembers(await getUnroleMember(workspaceId));
+         const inviteMembers = await getMemberList(workspaceId,3);
+         const unroleMembers = await getUnroleMember(workspaceId)
+         setUnaddedMembers(unroleMembers.filter(mem=>{
+            for(let i = 0; i < inviteMembers.length; i++) {
+               if(inviteMembers[i].id === mem.id) return false
+            }
+            return true
+         }));
          const roleMembers = await getMemberByRole(workspaceId, roleId);
          setAddedMembers(roleMembers);
          const areEnable = {};

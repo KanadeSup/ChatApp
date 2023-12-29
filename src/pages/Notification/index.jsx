@@ -13,7 +13,7 @@ export default function () {
    return (
       <div className="flex">
          {
-            workspaceId ? <UtilityBar workspace colleague notification /> : <UtilityBar logo colleague notification />
+            workspaceId ? <UtilityBar workspace colleague notification meeting/> : <UtilityBar logo colleague notification />
          }
          <NotificationList setNotification={setNotification} forceLoad={forceLoad} setForceLoad={setForceLoad} />
          {notification ? <NotificationDetail notification={notification} setNotification={setNotification} setForceLoad={setForceLoad} /> : <NotificationDetailEmpty />}
