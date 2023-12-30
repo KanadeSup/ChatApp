@@ -18,6 +18,7 @@ import FileCard from "./FileCard";
 import { GoTriangleRight } from "react-icons/go";
 import style from "./style.module.css";
 import ViewLinkPreview from "./ViewLinkPreview";
+import { getShortDatetimeSendAt } from "../utils/getShortDatetimeSendAt";
 
 function handleContent(content) {
   const doc = new DOMParser().parseFromString(content, "text/html");
@@ -59,7 +60,7 @@ export default function Message(props) {
           ` flex flex-col  rounded-md ${
             props.message.isPined
               ? "bg-[rgb(254,249,236)]"
-              : "hover:bg-gray-100"
+              : "hover:bg-slate-50"
           }`
         }
       >
@@ -90,7 +91,8 @@ export default function Message(props) {
               </span>
               <span className="text-gray-500 flex gap-2 font-medium text-xs ml-2 cursor-default">
                 {/* {convertTime(props.message.sendAt)}{" "} */}
-                {timeDifference(props.message.sendAt)}
+                {/* {timeDifference(props.message.sendAt)} */}
+                {getShortDatetimeSendAt(props.message.sendAt)}
                 {/* {props.message.isPined && (
                   <span className="text-red-500 italic flex">
                     <PinIcon className="w-4 h-4" /> (pinned)
@@ -109,7 +111,7 @@ export default function Message(props) {
               <>
                 <div
                   ref={refContent}
-                  className="text-[15px] mt-1 leading-relaxed w-full break-all"
+                  className="text-[15px] font-sans mt-1 leading-snug w-full break-all"
                   dangerouslySetInnerHTML={{ __html: props.message.content }}
                 ></div>
                 {props.message.isEdited ? (

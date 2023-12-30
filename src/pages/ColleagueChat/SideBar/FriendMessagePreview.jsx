@@ -37,7 +37,7 @@ export default function FriendMessagePreview(props) {
         </div>
         <div className="ml-1 flex-1">
           <div className="flex items-center justify-between relative bottom-0.5">
-            <p className={`${props.isRead ? "" : "font-bold"} text-sm truncate w-36`}>
+            <p className={`${props.isRead ? "" : "font-bold"} text-sm truncate w-32`}>
               {props.name}
             </p>
             <p
