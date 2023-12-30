@@ -86,6 +86,7 @@ export default function Login() {
                 <input
                   type="text"
                   required
+                  maxLength={15}
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
                   placeholder="putinlord123"
                   onChange={(e) => setEmail(e.target.value)}
@@ -102,6 +103,7 @@ export default function Login() {
                   type="password"
                   name="password"
                   required
+                  maxLength={20}
                   placeholder="***************"
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
                   onChange={(e) => setPassword(e.target.value)}
