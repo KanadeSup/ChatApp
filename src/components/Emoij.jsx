@@ -1,5 +1,10 @@
 function List_Emoij() {
   let list = [];
+  list.push(String.fromCodePoint(128077));
+  list.push(String.fromCodePoint(128078));
+  list.push(String.fromCodePoint(128150));
+  list.push(String.fromCodePoint(128148));
+  list.push(String.fromCodePoint(128405));
   for (let i = 128512; i <= 128567; i++) {
     list.push(String.fromCodePoint(i));
   }

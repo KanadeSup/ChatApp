@@ -1,4 +1,4 @@
-import myFetch from './myFetch';
+import myFetch from '../myFetch';
 
 export default async function uploadFiles(files) {
     console.log(files);

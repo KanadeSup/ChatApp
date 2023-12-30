@@ -18,7 +18,7 @@ export default async (email, username, password) => {
                 "Password": password,
                 "FirstName": "string",
                 "LastName": "string",
-                "Phone": "6",
+                "Phone": "0123456789",
                 "Gender": true,
                 "BirthDay": "2023-11-09T09:04:28.587Z"
             })

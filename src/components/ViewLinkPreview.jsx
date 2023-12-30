@@ -34,7 +34,7 @@ export default function ViewLinkPreview({ url, className }) {
 
   return (
     <div className={className} onClick={() => window.open(url, "_blank")}>
-      <div className="flex flex-row gap-3 cursor-pointer bg-slate-50">
+      <div className="flex flex-row gap-3 cursor-pointer border border-slate-200 rounded px-2 py-1 bg-slate-50">
         {dataPreview?.image ? (
           <img
             className="max-w-[120px] mt-1 rounded-sm h-20"
