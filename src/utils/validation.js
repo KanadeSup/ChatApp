@@ -12,7 +12,7 @@ export function ValidateUsername(inputText) {
     return (
         String(inputText)
             .toLowerCase()
-            .match(/^[a-zA-Z0-9]+$/) && inputText.length >= 5
+            .match(/^[a-zA-Z0-9]{5,12}$/)
     );
 }
 
@@ -20,16 +20,6 @@ export function ValidatePassword(inputText) {
     return (
         String(inputText)
             .toLowerCase()
-            .match(/^[a-zA-Z0-9]+$/) && inputText.length >= 6
-    );
-}
-
-export function ValidateSubmit(errorSyntax) {
-    return (
-        Object.keys(errorSyntax).length === 4 &&
-        errorSyntax.email === null &&
-        errorSyntax.username === null &&
-        errorSyntax.password === null &&
-        errorSyntax.repassword === null
+            .match(/^[a-zA-Z0-9!@#$%^&*]{6,20}$/)
     );
 }

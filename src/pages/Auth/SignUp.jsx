@@ -7,7 +7,6 @@ import {
   ValidateEmail,
   ValidateUsername,
   ValidatePassword,
-  ValidateSubmit,
 } from "/utils/validation";
 import { signUp, verifyRegister } from "/api";
 import { Button } from "@/components/ui/button";
@@ -15,19 +14,14 @@ import { Loader2 } from "lucide-react";
 
 export default function SignUp() {
   const navigate = useNavigate();
-
-  const [formState, setFormState] = useState({
-    email: "",
-    username: "",
-    password: "",
-    repassword: "",
-  });
-  const [errorSyntax, setErrorSyntax] = useState({
-    email: "",
-    username: "",
-    password: "",
-    repassword: "",
-  });
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
+  const [errorEmail, setErrorEmail] = useState("");
+  const [errorUsername, setErrorUsername] = useState("");
+  const [errorPassword, setErrorPassword] = useState("");
+  const [errorRePassword, setErrorRePassword] = useState("");
   const [notificationServer, setNotificationServer] = useState("");
   const [visibleSubmit, setVisibleSubmit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,82 +30,77 @@ export default function SignUp() {
   const [isLoadingOTP, setIsLoadingOTP] = useState(false);
   const [notificationServerOTP, setNotificationServerOTP] = useState("");
 
-  function handleChange(e) {
-    switch (e.target.name) {
-      case "email":
-        if (!ValidateEmail(e.target.value)) {
-          setErrorSyntax((errorSyntax) => ({
-            ...errorSyntax,
-            email: "Email is invalid"}));
-        } else {
-          setErrorSyntax({
-            ...errorSyntax,
-            email: null,
-          });
-        }
-        break;
-      case "username":
-        if (!ValidateUsername(e.target.value)) {
-          setErrorSyntax({
-            ...errorSyntax,
-            username: "Username must be more than 6 characters",
-          });
-        } else {
-          setErrorSyntax({
-            ...errorSyntax,
-            username: null,
-          });
-        }
-        break;
-      case "password":
-        if (
-          e.target.value !== formState.repassword ||
-          formState.repassword !== ""
-        ) {
-          setErrorSyntax((errorSyntax) => ({
-            ...errorSyntax,
-            repassword: "RePassword is not match",
-          }));
-        }
-        if (!ValidatePassword(e.target.value)) {
-          setErrorSyntax((errorSyntax) => ({
-            ...errorSyntax,
-            password: "Password must be more than 6 characters",
-          }));
-        } else {
-          setErrorSyntax((errorSyntax) => ({
-            ...errorSyntax,
-            password: null,
-          }));
-        }
-        break;
-      case "repassword":
-        if (e.target.value !== formState.password && e.target.value !== "") {
-          setErrorSyntax((errorSyntax) => ({
-            ...errorSyntax,
-            repassword: "RePassword is not match"}));
-        } else {
-          setErrorSyntax({
-            ...errorSyntax,
-            repassword: null,
-          });
-        }
-        break;
+  function checkVisibleSubmit() {
+    if (
+      errorEmail === "" &&
+      errorUsername === "" &&
+      errorPassword === "" &&
+      errorRePassword === "" &&
+      email !== "" &&
+      username !== "" &&
+      password !== "" &&
+      rePassword !== ""
+    ) {
+      setVisibleSubmit(true);
+    } else {
+      setVisibleSubmit(false);
+    }
+  }
+
+  useEffect(() => {
+    checkVisibleSubmit();
+  }, [errorEmail, errorUsername, errorPassword, errorRePassword, email, username, password, rePassword]);
+
+  function handleChangeEmail(e) {
+    setEmail(e.target.value);
+    if (!ValidateEmail(e.target.value)) {
+      setErrorEmail("Email is invalid");
+    } else {
+      setErrorEmail("");
+    }
+  }
+
+  function handleChangeUsername(e) {
+    setUsername(e.target.value);
+    if (!ValidateUsername(e.target.value)) {
+      setErrorUsername("Username must be more than 6 characters");
+    } else {
+      setErrorUsername("");
+    }
+  }
+
+  function handleChangePassword(e) {
+    setPassword(e.target.value);
+    if (!ValidatePassword(e.target.value)) {
+      setErrorPassword("Password must be more than 6 characters");
+    } else {
+      setErrorPassword("");
     }
 
-    setFormState({
-      ...formState,
-      [e.target.name]: e.target.value,
-    });
+    if (rePassword === "" || rePassword === e.target.value) {
+      setErrorRePassword("");
+    } else {
+      setErrorRePassword("RePassword is not match");
+    }
   }
+
+  function handleChangeRePassword(e) {
+    setRePassword(e.target.value);
+    if (e.target.value !== password && e.target.value !== "") {
+      setErrorRePassword("RePassword is not match");
+    } else {
+      setErrorRePassword("");
+    }
+  }
+
 
   async function handleSubmit(e) {
     try {
       setIsLoading(true);
       const response = await signUp(
-        formState.email,
-        formState.username,
-        formState.password
+        email,
+        username,
+        password,
       );
       console.log("response khi ddawng khi: ", response);
       setIsLoading(false);
@@ -126,6 +115,7 @@ export default function SignUp() {
     } catch (error) {
       setNotificationServer("An error occurred while signing up.");
     }
+    console.log("email: ", email);
   }
 
   async function handleVerifyOTP() {
@@ -147,18 +137,14 @@ export default function SignUp() {
     }
   }
 
-  useEffect(() => {
-    setVisibleSubmit(() => ValidateSubmit(errorSyntax));
-  }, [errorSyntax, formState]);
-
   return (
-    <div className="bg-gradient-to-r from-gray-200 to-gray-400 flex items-center flex-col h-screen">
+    <div className=" flex items-center flex-col h-screen">
       <h1 className="mx-auto pt-10 w-[184px]">
         <img src="assets\img\logo-no-background.png" alt="" />
       </h1>
 
       <div
-        className={`relative flex justify-start mt-4 items-center overflow-hidden shadow-xl rounded-md bg-white transition-all duration-500 w-[23rem] ${
+        className={`relative flex justify-start mt-4 items-center border border-300 overflow-hidden rounded-md bg-white transition-all duration-500 w-[23rem] ${
           showFormConfirmOTP ? "h-[324px]" : "h-[32rem]"
         }`}
       >
@@ -180,7 +166,7 @@ export default function SignUp() {
                   E-mail
                 </label>
                 <div className="text-red-500 text-xs italic my-1">
-                  {errorSyntax.email}
+                  {errorEmail}
                 </div>
               </div>
               <div className="flex mb-2">
@@ -190,9 +176,10 @@ export default function SignUp() {
                 <input
                   type="email"
                   name="email"
+                  maxLength={30}
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
                   placeholder="johnsmith@example.com"
-                  onChange={(e) => handleChange(e)}
+                  onChange={(e) => handleChangeEmail(e)}
                 />
               </div>
               {/* username */}
@@ -201,7 +188,7 @@ export default function SignUp() {
                   Username
                 </label>
                 <div className="text-red-500 text-xs italic my-1">
-                  {errorSyntax.username}
+                  {errorUsername}
                 </div>
               </div>
               <div className="flex mb-2">
@@ -211,9 +198,10 @@ export default function SignUp() {
                 <input
                   type="text"
                   name="username"
+                  maxLength={12}
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
                   placeholder="John"
-                  onChange={(e) => handleChange(e)}
+                  onChange={(e) => handleChangeUsername(e)}
                 />
               </div>
               {/* password */}
@@ -222,7 +210,7 @@ export default function SignUp() {
                   Password
                 </label>
                 <div className="text-red-500 text-xs italic my-1">
-                  {errorSyntax.password}
+                  {errorPassword}
                 </div>
               </div>
               <div className="flex mb-2">
@@ -232,9 +220,10 @@ export default function SignUp() {
                 <input
                   type="password"
                   name="password"
+                  maxLength={20}
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
                   placeholder="************"
-                  onChange={(e) => handleChange(e)}
+                  onChange={(e) => handleChangePassword(e)}
                 />
               </div>
               {/* repassword */}
@@ -243,7 +232,7 @@ export default function SignUp() {
                   Enter password again
                 </label>
                 <div className="text-red-500 text-xs italic my-1">
-                  {errorSyntax.repassword}
+                  {errorRePassword}
                 </div>
               </div>
               <div className="flex">
@@ -253,9 +242,10 @@ export default function SignUp() {
                 <input
                   type="password"
                   name="repassword"
+                  maxLength={20}
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
                   placeholder="************"
-                  onChange={(e) => handleChange(e)}
+                  onChange={(e) => handleChangeRePassword(e)}
                 />
               </div>
               {/* notification from server */}
