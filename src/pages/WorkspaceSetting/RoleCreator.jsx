@@ -23,6 +23,7 @@ import { getUnroleMember, getMemberByRole } from "/api/workspace";
 import { useToast } from "@/components/ui/use-toast";
 import MemberDialog from "./MemberDialog";
 import addRoleMembers from "/api/workspace/addRoleMembers";
+import { getMemberList } from "/api/workspace";
 
 const roleColors = [
    "#1ABC9C",
@@ -70,7 +71,14 @@ export default function () {
    useEffect(() => {
       async function fetchData() {
          const permissionData = await getWorkspacePermissions();
-         setUnaddedMembers(await getUnroleMember(workspaceId));
+         const inviteMembers = await getMemberList(workspaceId,3);
+         const unroleMembers = await getUnroleMember(workspaceId)
+         setUnaddedMembers(unroleMembers.filter(mem=>{
+            for(let i = 0; i < inviteMembers.length; i++) {
+               if(inviteMembers[i].id === mem.id) return false
+            }
+            return true
+         }));
          setPermissionList(permissionData);
          permissionData.map((p) => (enablePermissionList[p.id] = p.isEnabled));
          setEnablePermissionList(enablePermissionList);

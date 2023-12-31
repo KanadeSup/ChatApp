@@ -3,11 +3,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User2 } from "lucide-react";
 import timeDifferent from "@/utils/timeDifferent";
 import convertTime from "../../../utils/convertTime";
+import { useParams } from "react-router-dom";
 
 export default function FriendMessagePreview(props) {
   const [isHover, setIsHover] = useState(false);
   const ref = useRef()
-  const [shortMessage, setShortMessage] = useState()
+  const { conversationId } = useParams()
+
+  useEffect(() => {
+    props.setConversationId(conversationId)
+  }, [conversationId])
 
   useEffect(() => {
     if(ref.current) {
@@ -15,6 +20,7 @@ export default function FriendMessagePreview(props) {
       ref.current.textContent = ref.current.textContent
     }
   },[props.lastMessage])
+
   return (
       <div
         className="relative px-1.5 py-2.5 flex rounded-lg items-center hover:bg-gray-100 cursor-pointer"

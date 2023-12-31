@@ -1,5 +1,5 @@
 import { Await, Link, NavLink, useNavigate, useParams } from "react-router-dom";
-import { LogOut, UserCog, User2, Users, Bell } from "lucide-react";
+import { LogOut, UserCog, User2, Users, Bell, Video } from "lucide-react";
 import { Logo } from "/assets/img/MySvg";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -128,6 +128,25 @@ export default function (props) {
                            <Logo className="fill-gray-800 w-11 h-11" />
                         </Link>
                         <Separator className="w-9 bg-gray-400" />
+                     </div>
+                  );
+
+               case "meeting":
+                  return (
+                     <div key={utility} className="flex items-center group">
+                        <div className="line h-0 bg-black w-[4px] rounded-r-full transition-all group-hover:h-5 absolute left-0"> </div>
+                        <NavLink
+                           to={`/Workspace/${workspaceId}/Meeting`}
+                           className={({ isActive }) =>
+                              [
+                                 isActive ? "before:animate-vline-expand" : "before:h-0 before:group-hover:h-5 hover:bg-gray-100",
+                                 "before:block before:w-1 before:bg-black before:absolute before:left-0 before:rounded-r-full before:transition-all",
+                                 "flex w-12 h-12 items-center justify-center rounded",
+                              ].join(" ")
+                           }
+                        >
+                           <Video className="w-7 h-7" />
+                        </NavLink>
                      </div>
                   );
             }

@@ -54,7 +54,7 @@ export default function () {
 
    return (
       <div className="flex h-screen w-full">
-         {workspaceId ? <UtilityBar workspace colleague notification /> : <UtilityBar logo colleague notification />}
+         {workspaceId ? <UtilityBar workspace colleague notification meeting /> : <UtilityBar logo colleague notification />}
          <SideBar workspace={workspace} setChannelName={setChannelName} />
          <Outlet />
       </div>

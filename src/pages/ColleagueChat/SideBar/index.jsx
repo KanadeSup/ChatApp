@@ -16,11 +16,10 @@ export default function () {
   const { isNewMessage, setIsNewMessage } = useIsNewMessage();
   const [conversations, setConversations] = useState([]); // Danh sách các cuộc trò chuyện
   const { isClickedReply, setIsClickedReply, messageParent, setMessageParent } = useColleagueStore();
-  const { conversationId } = useParams();
+  const [conversationId, setConversationId] = useState(null); // Id của cuộc trò chuyện đang được chọn
   const navigate = useNavigate();
   const { workspaceId } = useParams()
   const audioRef = useRef();
-
 
   useEffect(() => {
     async function fetchConversions() {
@@ -92,7 +91,7 @@ export default function () {
     } else {
       console.error("Hub is not connected");
     }
-  }, [hub]);
+  }, [hub, conversationId]);
 
 
   return (
@@ -114,7 +113,7 @@ export default function () {
             className={({ isActive, isPending }) =>
               isPending ? "" : isActive ? "bg-gray-100" : ""
             }
-            onClick={() => {setIsClickedReply(false); setMessages([])}}
+            onClick={() => {setIsClickedReply(false); setMessages([]);}}
           >
             <FriendMessagePreview
               key={user.id}
@@ -126,6 +125,7 @@ export default function () {
               isRead={user.isRead}
               isActive={user.isActive}
               isOnline={user.isOnline}
+              setConversationId={setConversationId}
             />
           </NavLink>
         ))}

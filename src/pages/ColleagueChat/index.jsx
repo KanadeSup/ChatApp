@@ -48,12 +48,8 @@ export default function () {
       value={{ messages, setMessages, messagesChild, setMessagesChild }}
     >
       <div className="flex ">
-        {/* Utility bar */}
-        {workspaceId ? (
-          <UtilityBar workspace colleague notification />
-        ) : (
-          <UtilityBar logo colleague notification />
-        )}
+         {/* Utility bar */}
+         {workspaceId ? <UtilityBar workspace colleague notification meeting /> : <UtilityBar logo colleague notification />}
 
         {/* list friend */}
         <SideBar />
