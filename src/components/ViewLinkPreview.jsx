@@ -47,7 +47,7 @@ export default function ViewLinkPreview({ url, className }) {
           <p className="font-semibold font-sans text-sm">{dataPreview?.title}</p>
           <p className="text-gray-500 font-sans text-sm">{dataPreview?.description}</p>
           <p className="text-bold-blue font-semibold font-sans text-sm">
-            {dataPreview?.domain}
+            {dataPreview?.domain ? dataPreview?.domain : dataPreview?.url}
           </p>
         </div>
       </div>
