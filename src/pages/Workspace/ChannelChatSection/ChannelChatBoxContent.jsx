@@ -25,7 +25,6 @@ import audio from "@/assets/bip.mp3";
 // key trước đó để xem component có thay đổi hay không. Nếu key không thay đổi, React sẽ cập nhật component hiện tại thay vì tạo lại từ đầu
 
 export default function ChannelChatBoxContent(props) {
-  console.log("ChannelChatBoxContent");
   const { channelId } = useParams();
   const { hub, setHub } = useHubStore();
   const [messages, setMessages] = useState([]);
@@ -327,7 +326,7 @@ export default function ChannelChatBoxContent(props) {
           className="flex flex-col gap-1 justify-start min-w-[400px] h-full overflow-y-scroll pb-4"
           jump={jumpId}
         >
-          {messages.map((message, index) => (
+          {messages.map((message) => (
             <Message
               id={`message-${message.id}`}
               key={message.id}
