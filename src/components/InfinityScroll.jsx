@@ -107,7 +107,9 @@ function InfiniteScroll({ children, getMore, getMoreBottom, invokeHeight = 10, b
       <div className={`overflow-y-scroll ${className}`} onScroll={handleScroll} ref={scrollDivRef}>
          <div className="w-full flex items-center justify-center">
             <Loader2 className="w-5 h-5 my-4 animate-spin" ref={loaderRef}/>
-            <p className="text-lg font-medium hidden" ref={endMessageRef}> Nothing more !</p>
+            <p className="text-sm font-medium hidden italic text-gray-500" ref={endMessageRef}> 
+               This is the first of messages. There is no more message to load
+            </p>
          </div>
          {children}
       </div>
