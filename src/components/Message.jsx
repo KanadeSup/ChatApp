@@ -14,10 +14,11 @@ import convertTime from "../utils/convertTime";
 import timeDifference from "../utils/timeDifferent";
 import ChatBoxEdit from "@/components/ChatBoxEdit";
 import { BsFillPinAngleFill } from "react-icons/bs";
-import FileCard from "./FileCard";
 import { GoTriangleRight } from "react-icons/go";
 import style from "./style.module.css";
 import ViewLinkPreview from "./ViewLinkPreview";
+import { getShortDatetimeSendAt } from "../utils/getShortDatetimeSendAt";
+import FileList from "./FileList";
 
 function handleContent(content) {
   const doc = new DOMParser().parseFromString(content, "text/html");
@@ -59,7 +60,7 @@ export default function Message(props) {
           ` flex flex-col  rounded-md ${
             props.message.isPined
               ? "bg-[rgb(254,249,236)]"
-              : "hover:bg-gray-100"
+              : "hover:bg-slate-50"
           }`
         }
       >
@@ -89,13 +90,7 @@ export default function Message(props) {
                 {props.message.senderName}
               </span>
               <span className="text-gray-500 flex gap-2 font-medium text-xs ml-2 cursor-default">
-                {/* {convertTime(props.message.sendAt)}{" "} */}
-                {timeDifference(props.message.sendAt)}
-                {/* {props.message.isPined && (
-                  <span className="text-red-500 italic flex">
-                    <PinIcon className="w-4 h-4" /> (pinned)
-                  </span>
-                )} */}
+                {getShortDatetimeSendAt(props.message.sendAt)}
               </span>
             </div>
             {/*-- Content --*/}
@@ -109,7 +104,7 @@ export default function Message(props) {
               <>
                 <div
                   ref={refContent}
-                  className="text-[15px] mt-1 leading-relaxed w-full break-all"
+                  className="text-[15px] font-sans mt-1 leading-snug w-full break-all"
                   dangerouslySetInnerHTML={{ __html: props.message.content }}
                 ></div>
                 {props.message.isEdited ? (
@@ -134,7 +129,7 @@ export default function Message(props) {
 
                 {isOpenFile && (
                   <div className="flex flex-row flex-wrap gap-2 mt-1">
-                    {props.message.files.map((file, index) => (
+                    {/* {props.message.files.map((file, index) => (
                       <FileCard
                         key={index}
                         file={file}
@@ -153,12 +148,29 @@ export default function Message(props) {
                           props.DeleteFile(fileId);
                         }}
                       />
-                    ))}
+                    ))} */}
+                    <FileList
+                      files={props.message.files}
+                      allowDeletion={
+                        props.message.senderId ===
+                        localStorage.getItem("userId")
+                      }
+                      DeleteFile={(fileId) => {
+                        if (
+                          refContent.current.textContent === "" &&
+                          props.message.files.length === 1
+                        ) {
+                          props.DeleteMessage(props.message.id);
+                          return;
+                        }
+                        props.DeleteFile(fileId);
+                      }}
+                    />
                   </div>
                 )}
               </div>
             )}
-            
+
             {/* Link preview */}
             <div className="flex flex-col gap-2">
               {links.map((link, index) => (

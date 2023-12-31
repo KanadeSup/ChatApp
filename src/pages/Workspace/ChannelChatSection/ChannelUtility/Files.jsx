@@ -1,43 +1,46 @@
 import { ArrowDownToLine } from "lucide-react";
 import { Trash2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import getFiles from "../../../../api/file/getFiles";
+import { typeFile, imgFile } from "../../../../utils/supportImgFile";
 
-const typeFile = (name) => {
-  const extension = name.split(".")[1] ? name.split(".").pop().slice(0, 3).toUpperCase() : "";
-  return ['PDF', 'DOC', 'XLS'].includes(extension) ? "" : extension;
-};
+// const typeFile = (name) => {
+//   const extension = name.split(".")[1] ? name.split(".").pop().slice(0, 3).toUpperCase() : "";
+//   return ['PDF', 'DOC', 'XLS'].includes(extension) ? "" : extension;
+// };
 
   
-const imgFile = (name) => {
-  const typeFile = name.split(".")[1] ? name.split(".").pop().slice(0, 3).toUpperCase() : "";
-  switch (typeFile) {
-    case "DOC":
-      return "https://chat.zalo.me/assets/icon-word.d7db8ecee5824ba530a5b74c5dd69110.svg";
-    case "PDF":
-      return "https://chat.zalo.me/assets/icon-pdf.53e522c77f7bb0de2eb682fe4a39acc3.svg";
-    case "XLS":
-      return "https://chat.zalo.me/assets/icon-excel.fe93010062660a8332b5f5c7bb2a43b1.svg";
-    default:
-      return "https://chat.zalo.me/assets/icon-file-empty.6796cfae2f36f6d44242f7af6104f2bb.svg";
-  }
-};
-function FileCard(props) {
+// const imgFile = (name) => {
+//   const typeFile = name.split(".")[1] ? name.split(".").pop().slice(0, 3).toUpperCase() : "";
+//   switch (typeFile) {
+//     case "DOC":
+//       return "https://chat.zalo.me/assets/icon-word.d7db8ecee5824ba530a5b74c5dd69110.svg";
+//     case "PDF":
+//       return "https://chat.zalo.me/assets/icon-pdf.53e522c77f7bb0de2eb682fe4a39acc3.svg";
+//     case "XLS":
+//       return "https://chat.zalo.me/assets/icon-excel.fe93010062660a8332b5f5c7bb2a43b1.svg";
+//     default:
+//       return "https://chat.zalo.me/assets/icon-file-empty.6796cfae2f36f6d44242f7af6104f2bb.svg";
+//   }
+// };
+function FileCard({file}) {
   return (
-    <div className="relative flex flex-row items-center px-4 py-3 select-none cursor-pointer hover:bg-gray-200">
+    <div className="relative flex flex-row items-center px-4 py-3 select-none cursor-pointer hover:bg-slate-100">
       <div className="relative">
         <img
-          src={imgFile(props.name)}
+          src={imgFile(file.name, file.url)}
           alt=""
           className="w-10 h-10"
         />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1 text-[10px] font-medium text-white">
-          {typeFile(props.name)}
+          {typeFile(file.name)}
         </div>
       </div>
 
-      <div className="flex flex-col ml-2">
-        <span className="font-semibold text-sm">{props.name}</span>
+      <div className="flex flex-col w-3/5 ml-2">
+        <span className="font-semibold truncate text-sm">{file.name}</span>
         <span className="text-xs font-medium text-gray-500 mt-1.5">
-          106.5kb
+          {file.type}
         </span>
       </div>
 
@@ -50,9 +53,19 @@ function FileCard(props) {
 }
 
 export default function Files(props) {
+  const [files, setFiles] = useState([]);
+
+  useEffect(() => {
+    async function getFilesChannel() {
+      const result = await getFiles(props.conversationId, 0, 10, true);
+      setFiles(result);
+      console.log(result);
+    }
+    getFilesChannel();
+  }, [props.conversationId]);
   return (
     <>
-      <div className="font-medium flex items-center py-1 px-3 border-b">
+      <div className="font-medium text-sm flex items-center py-2 px-3 border-b-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -89,17 +102,12 @@ export default function Files(props) {
       </div>
       {/* Files */}
       <div
-        style={{ height: "calc(100vh - 9.5rem)" }}
+        style={{ height: "calc(100vh - 11rem)" }}
         className="flex flex-col overflow-y-scroll mt-5"
       >
-        <FileCard name="file1.txt" />
-        <FileCard name="file2.docx" />
-        <FileCard name="file3.pdf" />
-        <FileCard name="file4.js" />
-        <FileCard name="file5.xlsx" />
-        <FileCard name="file6.java" />
-        <FileCard name="file7.cpp" />
-        <FileCard name="file8" />
+        {files.map((file) => (
+          <FileCard key={file.id} file={file} />
+        ))}
       </div>
     </>
   );

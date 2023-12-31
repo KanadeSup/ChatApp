@@ -32,13 +32,13 @@ export default function GetOTPForgotPassword() {
   }
   return (
     <>
-      <div className="min-h-screen flex items-start bg-gradient-to-r from-gray-200 to-gray-400">
+      <div className="min-h-screen flex items-start">
         <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
           <h1 className="w-1/2 mx-auto mb-4">
             <img src="assets\img\logo-no-background.png" alt="" />
           </h1>
 
-          <div className="bg-white w-full rounded-md divide-gray-200 shadow-xl">
+          <div className="bg-white w-full rounded-md divide-gray-200 border border-300 shadow">
             <div className="text-center pt-6 pb-5">
               <h1 className="font-bold text-2xl text-gray-900">
                 Forget Password

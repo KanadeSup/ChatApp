@@ -18,6 +18,7 @@ import OrderedList from "@tiptap/extension-ordered-list";
 import BulletList from "@tiptap/extension-bullet-list";
 import style from "../style.module.css";
 
+
 const DisableEnter = Extension.create({
   addKeyboardShortcuts() {
     return {
@@ -89,6 +90,7 @@ const ChatBox = React.forwardRef((props) => {
   const [isHoverUpload, setIsHoverUpload] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [isOpenDialog, setIsOpenDialog] = useState(false);
+  const [isFileLarge, setIsFileLarge] = useState(false);
 
   const handleFileUpload = async (event) => {
     console.log("event: ", event.target.value);
@@ -103,6 +105,9 @@ const ChatBox = React.forwardRef((props) => {
       setIsOpenDialog(true);
     }
 
+    const totalSize = newFiles.reduce((acc, file) => acc + file.size, 0);
+    console.log("totalSize: ", totalSize);
+    
     setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
     setIsHaveFile(true);
   };
@@ -139,9 +144,14 @@ const ChatBox = React.forwardRef((props) => {
 
     if (isHaveFile) {
       try {
-        const res = await uploadFiles(selectedFiles);
-        console.log("res: ", res);
-        await props.SendMessage(contentHtml, res);
+        const res = await Promise.all(
+          selectedFiles.map((file) => uploadFiles([file]))
+        );
+        console.log("res file large: ", res);
+        const resFile = res.map((file) => file[0]);
+        console.log("resFile: ", resFile);
+        await props.SendMessage(contentHtml, resFile);
+
         editor.commands.clearContent(true);
         setSelectedFiles([]);
         setIsHaveFile(false);

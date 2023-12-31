@@ -12,6 +12,7 @@ export default async function({ path, params="", method="GET", headers={}, auth=
    }
    if(body !== "") request["body"] = body
    const res = await fetch(`${config.apiURL}/${path}?${params}`, request)
+   // console.log(`${config.apiURL}/${path}?${params}`)
    if(res.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
