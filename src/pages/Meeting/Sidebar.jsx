@@ -5,6 +5,7 @@ import getMeetings from "../../api/meeting/getMeetings"
 import { Link, useParams } from "react-router-dom"
 import convertTime from "../../utils/convertTime"
 import { isBeforeCurrentDate } from "../../utils/compareCurrentTime"
+import { Skeleton } from "@/components/ui/skeleton"
 
 function Sidebar() {
     const [meetings, setMeetings] = useState()
@@ -66,7 +67,30 @@ function Sidebar() {
                                 </div>
                             </Link>  
                         ))
-                    ) : ""
+                    ) : (
+                        <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-1 border-b border-gray-100 py-2"> 
+                                <Skeleton className="w-[80%] h-6" />
+                                <Skeleton className="w-[50%] h-6" />
+                                <Skeleton className="w-[60%] h-6" />
+                            </div>
+                            <div className="flex flex-col gap-1 border-b border-gray-100 py-2"> 
+                                <Skeleton className="w-[80%] h-6" />
+                                <Skeleton className="w-[60%] h-6" />
+                                <Skeleton className="w-[60%] h-6" />
+                            </div>
+                            <div className="flex flex-col gap-1 border-b border-gray-100 py-2"> 
+                                <Skeleton className="w-[80%] h-6" />
+                                <Skeleton className="w-[50%] h-6" />
+                                <Skeleton className="w-[70%] h-6" />
+                            </div>
+                            <div className="flex flex-col gap-1 border-b border-gray-100 py-2"> 
+                                <Skeleton className="w-[80%] h-6" />
+                                <Skeleton className="w-[70%] h-6" />
+                                <Skeleton className="w-[60%] h-6" />
+                            </div>
+                        </div>
+                    )
                 }
             </div>
         </div>

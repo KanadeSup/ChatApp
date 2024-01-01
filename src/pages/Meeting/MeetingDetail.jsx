@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import getMeetingById from "../../api/meeting/getMeetingById"
-import { Video } from "lucide-react"
+import { Loader2, Video } from "lucide-react"
 import convertTime from "../../utils/convertTime"
 import { Button } from "@/components/ui/button"
 import joinMeeting from "../../api/meeting/joinMeeting"
 import { isBeforeCurrentDate } from "../../utils/compareCurrentTime"
+import { CreateMeetingDialog } from "./CreateMeetingDialog"
 
 function MeetingDetail() {
    const {meetingId} = useParams()
@@ -43,24 +44,43 @@ function MeetingDetail() {
                }
             </div>
          </div>
-         <div>
-            <div >
-               <span className="text-lg font-semibold"> Time Start:  </span>
-               <span className="text-lg text-gray-500"> {convertTime(meeting.timeStart,true)} </span>
+         <div className="border border-gray-500 inline-block px-7 pt-5 pb-3 rounded-lg mt-5">
+            <div className="">
+               <div >
+                  <span className="text-lg font-semibold"> Time Start:  </span>
+                  <span className="text-lg text-gray-500"> {convertTime(meeting.timeStart,true)} </span>
+               </div>
+               <div> 
+               <span className="text-lg font-semibold"> Time End:  </span> 
+                  <span className="text-lg text-gray-500"> {convertTime(meeting.timeEnd,true)} </span>
+               </div>
             </div>
-            <div> 
-            <span className="text-lg font-semibold"> Time End:  </span> 
-               <span className="text-lg text-gray-500"> {convertTime(meeting.timeEnd,true)} </span>
+            <div className="mt-5 flex justify-end items-center">
+               <CreateMeetingDialog editData={meeting}>
+                  <Button variant="link" className="text-md font-bold">
+                     edit
+                  </Button>
+               </CreateMeetingDialog>
+
+               {
+                  isBeforeCurrentDate(meeting.timeStart) && !isBeforeCurrentDate(meeting.timeEnd) ? (
+                     <button 
+                        className="px-3 font-semibold bg-black text-white text-md rounded flex items-center"
+                        onClick={async e=>{
+                           const butEle = e.currentTarget
+                           butEle.disabled = true
+                           butEle.classList.replace("bg-black","bg-gray-300")
+                           butEle.querySelector(".loader").classList.remove("hidden")
+                           navigate("room")
+                        }}
+                     > 
+                        <Loader2 className="loader w-4 h-4 animate-spin hidden mr-2" />
+                        Join 
+                     </button>
+                  ) : null
+               }
             </div>
          </div>
-         <Button 
-            className="px-4 font-semibold py-1 text-md mt-3"
-            onClick={async e=>{
-               navigate("room")
-            }}
-         > 
-            Join 
-         </Button>
       </div>
    )
 }
