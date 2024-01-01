@@ -1,7 +1,7 @@
 import Message from "../../../components/Message";
 import ChatBox from "/components/ChatBox";
 import ReplySection from "../../../components/ReplySection";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { getMessagesColleague } from "../../../api";
 import useIsNewMessage from "../../../storages/useIsNewMessage";
@@ -9,7 +9,6 @@ import { getUserById } from "../../../api";
 import useColleagueStore from "@/storages/useColleagueStore";
 import useHubStore from "@/storages/useHubStore";
 import { InfiniteScroll } from "@/components/InfinityScroll";
-import audio from "@/assets/bip.mp3";
 import {
   SendMessage,
   UpdateMessage,
@@ -18,26 +17,33 @@ import {
   PinMessage,
   DeleteFileColleague,
 } from "@/utils/hubs";
-
+import ColleagueContext from "@/contexts/ColleagueContext";
+import ColleagueUtility from "./ColleagueUtility";
 
 export default function ChatBoxContent() {
   const { conversationId } = useParams();
   const { hub, setHub } = useHubStore();
-  const [messages, setMessages] = useState([]);
-  const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
+  const { messages, setMessages, messagesChild, setMessagesChild } =
+    useContext(ColleagueContext);
+  const [jumpId, setJumpId] = useState(null);
+  const [pinMessages, setPinMessages] = useState([]); // Lưu lại tin nhắn pin của channel
+
+  // const [messages, setMessages] = useState([]);
+  // const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
   const { isNewMessage, setIsNewMessage } = useIsNewMessage(); // Cập nhập danh sách hiển thị tin nhắn ở sideBar
   const [user, setUser] = useState(null);
-  const audioRef = useRef();
   const {
     isClickedReply,
     setIsClickedReply,
-    setIsNewChat,
-    message,
-    setMessage,
+    isChatOption,
+    setIsChatOption,
+    messageParent,
+    setMessageParent,
   } = useColleagueStore();
   const [forceScroll, setForceScroll] = useState({});
   const scrollDivRef = useRef();
 
+  // Lấy thêm tin nhắn khi kéo lên trên
   const fetchMoreData = async () => {
     if (messages.length === 0) {
       return;
@@ -45,70 +51,29 @@ export default function ChatBoxContent() {
     const timeFirst = messages[0].sendAt;
     const now = new Date(timeFirst);
     const timeCursor = encodeURIComponent(now.toISOString());
-    const data = await getMessagesColleague(conversationId, timeCursor, 10);
-    // Sắp xếp tin nhắn theo thời gian
-    const sortedData = data.sort(
-      (a, b) => new Date(a.sendAt) - new Date(b.sendAt)
-    );
-
-    setMessages((prev) => [...sortedData, ...prev]);
+    const data = await getMessagesColleague(conversationId, timeCursor, 6);
+    if (data.length === 0) {
+      return 0;
+    }
+    setMessages((prev) => [...data.reverse(), ...prev]);
     return data.length;
   };
-
-  // Hub nhận tin nhắn mới
-  useEffect(() => {
-    if (hub) {
-      hub.off("receive_message");
-      hub.on("receive_message", (message) => {
-        console.log("message đã nhận: ", message);
-        setIsNewMessage(true);
-        console.log("conversationId", conversationId);
-        console.log("message.senderId", message.senderId);
-        if ((message.senderId !== conversationId) || (message.receiverId !== localStorage.getItem("userId"))) {
-          audioRef.current.play();
-          return;
-        }
-
-        setMessages((currentMessages) => {
-          const messages = [...currentMessages];
-          const newMessage = { ...message };
-          const parentMessageIndex = messages.findIndex(
-            (m) => m.id === newMessage.parentId
-          );
-          if (
-            newMessage.senderId === conversationId &&
-            parentMessageIndex !== -1
-          ) {
-            const parentMessage = { ...messages[parentMessageIndex] };
-
-            if (message.parentId === localStorage.getItem("idMessage")) {
-              setMessagesChild((messagesChild) => [
-                ...messagesChild,
-                newMessage,
-              ]);
-            }
-            parentMessage.childCount += 1;
-
-            // Lưu lại tin nhắn để hiển thị trong reply box
-            if (parentMessage.id === localStorage.getItem("idMessage")) {
-              setMessage(parentMessage);
-            }
-            // Replace the old parent message with the updated one
-            messages[parentMessageIndex] = parentMessage;
-          } else {
-            // If the message doesn't have a parent in the current set of messages, add it to the set
-            messages.push(newMessage);
-          }
-          return messages;
-        });
-      });
-      return () => {
-        hub.off("receive_message");
-      };
-    } else {
-      console.error("Hub is not connected");
+   // Lấy thêm tin nhắn khi kéo xuống dưới
+   const fetchMoreDataBottom = async () => {
+    if (messages.length === 0) {
+      return;
     }
-  }, [hub]);
+    const timeLast = messages[messages.length - 1].sendAt;
+    let now = new Date(timeLast);
+    now.setMilliseconds(now.getMilliseconds() + 10)
+    const timeCursor = encodeURIComponent(now.toISOString());
+    const data = await getMessagesColleague(conversationId, timeCursor, 6, null, false, false);
+    if (data.length === 0) {
+      return 0;
+    }
+    setMessages((prev) => [...prev, ...data.reverse()]);
+    return data.length
+  };
 
   //Lấy thông tin user
   async function fetchData() {
@@ -123,8 +88,6 @@ export default function ChatBoxContent() {
   //Lấy tin nhắn khi vào conversation
   useEffect(() => {
     async function fetchData() {
-      // const now = new Date();
-      // const timeCursor = encodeURIComponent(now.toISOString());
       const data = await getMessagesColleague(conversationId, null, 15);
       // Sắp xếp tin nhắn theo thời gian
       if (data.length > 0) {
@@ -146,7 +109,7 @@ export default function ChatBoxContent() {
               message.id === message_updated.id ? message_updated : message
             )
           );
-        } else {
+        } else { // Nếu tin nhắn có parentId
           setMessagesChild((messagesChild) =>
             messagesChild.map((messageChild) => {
               if (messageChild.id === message_updated.id) {
@@ -159,7 +122,32 @@ export default function ChatBoxContent() {
         }
         // Lưu lại tin nhắn để hiển thị trong reply box
         if (message_updated.id === localStorage.getItem("idMessage")) {
-          setMessage(message_updated);
+          setMessageParent(message_updated);
+        }
+        // Lưu tin nhắn pinned
+        if (message_updated.isPined) {
+          setPinMessages((pinMessages) => {
+            const index = pinMessages.findIndex(
+              (pinMessage) => pinMessage.id === message_updated.id
+            );
+            if (index !== -1) {
+              // Nếu tin nhắn đã được ghim, cập nhật nó
+              return pinMessages.map((pinMessage) =>
+                pinMessage.id === message_updated.id
+                  ? message_updated
+                  : pinMessage
+              );
+            } else {
+              // Nếu tin nhắn chưa được ghim, thêm nó vào danh sách
+              return [message_updated, ...pinMessages];
+            }
+          });
+        } else {
+          setPinMessages((pinMessages) =>
+            pinMessages.filter(
+              (pinMessage) => pinMessage.id !== message_updated.id
+            )
+          );
         }
         setIsNewMessage(true);
         return () => {
@@ -193,7 +181,7 @@ export default function ChatBoxContent() {
               const parentMessage = { ...messages[parentMessageIndex] }; // Create a new copy of the parent message
               parentMessage.childCount -= 1;
               // Lưu lại tin nhắn để hiển thị trong reply box
-              setMessage(parentMessage);
+              setMessageParent(parentMessage);
               setMessagesChild((messagesChild) =>
                 messagesChild.filter(
                   (messageChild) => messageChild.id !== message_deleted.id
@@ -207,7 +195,7 @@ export default function ChatBoxContent() {
           });
         }
         if (message_deleted.id === localStorage.getItem("idMessage")) {
-          setMessage(null);
+          setMessageParent(null);
           setIsClickedReply(false);
         }
         //setIsNewMessage(true);
@@ -293,16 +281,18 @@ export default function ChatBoxContent() {
       >
         <InfiniteScroll
           getMore={fetchMoreData}
+          getMoreBottom={fetchMoreDataBottom}
           invokeHeight={5}
           scrollDivRef={scrollDivRef}
           className="flex flex-col justify-start overflow-y-scroll h-full min-w-[400px] py-4 gap-1"
+          jump={jumpId}
         >
           {messages.map((message) => (
             <Message
               id={`message-${message.id}`}
               key={message.id}
               message={message}
-              setMessage={setMessage}
+              setMessage={setMessageParent}
               setIsClickedReply={setIsClickedReply}
               DeleteMessage={(idMessage) =>
                 DeleteMessage(hub, idMessage, setMessages, setIsClickedReply)
@@ -346,8 +336,8 @@ export default function ChatBoxContent() {
       </div>
       {isClickedReply && (
         <ReplySection
-          message={message}
-          setMessage={setMessage}
+          message={messageParent}
+          setMessage={setMessageParent}
           setIsClickedReply={setIsClickedReply}
           messages={messages}
           setMessages={setMessages}
@@ -357,9 +347,18 @@ export default function ChatBoxContent() {
           isChannel={false}
         />
       )}
-      <audio ref={audioRef} preload="metadata">
-        <source type="audio/mpeg" src={audio} />
-      </audio>
+
+      {isChatOption && (
+        <ColleagueUtility
+          setIsChatOption={setIsChatOption}
+          setJump={setJumpId}
+          isChannel={false}
+          conversationId={conversationId}
+          setMessages={setMessages}
+          setPinMessages={setPinMessages}
+          pinMessages={pinMessages}
+        />
+      )}
     </div>
   );
 }
