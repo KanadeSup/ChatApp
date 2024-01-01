@@ -35,24 +35,24 @@ export default function SideBarHeader({ fetcher, workspace }) {
                      <span className="font-medium"> Workspace Setting </span>
                   </DropdownMenuItem>
                </Link>
-               <Link to="/Workspace">
-                  <DropdownMenuItem className="cursor-pointer h-9">
-                     <ArrowLeftRight className="w-4 h-4 mr-3"/>
-                     <span className="font-medium"> Change Workspace </span>
-                  </DropdownMenuItem>
-               </Link>
                <DropdownMenuItem className="cursor-pointer h-9" onSelect={()=>setOpenInvite(true)}>
                   <UserPlus className="w-4 h-4 mr-3"/>
                   <span className="font-medium"> Invite People to Workspace </span>
                </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer h-9" 
-                     onSelect={(e)=>{
-                        setOpenCreate(true)
-                     }}
-                  >
-                     <Hash className="w-4 h-4 mr-3"/>
-                     <span className="font-medium"> Create Channel </span>
+               <DropdownMenuItem className="cursor-pointer h-9" 
+                  onSelect={(e)=>{
+                     setOpenCreate(true)
+                  }}
+               >
+                  <Hash className="w-4 h-4 mr-3"/>
+                  <span className="font-medium"> Create Channel </span>
+               </DropdownMenuItem>
+               <Link to="/Workspace">
+                  <DropdownMenuItem className="cursor-pointer h-9">
+                     <ArrowLeftRight className="w-4 h-4 mr-3 stroke-red-500"/>
+                     <span className="font-medium text-red-600 font-semibold"> Change Workspace </span>
                   </DropdownMenuItem>
+               </Link>
             </DropdownMenuGroup>
          </DropdownMenuContent>
          <ChannelCreation fetcher={fetcher} open={openCreate} onOpenChange={setOpenCreate}> </ChannelCreation>

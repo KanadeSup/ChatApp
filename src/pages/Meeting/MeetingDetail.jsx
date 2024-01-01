@@ -44,7 +44,7 @@ function MeetingDetail() {
                }
             </div>
          </div>
-         <div className="border border-gray-500 inline-block px-7 pt-5 pb-3 rounded-lg mt-5">
+         <div className="border border-gray-200 inline-block px-7 pt-5 pb-3 rounded-lg mt-5">
             <div className="">
                <div >
                   <span className="text-lg font-semibold"> Time Start:  </span>
