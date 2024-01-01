@@ -161,13 +161,31 @@ export default function () {
             if(removeUids.length !== 0) await addRoleMembers(workspaceId, removeUids, null);
 
             // notify
+            navigate("..", { relative: "path" });
+            if(res.ok) {
+               toast({
+                  title: (
+                     <p className="text-green-500">Successfully update new role</p>
+                  ),
+                  duration: 1500,
+               });
+               return
+            }
+            if(res.status === 403) {
+               toast({
+                  title: (
+                     <p className="text-red-600">You don't have permission to do this</p>
+                  ),
+                  duration: 1500,
+               });
+               return
+            }
             toast({
                title: (
-                  <p className="text-green-500">Successfully update role</p>
+                  <p className="text-red-600">Something went wrong, please try again</p>
                ),
                duration: 1500,
             });
-            navigate("..", { relative: "path" });
          }}
       >
          <div className="flex gap-5 items-center">

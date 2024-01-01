@@ -8,5 +8,9 @@ export default async (cid, rid) => {
          "channel-id": cid,
       },
    })
-   return "done"
+   return {
+      data: null,
+      status: res.status,
+      ok: res.ok,
+   }
 };

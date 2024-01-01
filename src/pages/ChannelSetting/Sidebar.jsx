@@ -48,16 +48,17 @@ export default function({ items }) {
       if(actionData.status === 403) {
          toast({
             title: 
-               <p className="flex">
+               <p className="flex items-center">
                   <X className="stroke-red-600 mr-2" />
                   <span className="text-red-600"> You don't have permission to delete workspace </span>
                </p>
          })
          return
       }
+      
       toast({
          title: 
-            <p className="flex">
+            <p className="flex items-center">
                <X className="stroke-red-600 mr-2" />
                <span className="text-red-600"> Something went wrong please try again </span>
             </p>
@@ -118,9 +119,19 @@ export default function({ items }) {
                         document.querySelector(".leave-but").disabled = false
                         document.querySelector(".leave-cancel-but").disabled = false
                         document.querySelector(".leave-loader").classList.toggle("hidden")
+                        if(res.status === 400) {
+                           toast({
+                              title: 
+                                 <p className="flex items-center">
+                                    <X className="stroke-red-600 mr-2" />
+                                    <span className="text-red-600"> {res.data.title}  </span>
+                                 </p>
+                           })
+                           return
+                        }
                         toast({
                            title: 
-                              <p className="flex">
+                              <p className="flex items-center">
                                  <X className="stroke-red-600 mr-2" />
                                  <span className="text-red-600"> Something when wrong please try again </span>
                               </p>

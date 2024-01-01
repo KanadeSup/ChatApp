@@ -143,7 +143,7 @@ export default function() {
                                              if(data.ok) {
                                                 toast({
                                                    title: 
-                                                      <p className="flex">
+                                                      <p className="flex items-center">
                                                          <Check className="stroke-green-600 mr-2" />
                                                          <span className="text-green-600"> Delete Successfully! </span>
                                                       </p>
@@ -154,7 +154,7 @@ export default function() {
                                              if(data.status === 403) {
                                                 toast({
                                                    title: 
-                                                      <p className="flex">
+                                                      <p className="flex items-center">
                                                          <X className="stroke-red-600 mr-2" />
                                                          <span className="text-red-600"> You don't have permission to kick member </span>
                                                       </p>
@@ -164,7 +164,7 @@ export default function() {
                                              if(data.status === 400) {
                                                 toast({
                                                    title: 
-                                                      <p className="flex">
+                                                      <p className="flex items-center">
                                                          <X className="stroke-red-600 mr-2" />
                                                          <span className="text-red-600"> {data.data.title} </span>
                                                       </p>

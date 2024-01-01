@@ -50,7 +50,7 @@ export default function SideBarHeader({ fetcher, workspace }) {
                <Link to="/Workspace">
                   <DropdownMenuItem className="cursor-pointer h-9">
                      <ArrowLeftRight className="w-4 h-4 mr-3 stroke-red-500"/>
-                     <span className="font-medium text-red-600 font-semibold"> Change Workspace </span>
+                     <span className=" text-red-600 font-semibold"> Change Workspace </span>
                   </DropdownMenuItem>
                </Link>
             </DropdownMenuGroup>
