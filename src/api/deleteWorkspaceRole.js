@@ -8,5 +8,9 @@ export default async (wid, rid) => {
          "workspace-id": wid,
       }
    })
-   return res.status
+   return {
+      data: null,
+      status: res.status,
+      ok: res.ok
+   }
 };

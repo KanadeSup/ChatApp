@@ -18,8 +18,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { Form, useNavigate, useNavigation } from "react-router-dom"
+import { Form, useActionData, useNavigate, useNavigation } from "react-router-dom"
 import { useEffect, useState } from "react"
+import { useToast } from "@/components/ui/use-toast";
 
 export default [
    {
@@ -47,11 +48,40 @@ export default [
          const roleId = row.original.id
          const navigation = useNavigation()
          const [open, setOpen] = useState(false)
+         const res = useActionData()
+         const { toast } = useToast()
          useEffect(()=> {
             if(navigation.state === "idle") {
                setOpen(false)
             }
          },[navigation])
+         useEffect(()=> {
+            if(!res) return
+            if(res.ok) {
+               toast({
+                  title: (
+                     <p className="text-green-500">delete Successfully</p>
+                  ),
+                  duration: 1500,
+               });
+               return
+            }
+            if(res.status === 403) {
+               toast({
+                  title: (
+                     <p className="text-red-600">You don't have permission to do this</p>
+                  ),
+                  duration: 1500,
+               });
+               return
+            }
+            toast({
+               title: (
+                  <p className="text-red-600">Something went wrong, please try again</p>
+               ),
+               duration: 1500,
+            });
+         },[res])
          return (
             <div className="flex justify-end gap-8 items-center">
                <Pencil className="w-5 h-5 stroke-gray-500 group-hover:visible invisible transition-all duration-30"/>

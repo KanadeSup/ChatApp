@@ -97,7 +97,17 @@ export default function () {
                                              <User2 />
                                           </AvatarFallback>
                                        </Avatar>
-                                       <h1> {member.username} </h1>
+                                       <div className="flex flex-col justify-center">
+                                          <div className="flex items-center gap-2">
+                                             <h1> {member.username} </h1>
+                                             {member.isOwner ? (
+                                                <div className="px-1 bg-red-500 text-white font-bold text-xs rounded-full"> 
+                                                   owner
+                                                </div>
+                                             ): null}
+                                          </div>
+                                          <p className="text-sm text-gray-500 italic"> {member.email} </p>
+                                       </div>
                                     </div>
                                  </TableCell>
                                  <TableCell>

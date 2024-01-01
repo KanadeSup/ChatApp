@@ -100,7 +100,7 @@ import { Toaster } from "@/components/ui/toaster"
                         if(data.status === 403) {
                            toast({
                               title:
-                                 <p>
+                                 <p className="flex items-center">
                                     <X className="stroke-red-600 mr-2" />
                                     <span className="text-red-600"> You don't have permission to add member </span>
                                  </p>

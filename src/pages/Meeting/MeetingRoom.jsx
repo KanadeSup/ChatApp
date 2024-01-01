@@ -23,7 +23,7 @@ function MeetingRoom() {
    const [isCamEnable, setIsCamEnable] = useState(false)
    const navigate = useNavigate()
    function leaveSession() {
-      session.unpublish(publisherData.streamManager)
+      session.unpublish(publisher.streamManager)
       if (session) session.disconnect();
       setOV(null);
       setSession(null);
@@ -99,7 +99,7 @@ function MeetingRoom() {
          isMute: false,
          isAudio: isMicEnable,
          isVideo: isCamEnable,
-         name: user.name,
+         name: user.username,
          avatar: user.picture
       });
       setSession(session)

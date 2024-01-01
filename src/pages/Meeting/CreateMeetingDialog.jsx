@@ -23,6 +23,9 @@ import {
    AvatarImage,
  } from "@/components/ui/avatar"
  import { Checkbox } from "@/components/ui/checkbox"
+ import { parseISO, addHours, format } from "date-fns";
+import updateMeeting from "../../api/meeting/updateMeeting";
+
 
 function convertToISO(dateString, timeString) {
    let [year, month, day] = dateString.split("-");
@@ -51,33 +54,42 @@ function compareTime(time1, time2) {
    if(minute1 < minute2) return -1
    return 0
 }
+function iso2Date(isoTime) {
+   let date = parseISO(isoTime);
+   date = addHours(date, 0);
+   return format(date, "yyyy-MM-dd")
+}
+function iso2Time(isoTime) {
+   let date = parseISO(isoTime);
+   date = addHours(date, 0);
+   return format(date, "HH:mm")
+}
 
-function CreateMeetingDialog({ children, loadData }) {
+function CreateMeetingDialog({ children, loadData, editData}) {
    const [open, setOpen] = useState();
    return (
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={setOpen} asChild>
          <DialogTrigger>{children}</DialogTrigger>
-         <DialogContent className="w-auto max-w-[1000px]">
+         <DialogContent className="w-auto max-w-[1000px] min-w-[940px]">
             <DialogHeader>
                <DialogTitle> Create new meeting </DialogTitle>
             </DialogHeader>
-            <MeetingForm  setOpen={setOpen} loadData={loadData} />
+            <MeetingForm  setOpen={setOpen} loadData={loadData} editData={editData} />
          </DialogContent>
       </Dialog>
    );
 }
-function MeetingForm({ setOpen, loadData }) {
-   const [dateStart, setDateStart] = useState()
-   const [dateEnd, setDateEnd] = useState()
-   const [timeStart, setTimeStart] = useState()
-   const [timeEnd, setTimeEnd] = useState()
-   const [name, setName] = useState("")
-   const [id, setId] = useState("")
-   const [description, setDescription] = useState("")
-   const [password, setPassword] = useState("")
+function MeetingForm({ setOpen, loadData, editData }) {
+   const [dateStart, setDateStart] = useState(editData ? iso2Date(editData.timeStart) : undefined)
+   const [dateEnd, setDateEnd] = useState(editData ? iso2Date(editData.timeEnd) : undefined)
+   const [timeStart, setTimeStart] = useState(editData ? iso2Time(editData.timeStart) : undefined)
+   const [timeEnd, setTimeEnd] = useState(editData ? iso2Time(editData.timeEnd) : undefined)
+   const [name, setName] = useState(editData ? editData.name : "")
+   const [id, setId] = useState(editData ? editData.sessionId : "")
+   const [description, setDescription] = useState(editData ? editData.description : "")
+   const [password, setPassword] = useState(editData ? editData.password : "")
    const [memberList, setMemberList] = useState("")
-
-   const {workspaceId} = useParams()
+   const {workspaceId, meetingId} = useParams()
    const {toast} = useToast()
    const submitRef = useRef()
    const cancelRef = useRef()
@@ -103,7 +115,12 @@ function MeetingForm({ setOpen, loadData }) {
             submitRef.current.disabled = true
             cancelRef.current.disabled = true
             loaderRef.current.classList.remove("hidden")
-            const res = await createMeeting(workspaceId, null, id, name, password, description, meetingStart, meetingEnd, selectedMembers)
+            let res;
+            if(editData) {
+               res = await createMeeting(workspaceId, null, id, name, password, description, meetingStart, meetingEnd, selectedMembers)
+            } else {
+               res = await updateMeeting(workspaceId, null, meetingId, name, password, description, meetingStart, meetingEnd, selectedMembers)
+            }
             submitRef.current.disabled = false
             cancelRef.current.disabled = false
             loaderRef.current.classList.add("hidden")
@@ -113,7 +130,7 @@ function MeetingForm({ setOpen, loadData }) {
                   title: (
                      <p className="flex items-center gap-2">
                         <Check className="stroke-green-600"/>
-                        Create meeting successfully
+                        {editData ? "Edit sucessfully" : "Create meeting successfully"}
                      </p>
                   )
                })
@@ -147,7 +164,7 @@ function MeetingForm({ setOpen, loadData }) {
                className="grid grid-cols-6 items-center gap-2 flex-shrink-0"
             >
                {/* Meeting id */}
-               <Label className="font-medium text-[16px] col-span-2"> Meeting id: </Label>
+               <Label className="font-medium text-[16px] col-span-2"> Meeting id </Label>
                <Input type="text"
                   value={id}
                   onChange={e=>setId(e.currentTarget.value)}
@@ -161,10 +178,13 @@ function MeetingForm({ setOpen, loadData }) {
                      inputEle.classList.replace("border-red-500","border-black")
                   }}
                   className="col-span-4" 
+                  disabled={
+                     editData ? true : false
+                  }
                />
 
                {/* Meeting name */}
-               <Label className="font-medium text-[16px] col-span-2"> Meeting name: </Label>
+               <Label className="font-medium text-[16px] col-span-2"> Meeting name </Label>
                <Input type="text"
                   value={name}
                   onChange={e=>setName(e.currentTarget.value)} 
@@ -181,7 +201,7 @@ function MeetingForm({ setOpen, loadData }) {
                />
 
                {/* Password */}
-               <Label className="font-medium text-[16px] col-span-2"> Meeting password: </Label>
+               <Label className="font-medium text-[16px] col-span-2"> Meeting password </Label>
                <Input type="password" 
                   maxLength={50}
                   className="col-span-4" 
@@ -198,9 +218,10 @@ function MeetingForm({ setOpen, loadData }) {
                />
 
                {/* Date */}
-               <Label className="font-medium text-[16px] col-span-2"> Date: </Label>
+               <Label className="font-medium text-[16px] col-span-2"> Meeting start and end at </Label>
                <div className="flex col-span-4 items-center gap-1">
                   <Input type="date" className="col-span-2" 
+                     value={dateStart}
                      onChange={e=>{setDateStart(e.currentTarget.value)}} 
                      onBlur={e=>{
                         if(e.currentTarget.value === "") {
@@ -213,7 +234,8 @@ function MeetingForm({ setOpen, loadData }) {
                      }}
                   />
                   -
-                  <Input type="date" className="col-span-2" 
+                  <Input type="date" className="col-span-2"
+                     value={dateEnd}
                      onChange={e=>{setDateEnd(e.currentTarget.value)}} 
                      onBlur={e=>{
                         if(e.currentTarget.value === "") {
@@ -231,6 +253,7 @@ function MeetingForm({ setOpen, loadData }) {
                <Label className="font-medium text-[16px] col-span-2"> Time: </Label>
                <div className="flex col-span-4 items-center gap-1">
                   <Input type="time" className="col-span-2" 
+                     value={timeStart}
                      onChange={e=>{setTimeStart(e.currentTarget.value)}}
                      onBlur={e=>{
                         if(e.currentTarget.value === "") {
@@ -244,6 +267,7 @@ function MeetingForm({ setOpen, loadData }) {
                   />
                   -
                   <Input type="time" 
+                     value={timeEnd}
                      className="col-span-2" 
                      onChange={e=>{setTimeEnd(e.currentTarget.value)}}
                      onBlur={e=>{
@@ -309,17 +333,19 @@ function MeetingForm({ setOpen, loadData }) {
          </div>
          {/* Submit  */}
          <div className="flex justify-end col-span-6 gap-2 mt-2">
-            <Button variant="outline" onClick={e=>setOpen(false)} ref={cancelRef}> Cancel </Button>
+            <Button type="button" variant="outline" onClick={e=>setOpen(false)} ref={cancelRef}> Cancel </Button>
             <Button ref={submitRef} 
                className="flex items-center"
                disabled={
-                  !dateEnd || !dateStart || !timeStart || !timeStart || !name || !id || !password
+                  !dateEnd || !dateStart || !timeStart || !timeEnd || !name || !id || !password
                   || name.trim() === "" || id.trim() === ""
                   || compareDate(dateStart, dateEnd) === 1 || compareTime(timeStart, timeEnd) === 1
                }
             > 
                <Loader2 className="w-4 h-4 mr-2 hidden animate-spin" ref={loaderRef} />
-               Create 
+               {
+                  editData ? "Edit" : "Create"
+               } 
             </Button>
          </div>
       </Form>

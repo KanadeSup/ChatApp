@@ -60,8 +60,8 @@ async function deleteRoleAction({request,params}) {
    const formData = await request.formData();
    const roleId = formData.get("roleid")
    const { workspaceId } = params
-   await deleteWorkspaceRole(workspaceId, roleId)
-   return roleId
+   const res = await deleteWorkspaceRole(workspaceId, roleId)
+   return res
 }
 async function workspaceRolesLoader({params}) {
    const { workspaceId } = params

@@ -47,7 +47,7 @@ export default function({ items }) {
       if(actionData.status === 403) {
          toast({
             title: 
-               <p className="flex">
+               <p className="flex items-center">
                   <X className="stroke-red-600 mr-2" />
                   <span className="text-red-600"> You don't have permission to delete workspace </span>
                </p>
@@ -56,7 +56,7 @@ export default function({ items }) {
       }
       toast({
          title: 
-            <p className="flex">
+            <p className="flex items-center">
                <X className="stroke-red-600 mr-2" />
                <span className="text-red-600"> Something went wrong please try again </span>
             </p>
@@ -120,7 +120,7 @@ export default function({ items }) {
                         if(res.status === 400) {
                            toast({
                               title: 
-                                 <p className="flex">
+                                 <p className="flex items-center">
                                     <X className="stroke-red-600 mr-2" />
                                     <span className="text-red-600"> {res.data.title}  </span>
                                  </p>
@@ -129,7 +129,7 @@ export default function({ items }) {
                         }
                         toast({
                            title: 
-                              <p className="flex">
+                              <p className="flex items-center">
                                  <X className="stroke-red-600 mr-2" />
                                  <span className="text-red-600"> Something when wrong please try again </span>
                               </p>
