@@ -1,4 +1,13 @@
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose, DialogTrigger } from "@/components/ui/dialog";
+import {
+   Dialog,
+   DialogContent,
+   DialogDescription,
+   DialogFooter,
+   DialogHeader,
+   DialogTitle,
+   DialogClose,
+   DialogTrigger,
+} from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -11,16 +20,17 @@ export default function ({ children, members, addMembers }) {
    const [checkedMember, setCheckedMember] = useState([]);
    const [search, setSearch] = useState("");
    return (
-      <Dialog onOpenChange={e=>setSearch("")}>
+      <Dialog onOpenChange={(e) => setSearch("")}>
          <DialogTrigger asChild>{children}</DialogTrigger>
          <DialogContent className="space-y-2">
             <DialogHeader className="space-y-5">
                <DialogTitle className="text-center"> Add Members </DialogTitle>
                <div className="relative">
                   <Search className="absolute left-3 top-2 w-5 h-6 stroke-gray-500" />
-                  <Input className="pl-10" 
-                     onChange={e=> {
-                        setSearch(e.target.value.trim())
+                  <Input
+                     className="pl-10"
+                     onChange={(e) => {
+                        setSearch(e.target.value.trim());
                      }}
                   />
                </div>
@@ -29,9 +39,11 @@ export default function ({ children, members, addMembers }) {
             <div className="flex flex-col justify-start h-[300px] overflow-y-auto">
                {members
                   ? members
-                       .filter((member) => (search === "" ? true : member.username.toLowerCase().includes(search.toLowerCase())))
+                       .filter((member) =>
+                          search === "" ? true : member.username.toLowerCase().includes(search.toLowerCase())
+                       )
                        .map((member) => {
-                           return (
+                          return (
                              <div key={member.id}>
                                 <div
                                    className="flex items-center gap-3 hover:bg-gray-200 px-3 py-2 rounded cursor-pointer"

@@ -40,7 +40,9 @@ import { Toaster } from "@/components/ui/toaster"
                <h2 className="text-gray-700 font-bold"> Members </h2>
                <div className="flex flex-col justify-start h-[300px] overflow-y-auto">
                   {members
-                     ? members.map((member) => {
+                     ? members
+                        .filter(member=>member.isInvited)
+                        .map((member) => {
                            return (
                               <div key={member.id}>
                                  <div
