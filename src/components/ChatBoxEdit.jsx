@@ -96,7 +96,7 @@ const ChatBoxEdit = React.forwardRef((props) => {
   }
 
   return (
-    <div className="border border-gray-500 bg-white rounded-md mx-3 my-3 py-1 px-2">
+    <div className="border border-gray-500 bg-white rounded-md mx-3 my-3 py-1 px-2 min-w-[300px]">
       {/* Format bar */}
       <div className="flex">
         <button

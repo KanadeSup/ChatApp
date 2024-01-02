@@ -6,66 +6,81 @@ import convertTime from "../../../utils/convertTime";
 import { useParams } from "react-router-dom";
 
 export default function FriendMessagePreview(props) {
-  const [isHover, setIsHover] = useState(false);
-  const ref = useRef()
-  const { conversationId } = useParams()
+    const [isHover, setIsHover] = useState(false);
+    const ref = useRef();
+    const { conversationId } = useParams();
+    const [isSendFile, setIsSendFile] = useState(false);
 
-  useEffect(() => {
-    props.setConversationId(conversationId)
-  }, [conversationId])
+    useEffect(() => {
+        props.setConversationId(conversationId);
+    }, [conversationId]);
 
-  useEffect(() => {
-    if(ref.current) {
-      ref.current.innerHTML = props.lastMessage
-      ref.current.textContent = ref.current.textContent
-    }
-  },[props.lastMessage])
-
-  return (
-      <div
-        className="relative px-1.5 py-2.5 flex rounded-lg items-center hover:bg-gray-100 cursor-pointer"
-        onMouseEnter={() => setIsHover(true)}
-        onMouseLeave={() => setIsHover(false)}
-      >
-        <div className="relative">
-          <Avatar>
-            <AvatarImage src={props.avatar} alt="@shadcn" />
-            <AvatarFallback className="bg-gray-300">
-              <User2 />
-            </AvatarFallback>
-          </Avatar>
-          <div
-            className={`${
-              props.isOnline ? "bg-green-600" : "bg-red-600"
-            } absolute
-            border-white border-2 rounded-full p-1 right-0 bottom-0`}
-          ></div>
-        </div>
-        <div className="ml-1 flex-1">
-          <div className="flex items-center justify-between relative bottom-0.5">
-            <p className={`${props.isRead ? "" : "font-bold"} text-sm truncate w-32`}>
-              {props.name}
-            </p>
-            <p
-              className={`${
-                props.isRead ? "" : "font-bold"
-              } text-xs text-gray-600`}
-            >
-              {timeDifferent(props.time)}
-            </p>
-          </div>
-          <p
-            className={`${
-              props.isRead ? "" : "font-bold"
-            } text-gray-900 mt-1 text-sm truncate w-40`
+    useEffect(() => {
+        if (ref.current) {
+            ref.current.innerHTML = props.lastMessage;
+            ref.current.textContent = ref.current.textContent
+            console.log("ref.current.textContent: ", ref.current.textContent);
+            if (ref.current.textContent.length === 0) {
+                ref.current.textContent = "sent the attachment";
+                setIsSendFile(true);
+            } else {
+                setIsSendFile(false);
             }
-            ref={ref}
-          >
-          </p>
-        </div>
+        }
+    }, [props.lastMessage]);
 
-        {/* Hiện more khi hover */}
-        {/* {isHover && (
+    return (
+        <div
+            className="relative px-1.5 py-2.5 flex rounded-lg items-center hover:bg-gray-100 cursor-pointer"
+            onMouseEnter={() => setIsHover(true)}
+            onMouseLeave={() => setIsHover(false)}
+        >
+            <div className="relative">
+                <Avatar>
+                    <AvatarImage src={props.avatar} alt="@shadcn" />
+                    <AvatarFallback className="bg-gray-300">
+                        <User2 />
+                    </AvatarFallback>
+                </Avatar>
+                <div
+                    className={`${
+                        props.isOnline ? "bg-green-600" : "bg-red-600"
+                    } absolute
+            border-white border-2 rounded-full p-1 right-0 bottom-0`}
+                ></div>
+            </div>
+            <div className="ml-1 flex-1">
+                <div className="flex items-center justify-between relative bottom-0.5">
+                    <p
+                        className={`${
+                            props.isRead ? "" : "font-bold"
+                        } text-sm truncate w-32`}
+                    >
+                        {props.name}
+                    </p>
+                    <p
+                        className={`${
+                            props.isRead ? "" : "font-bold"
+                        } text-xs text-gray-600`}
+                    >
+                        {timeDifferent(props.time)}
+                    </p>
+                </div>
+                <div className="flex w-48 items-center gap-1">
+                    <p className={`text-sm flex-shrink-0 mt-1 ${isSendFile ? "italic " : " "} ${
+                            props.isRead ? "" : "font-semibold"
+                        }`}>{props.lastMessageSender==="You" ? (props.lastMessageSender + ":") : (props.name +":")}</p>
+                    <p
+                        className={`${
+                            props.isRead ? "" : "font-semibold"
+                        } text-gray-900 mt-1 text-sm truncate  ${isSendFile ? "italic" : ""}`}
+                        ref={ref}
+                    ></p>
+                </div>
+            </div>
+
+            {/* Hiện more khi hover */}
+            {/* {isHover && (
         <div
           style={{
             boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.4)", // This line adds the shadow
@@ -101,6 +116,6 @@ export default function FriendMessagePreview(props) {
           </svg>
         </div>
       )} */}
-      </div>
-  );
+        </div>
+    );
 }

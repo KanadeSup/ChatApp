@@ -32,7 +32,8 @@ export default function Login() {
       localStorage.setItem("token", response.token);
       localStorage.setItem("tokenTimeOut", response.tokenTimeOut);
       localStorage.setItem("refreshToken", response.refreshToken);
-      localStorage.setItem("refreshTokenTimeout", response.refreshTokenTimeout);
+      localStorage.setItem("refreshTokenTimeOut", response.refreshTokenTimeOut);
+      localStorage.setItem("email", email);
       loginOneSignal(response.userId);
       navigate("/Workspace");
     } catch (error) {
@@ -54,6 +55,7 @@ export default function Login() {
         localStorage.setItem("tokenTimeOut", data.tokenTimeOut);
         localStorage.setItem("refreshToken", data.refreshToken);
         localStorage.setItem("refreshTokenTimeout", data.refreshTokenTimeout);
+        localStorage.setItem("email", data.email);
         loginOneSignal(data.userId);
         navigate("/Workspace");
       },

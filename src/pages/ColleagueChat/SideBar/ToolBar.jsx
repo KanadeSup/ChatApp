@@ -4,7 +4,7 @@ import useColleagueStore from "@/storages/useColleagueStore";
 export default function ToolbarIconComponent(props) {
   const [isHoveredFilter, setIsHoveredFilter] = useState(false);
   const [isHoveredNewChat, setIsHoveredNewChat] = useState(false);
-  const { setIsNewChat } = useColleagueStore();
+  const { isNewChat, setIsNewChat } = useColleagueStore();
   return (
     <div className="flex h-14 rounded-b-md border-gray-300 justify-end items-center bg-gray-50 border-b">
       <div className="mx-4 font-semibold text-lg w-full">Colleague chat</div>
@@ -47,7 +47,7 @@ export default function ToolbarIconComponent(props) {
         className="cursor-pointer relative"
         onMouseEnter={() => setIsHoveredNewChat(true)}
         onMouseLeave={() => setIsHoveredNewChat(false)}
-        onClick={() => setIsNewChat(true)}
+        onClick={() => setIsNewChat(!isNewChat)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

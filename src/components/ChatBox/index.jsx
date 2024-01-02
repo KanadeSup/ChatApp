@@ -172,7 +172,7 @@ const ChatBox = React.forwardRef((props) => {
   }
 
   return (
-    <div className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2">
+    <div className="border border-gray-500 rounded-md mx-3 my-3 py-1 px-2 min-w-[360px]">
       {/* Format bar */}
       {isOpenDialog && (
         <InformDialog
@@ -259,7 +259,7 @@ const ChatBox = React.forwardRef((props) => {
           }
         }}
         onPaste={handlePaste}
-        className="outline-none mt-1 mb-2 relative max-w-[calc(100vw-25rem)]"
+        className="outline-none mt-1 mb-2 relative max-w-[calc(100vw-5rem)] lg:max-w-[calc(100vw-25rem)] min-w-[250px]"
         ref={ref}
       >
         <EditorContent
