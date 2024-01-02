@@ -1,7 +1,12 @@
-import { Mic, MicOff, MoreVertical, Pin, PinOff } from "lucide-react";
+import { Mic, MicOff, MoreVertical, Pin, PinOff, User2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { useParams } from "react-router-dom";
+import {
+   Avatar,
+   AvatarFallback,
+   AvatarImage,
+ } from "@/components/ui/avatar"
 
 function UserVideo({ setParticipant, participant, isPublisher, setPinnedUser,  className }) {
    const videoRef = useRef(null);
@@ -12,11 +17,26 @@ function UserVideo({ setParticipant, participant, isPublisher, setPinnedUser,  c
       participant.streamManager.addVideoElement(videoRef.current);
    }, [participant]);
    return (
-      <div className={`${className}`}>
-         <div className={`flex items-center justify-center relative rounded-lg bg-gray-900 group h-full w-full`}>
+      <div className={`${className} relative group`}>
+         {/* Profile section */}
+         {
+            participant?.isVideo === false ? (
+               <div className="absolute w-full h-full flex items-center justify-center z-10 bg-gray-900">
+                  <div className="flex flex-col items-center h-[50%] aspect-square ">
+                     <Avatar className="w-full h-full rounded-full ">
+                        <AvatarImage className="w-full h-full" src={participant.avatar} />
+                        <AvatarFallback className="w-full">
+                           <User2 className="w-[60%] h-[60%] stroke-gray-700"/>
+                        </AvatarFallback>
+                     </Avatar>
+                  </div>
+               </div>
+            ): null
+         }
+         <div className={`flex items-center justify-center relative rounded-lg bg-gray-900 h-full w-full`}>
             <video autoPlay={true} ref={videoRef} className={`h-full aspect-video`} />
             <div 
-               className={`absolute left-0 bottom-0 bg-gray-700 text-white pl-1 pr-2 font-bold text-sm flex gap-1 items-center justify-center 
+               className={`absolute z-20 left-0 bottom-0 bg-gray-700 text-white pl-1 pr-2 font-bold text-sm flex gap-1 items-center justify-center 
                   ${deviceType?.toUpperCase() === "MOBILE" ? "text-[35px] py-1" : "text-sm py-1"}
                `}
             >
@@ -27,7 +47,7 @@ function UserVideo({ setParticipant, participant, isPublisher, setPinnedUser,  c
                {participant?.name} 
             </div> 
             <div 
-               className={`absolute bg-gray-300 bg-opacity-50 px-2 rounded-full py-1 flex invisible group-hover:visible items-center
+               className={`absolute bg-gray-300 bg-opacity-50 px-2 rounded-full py-1 flex invisible group-hover:visible items-center z-50
                   ${deviceType?.toUpperCase() === "MOBILE" ? "gap-10" : "gap-2"}
                `}>
                {
@@ -59,7 +79,6 @@ function UserVideo({ setParticipant, participant, isPublisher, setPinnedUser,  c
                      />
                   )
                }
-
                <Pin 
                   className={`stroke-gray-800 cursor-pointer hover:bg-gray-100 hover:bg-opacity-30 p-1 rounded-full
                      ${deviceType?.toUpperCase() === "MOBILE" ? "w-20 h-20" : "w-8 h-8"}

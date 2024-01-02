@@ -26,7 +26,6 @@ export default function ({setNotification, forceLoad, setForceLoad }) {
    const [loadMore, setLoadMore] = useState(null)
    const [isMutilpleDelete, setIsMutilpleDelete] = useState(false)
    const [deletes, setDeletes] = useState([])
-   console.log(deletes)
    useEffect(() => {
       async function fetchData() {
          const nNotification = 20
@@ -47,6 +46,7 @@ export default function ({setNotification, forceLoad, setForceLoad }) {
          }
          if(loadMore === null) setNotifications([...data]);
          else setNotifications([...notifications, ...data]);
+         console.log(data)
          data.map((noti) => {
             if (notificationId === noti.id) setNotification(noti);
          });
@@ -60,7 +60,7 @@ export default function ({setNotification, forceLoad, setForceLoad }) {
          <div className="text-md flex justify-between items-center py-3 px-3 h-12 mt-1">
             <span className="font-bold text-neutral-800 text-xl">Notification</span>
             <div className="flex items-center gap-1">
-               <span className="text-sm font-bold"> unread </span>
+               <span className="text-sm font-bold"> Unreads </span>
                <Switch className="" 
                   onCheckedChange={check=> setUnread(check)}
                />
@@ -112,8 +112,16 @@ export default function ({setNotification, forceLoad, setForceLoad }) {
                               if (MESSAGE.includes(noti.type)) {
                                  const detail = JSON.parse(noti.data.Detail);
                                  if (!detail.IsChannel) {
-                                    navigate(workspaceId ? `/${workspaceId}/colleague-chat/${detail.UserId}` : `/colleague-chat/${detail.UserId}`);
+                                    const senderId = noti.data.Url.split("/")[noti.data.Url.split("/").length - 1]
+                                    navigate(workspaceId ? `/${workspaceId}/colleague-chat/${senderId}` : `/colleague-chat/${senderId}`);
                                     return;
+                                 }
+                                 else {
+                                    const splits = noti.data.Url.split("/")
+                                    const wid = splits[splits.length-2]
+                                    const cid = splits[splits.length-1]
+                                    navigate(`/Workspace/${wid}/${cid}`)
+                                    return
                                  }
                               }
                               setNotification(noti);

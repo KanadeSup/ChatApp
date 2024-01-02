@@ -1,5 +1,5 @@
 import { OpenVidu } from "openvidu-browser";
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useLoaderData, useNavigate } from "react-router-dom"
 import useInfo from "/storages/useInfo"
 import { Camera, Loader2, Mic, User2, X } from "lucide-react";
@@ -21,15 +21,27 @@ function MeetingRoom() {
    const { user, setUser } = useInfo()
    const [isMicEnable, setIsMicEnable] = useState(false)
    const [isCamEnable, setIsCamEnable] = useState(false)
+   const joinRef = useRef()
+   const loaderRef=useRef()
    const navigate = useNavigate()
+   const sessionRef = useRef()
    function leaveSession() {
-      session.unpublish(publisher.streamManager)
-      if (session) session.disconnect();
+      if (sessionRef.current) {
+         sessionRef.current.disconnect();
+      }
       setOV(null);
       setSession(null);
       setSubcribers([]);
       setPublisher(null);
    }
+   useEffect(()=>{
+      sessionRef.current = session
+   },[session])
+   useEffect(()=>{
+      return ()=>{
+         leaveSession()
+      }
+   }, [])
    useEffect(()=>{
       if(user) return
       async function fetchUser() {
@@ -40,19 +52,20 @@ function MeetingRoom() {
       fetchUser()
    },[user])
    async function initialize() {
+      joinRef.current.disabled = true
+      loaderRef.current.classList.remove("hidden")
       const OV = new OpenVidu();
       setOV(OV);
       const session = OV.initSession();
       session.on("streamCreated", (e) => {
          const connectionData = JSON.parse(e.stream.connection.data)
-         console.log("json",connectionData)
          const subcriber = session.subscribe(e.stream, undefined);
          subcribers.push({
             id: `subcriber_${subcribers.length}`,
             streamManager: subcriber,
             isMute: false,
-            isAudio: false,
-            isVideo: false,
+            isAudio: e.stream.audioActive,
+            isVideo: e.stream.videoActive,
             name: connectionData.name,
             avatar: connectionData.avatar,
          });
@@ -61,6 +74,15 @@ function MeetingRoom() {
                for (let i = 0; i < subcribers.length; i++) {
                   if (subcribers[i].streamManager === subcriber) {
                      subcribers[i].isAudio = e.newValue;
+                     setSubcribers([...subcribers]);
+                     return;
+                  }
+               }
+            }
+            if (e.changedProperty === "videoActive") {
+               for (let i = 0; i < subcribers.length; i++) {
+                  if (subcribers[i].streamManager === subcriber) {
+                     subcribers[i].isVideo = e.newValue;
                      setSubcribers([...subcribers]);
                      return;
                   }
@@ -128,10 +150,12 @@ function MeetingRoom() {
                         <AvatarFallback className="w-40 h-40"> <User2 /> </AvatarFallback>
                      </Avatar>
                      <Button className="px-10 font-semibold mt-5"
+                        ref={joinRef}
                         onClick={e=>{
                            initialize()
                         }}
                      >
+                        <Loader2 ref={loaderRef} className="w-4 h-4 mr-2 animate-spin hidden"/>
                         Join now
                      </Button>
                      <div className="flex items-center gap-20 mt-5">
@@ -151,6 +175,8 @@ function MeetingRoom() {
          {
             session !== null ? (
                <VideoSection 
+                  defaultCamera={isCamEnable}
+                  defaultMic={isMicEnable}
                   setSubcribers={setSubcribers}
                   subcribers={subcribers}
                   setPublisher={setPublisher}

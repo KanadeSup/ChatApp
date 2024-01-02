@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useOutletContext, useParams } from "react-router-dom"
 import getMeetingById from "../../api/meeting/getMeetingById"
 import { Loader2, Video } from "lucide-react"
 import convertTime from "../../utils/convertTime"
@@ -9,18 +9,23 @@ import { isBeforeCurrentDate } from "../../utils/compareCurrentTime"
 import { CreateMeetingDialog } from "./CreateMeetingDialog"
 
 function MeetingDetail() {
+   const loadData = useOutletContext()
    const {meetingId} = useParams()
    const [meeting, setMeeting] = useState()
    const navigate = useNavigate()
+   const [forceLoad, setForceLoad] = useState()
+   function loadMeeting() {
+      setForceLoad({})
+   }
    useEffect(()=>{
       async function fetchData() {
          const res = await getMeetingById(meetingId)
          if(!res.ok) return
          setMeeting(res.data)
-         console.log(res.data)
+         console.log(res.data.description)
       }
       fetchData()
-   }, [meetingId])
+   }, [meetingId, forceLoad])
    if(!meeting) return <div></div>
    return (
       <div className="px-5 w-full">
@@ -44,7 +49,15 @@ function MeetingDetail() {
                }
             </div>
          </div>
-         <div className="border border-gray-200 inline-block px-7 pt-5 pb-3 rounded-lg mt-5">
+         <div className="border border-gray-200 inline-block px-7 pt-5 pb-3 rounded-lg mt-5 max-w-[500px]">
+            {
+               meeting.description !== "" ? (
+                  <div>
+                     <span className="text-lg font-semibold"> Description: </span> 
+                     <p className="break-words text-gray-500"> {meeting.description} </p>
+                  </div>
+               ): null
+            }
             <div className="">
                <div >
                   <span className="text-lg font-semibold"> Time Start:  </span>
@@ -56,9 +69,9 @@ function MeetingDetail() {
                </div>
             </div>
             <div className="mt-5 flex justify-end items-center">
-               <CreateMeetingDialog editData={meeting}>
+               <CreateMeetingDialog editData={meeting} loadData={loadData} loadMeeting={loadMeeting}>
                   <Button variant="link" className="text-md font-bold">
-                     edit
+                     Edit
                   </Button>
                </CreateMeetingDialog>
 
@@ -75,7 +88,7 @@ function MeetingDetail() {
                         }}
                      > 
                         <Loader2 className="loader w-4 h-4 animate-spin hidden mr-2" />
-                        Join 
+                        Join
                      </button>
                   ) : null
                }
