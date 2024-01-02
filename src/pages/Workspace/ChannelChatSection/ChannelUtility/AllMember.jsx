@@ -48,6 +48,7 @@ export default function AllMember(props) {
       >
         {memberList.map((user) => (
           <AvatarName
+          key={user.id}
           name={user.firstName + " " + (user.lastName ? user.lastName : "")}
           avatar={user.picture}
         />

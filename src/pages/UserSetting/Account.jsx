@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useLoaderData, Await } from "react-router-dom";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton"
+import ChangePassword from "./ChangePassword";
 
 export default function () {
   const data = useLoaderData();
@@ -52,7 +53,7 @@ export default function () {
             variant="link"
             className="text-muted-foreground hover:text-black"
           >
-            Edit
+            <ChangePassword />
           </Button>
         </div>
         <p className="text-lg font-medium"> *********** </p>

@@ -10,8 +10,6 @@ import {
   Pencil,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import convertTime from "../utils/convertTime";
-import timeDifference from "../utils/timeDifferent";
 import ChatBoxEdit from "@/components/ChatBoxEdit";
 import { BsFillPinAngleFill } from "react-icons/bs";
 import { GoTriangleRight } from "react-icons/go";
@@ -51,7 +49,7 @@ export default function Message(props) {
   return (
     <div
       id={props.id}
-      className="mx-2 relative group"
+      className="mx-2 relative group min-w-[360px]"
       onMouseLeave={() => setShowEmoij(false)}
     >
       <div
@@ -85,7 +83,7 @@ export default function Message(props) {
           </div>
 
           <div className="relative bottom-1 w-full max-w-[calc(100vw-28rem)]">
-            <div className="flex items-baseline">
+            <div className="flex items-baseline min-w-[200px]">
               <span className="font-bold font-sans text-sm cursor-pointer">
                 {props.message.senderName}
               </span>
@@ -104,7 +102,7 @@ export default function Message(props) {
               <>
                 <div
                   ref={refContent}
-                  className="text-[15px] font-sans mt-1 leading-snug w-full break-all"
+                  className="text-[15px] font-sans mt-1 leading-snug w-full break-words min-w-[300px]"
                   dangerouslySetInnerHTML={{ __html: props.message.content }}
                 ></div>
                 {props.message.isEdited ? (
@@ -117,7 +115,7 @@ export default function Message(props) {
             {/*-- Files --*/}
             {props.message.files?.length > 0 && (
               <div>
-                <div className="flex items-center text-slate-600 text-sm gap-1">
+                <div className="flex items-center text-slate-600 text-sm gap-1 min-w-[200px]">
                   <span>{props.message.files.length} files</span>{" "}
                   <GoTriangleRight
                     className={`w-4 h-4 cursor-pointer hover:bg-gray-200 rounded-full ${
@@ -171,10 +169,10 @@ export default function Message(props) {
               </div>
             )}
 
-            {/* Link preview */}
+            {/* Links preview */}
             <div className="flex flex-col gap-2">
               {links.map((link, index) => (
-                <ViewLinkPreview key={index} url={link} className="w-4/5" />
+                <ViewLinkPreview key={index} url={link} className="w-4/5  min-w-[300px]" />
               ))}
             </div>
 
@@ -185,7 +183,8 @@ export default function Message(props) {
                   ([emoji, count], index) => (
                     <div
                       key={index}
-                      className="h-full border-[1.5px] px-0.5 bg-blue-50 border-bold-blue rounded-lg"
+                      className="h-full border-[1.5px] px-0.5 bg-blue-50 border-bold-blue cursor-pointer rounded-lg"
+                      onClick={() => props.SendEmoji(emoji)}
                     >
                       {emoji}{" "}
                       <span className="text-base text-bold-blue font-mono font-medium">

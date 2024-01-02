@@ -85,6 +85,11 @@ export default function ChatBoxContent() {
     fetchData();
   }, []);
 
+  // Xoas tin nhắn khi chuyển sang conversation khác
+  useEffect(() => {
+    setMessages([]);
+    setMessagesChild([]);
+  }, [conversationId]);
   //Lấy tin nhắn khi vào conversation
   useEffect(() => {
     async function fetchData() {
@@ -92,7 +97,7 @@ export default function ChatBoxContent() {
       // Sắp xếp tin nhắn theo thời gian
       if (data.length > 0) {
         setMessages(data.reverse());
-      }
+      } 
     }
     fetchData();
   }, [conversationId]);
@@ -164,6 +169,11 @@ export default function ChatBoxContent() {
     if (hub) {
       hub.off("delete_message");
       hub.on("delete_message", (message_deleted) => {
+
+        if (message_deleted.senderId === localStorage.getItem("userId")) {
+          return;
+        }
+
         console.log("đã chạy delete message");
         if (message_deleted.parentId === null) {
           setMessages((messages) =>
