@@ -6,6 +6,7 @@ async function DeleteMessage(hub, messageId, setMessages, setIsClickedReply, isC
         }
         console.log("click delete message:", messageId);
         const data = await hub.invoke("DeleteMessageAsync", messageId, true);
+
         setMessages((messages) =>
             messages.filter((message) => message.id !== data)
         );

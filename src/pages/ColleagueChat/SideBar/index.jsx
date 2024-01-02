@@ -27,10 +27,10 @@ export default function () {
       console.log("conversations: ", response);
       setConversations(response);
       setIsNewMessage(false);
-      if (!conversationId && response.length > 0) {
-        console.log("conversationId: ", response[0].id);
-        navigate(workspaceId ? `/${workspaceId}/colleague-chat/${response[0].id}` : `/colleague-chat/${response[0].id}`);
-      }
+      // if (!conversationId && response.length > 0) {
+      //   console.log("conversationId cai dau tien: ", response[0].id);
+      //   navigate(workspaceId ? `/${workspaceId}/colleague-chat/${response[0].id}` : `/colleague-chat/${response[0].id}`);
+      // }
 
     }
     // if (isNewMessage) {
@@ -49,6 +49,11 @@ export default function () {
         console.log("message.senderId", message.senderId);
         if ((message.senderId !== conversationId) || (message.receiverId !== localStorage.getItem("userId"))) {
           audioRef.current.play();
+          return;
+        }
+
+        // Nếu tin nhắn là của mình thì không hiển thị
+        if (message.senderId === localStorage.getItem("userId")) {
           return;
         }
 
@@ -113,7 +118,7 @@ export default function () {
             className={({ isActive, isPending }) =>
               isPending ? "" : isActive ? "bg-gray-100" : ""
             }
-            onClick={() => {setIsClickedReply(false); setMessages([]);}}
+            onClick={() => {setIsClickedReply(false);}}
           >
             <FriendMessagePreview
               key={user.id}
@@ -121,10 +126,12 @@ export default function () {
               name={user.name}
               avatar={user.avatar}
               lastMessage={user.lastMessage}
+              lastMessageSender={user.lastMessageSender}
               time={user.lastMessageTime}
               isRead={user.isRead}
               isActive={user.isActive}
               isOnline={user.isOnline}
+
               setConversationId={setConversationId}
             />
           </NavLink>

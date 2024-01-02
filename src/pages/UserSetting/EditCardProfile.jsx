@@ -121,13 +121,13 @@ export default function ({ user, isUpdate, setIsUpdate, setUser }) {
 
                <Label> Gender </Label>
                <span> : </span>
-               <RadioGroup defaultValue={gender ? "male" : "female"} onChange={(e) => setGender(e.target.value)} className="flex items-center gap-10">
+               <RadioGroup defaultValue={gender ? true : false} onValueChange={setGender} className="flex items-center gap-10">
                   <div className="flex items-center gap-1">
-                     <RadioGroupItem value="male" id="male" />
+                     <RadioGroupItem value={true} id="male" />
                      <Label htmlFor="male"> Male </Label>
                   </div>
                   <div className="flex items-center gap-1">
-                     <RadioGroupItem value="female" id="female" />
+                     <RadioGroupItem value={false} id="female" />
                      <Label htmlFor="female"> Female </Label>
                   </div>
                </RadioGroup>
@@ -138,7 +138,7 @@ export default function ({ user, isUpdate, setIsUpdate, setUser }) {
 
                <Label> Birthday </Label>
                <span> : </span>
-               <Input type="date" defaultValue="2002-06-20" onChange={(e) => setBirthDay(e.target.value)} />
+               <Input type="date" placeholder="dd-mm-yyyy" onChange={(e) => setBirthDay(e.target.value)} />
             </div>
 
             <DialogFooter>
