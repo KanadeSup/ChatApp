@@ -1,6 +1,7 @@
 import myFetch from "./myFetch"
 
 export default async (idUser, firstName, lastName, gender, phone, email, birthday) => {
+    console.log("updateUser:", gender, phone, email, birthday)
     const formData = new FormData();
     formData.append('FirstName', firstName);
     formData.append('LastName', lastName);

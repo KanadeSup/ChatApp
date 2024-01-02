@@ -57,6 +57,7 @@ async function SendMessage(
         //     reactionCount: {},
         //     files: files,
         // };
+        
         setMessages((messages) => [...messages, newMessage]);
     } else {
         console.error("Hub is not connected");
