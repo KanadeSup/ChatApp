@@ -98,7 +98,17 @@ export default function() {
                                  <AvatarImage src={member.picture}/>
                                  <AvatarFallback> <User /> </AvatarFallback>
                               </Avatar>
-                              <div> { member.username } </div>
+                              <div className="flex flex-col justify-center">
+                                 <div className="flex items-center gap-2">
+                                    <h1> {member.username} </h1>
+                                    {member.isOwner ? (
+                                       <div className="px-1 pb-[2px] bg-red-500 text-white font-bold text-xs rounded-full"> 
+                                          owner
+                                       </div>
+                                    ): null}
+                                 </div>
+                                 <p className="text-sm text-gray-500 italic"> {member.email} </p>
+                              </div>
                            </TableCell>
                            <TableCell>
                               {
@@ -143,7 +153,7 @@ export default function() {
                                              if(data.ok) {
                                                 toast({
                                                    title: 
-                                                      <p className="flex">
+                                                      <p className="flex items-center">
                                                          <Check className="stroke-green-600 mr-2" />
                                                          <span className="text-green-600"> Delete Successfully! </span>
                                                       </p>
@@ -154,7 +164,7 @@ export default function() {
                                              if(data.status === 403) {
                                                 toast({
                                                    title: 
-                                                      <p className="flex">
+                                                      <p className="flex items-center">
                                                          <X className="stroke-red-600 mr-2" />
                                                          <span className="text-red-600"> You don't have permission to kick member </span>
                                                       </p>
@@ -164,7 +174,7 @@ export default function() {
                                              if(data.status === 400) {
                                                 toast({
                                                    title: 
-                                                      <p className="flex">
+                                                      <p className="flex items-center">
                                                          <X className="stroke-red-600 mr-2" />
                                                          <span className="text-red-600"> {data.data.title} </span>
                                                       </p>

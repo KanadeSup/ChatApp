@@ -121,12 +121,31 @@ export default function() {
             });
             if(addUids.length !== 0) await addRoleMembers(channelId, addUids, roleId);
             if(removeUids.length !== 0)  await addRoleMembers(channelId, removeUids, null);
-            
-            toast({
-               title: <p className="text-green-500">Successfully update role</p>,
-               duration: 1500,
-            })
             navigate("..", {relative:"path"})
+            if(res.ok) {
+               toast({
+                  title: (
+                     <p className="text-green-500">Update Successfully </p>
+                  ),
+                  duration: 1500,
+               });
+               return
+            }
+            if(res.status === 403) {
+               toast({
+                  title: (
+                     <p className="text-red-600">You don't have permission to do this</p>
+                  ),
+                  duration: 1500,
+               });
+               return
+            }
+            toast({
+               title: (
+                  <p className="text-red-600">Something went wrong, please try again</p>
+               ),
+               duration: 1500,
+            });
          }}
       >
          <div className="flex gap-5 items-center">

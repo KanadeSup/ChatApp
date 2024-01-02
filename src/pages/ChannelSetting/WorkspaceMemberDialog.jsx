@@ -40,7 +40,9 @@ import { Toaster } from "@/components/ui/toaster"
                <h2 className="text-gray-700 font-bold"> Members </h2>
                <div className="flex flex-col justify-start h-[300px] overflow-y-auto">
                   {members
-                     ? members.map((member) => {
+                     ? members
+                        .filter(member=>member.isInvited)
+                        .map((member) => {
                            return (
                               <div key={member.id}>
                                  <div
@@ -100,7 +102,7 @@ import { Toaster } from "@/components/ui/toaster"
                         if(data.status === 403) {
                            toast({
                               title:
-                                 <p>
+                                 <p className="flex items-center">
                                     <X className="stroke-red-600 mr-2" />
                                     <span className="text-red-600"> You don't have permission to add member </span>
                                  </p>

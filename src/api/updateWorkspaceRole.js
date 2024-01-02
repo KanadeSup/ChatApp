@@ -10,4 +10,9 @@ export default async (wid, rid, roledata) => {
       },
       body: JSON.stringify(roledata)
    })
+   return {
+      data: null,
+      status: res.status,
+      ok: res.ok
+   }
 };

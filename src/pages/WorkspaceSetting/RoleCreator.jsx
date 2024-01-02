@@ -107,13 +107,31 @@ export default function () {
             const uids = [];
             addedMembers.map((member) => uids.push(member.id));
             await addRoleMembers(workspaceId, uids, res.id);
+            navigate("..", { relative: "path" });
+            if(res.ok) {
+               toast({
+                  title: (
+                     <p className="text-green-500">Successfully Create new role</p>
+                  ),
+                  duration: 1500,
+               });
+               return
+            }
+            if(res.status === 403) {
+               toast({
+                  title: (
+                     <p className="text-red-600">You don't have permission to do this</p>
+                  ),
+                  duration: 1500,
+               });
+               return
+            }
             toast({
                title: (
-                  <p className="text-green-500">Successfully Create new role</p>
+                  <p className="text-red-600">Something went wrong, please try again</p>
                ),
                duration: 1500,
             });
-            navigate("..", { relative: "path" });
          }}
       >
          <div className="flex gap-5 items-center">

@@ -10,6 +10,9 @@ export default async (wid, roledata) => {
       },
       body: JSON.stringify(roledata),
    })
-   const data = await res.json()
-   return data
+   return {
+      data: null,
+      status: res.status,
+      ok: res.ok
+   }
 };

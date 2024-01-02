@@ -23,8 +23,8 @@ async function deleteRoleAction({request,params}) {
    const formData = await request.formData();
    const roleId = formData.get("roleid")
    const { channelId } = params
-   await deleteChannelRole(channelId, roleId)
-   return roleId
+   const res = await deleteChannelRole(channelId, roleId)
+   return res
 }
 
 export default [

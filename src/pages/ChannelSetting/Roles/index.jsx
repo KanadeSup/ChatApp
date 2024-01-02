@@ -17,7 +17,7 @@ export default function() {
       <div className="space-y-5 w-[800px]">
          <div>
             <h1 className="text-lg font-medium"> Role & Permisson </h1>
-            <p className="text-muted-foreground text-sm"> Manage workspace roles and its permission</p>
+            <p className="text-muted-foreground text-sm"> Manage Channel roles and its permission</p>
          </div>
          <Separator />
          <Suspense
