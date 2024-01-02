@@ -3,6 +3,7 @@ import { AlertTriangle, Bell, Loader2, MailPlus, MessageSquare, Trash2, UserX, X
 import acceptWorkspaceInvite from "../../api/workspace/acceptWorkspaceInvite";
 import { useNavigate } from "react-router-dom";
 import deleteNotification from "../../api/notification/deleteNotification";
+import { useToast } from "@/components/ui/use-toast"
 import {
    AlertDialog,
    AlertDialogAction,
@@ -106,6 +107,7 @@ function WorkspaceInviteTemplate({ notification, setNotification, navigate }) {
    const detail = JSON.parse(data.Detail);
    const { setWorkspace } = useInfo()
    const { notifications, setNotifications } = useNotification()
+   const { toast } = useToast()
    return (
       <div className="flex flex-col justify-center items-center gap-3 h-[calc(100vh-200px)] ">
          <div className="text-xl flex gap-1 items-center mb-3 border-b pb-5">
@@ -130,12 +132,19 @@ function WorkspaceInviteTemplate({ notification, setNotification, navigate }) {
                   document.querySelector(".reject-but").classList.replace("bg-red-700","bg-gray-400")
                   document.querySelector(".reject-but").classList.add("hover:bg-gray-400")
                   const res = await acceptWorkspaceInvite(detail.GroupId)
-                  await deleteNotification([notification.id])
                   if(res.ok) {
+                     await deleteNotification([notification.id])
                      navigate(`/Workspace/${detail.GroupId}`)
-                     setWorkspace(null)
                      return
                   }
+                  toast({
+                     title: (
+                        <p className="flex items-center"> 
+                           <X className="stroke-red-500 w-6 h-6 stroke-[3] mr-2"/> 
+                           You cannot join workspace because the invitation is expired
+                        </p>
+                     )
+                  })
                   setNotification(null)
                   document.querySelector(".accept-but").classList.replace("bg-gray-400","bg-green-700")
                   document.querySelector(".accept-but").classList.add("hover:bg-green-700")
@@ -148,9 +157,7 @@ function WorkspaceInviteTemplate({ notification, setNotification, navigate }) {
             <button className="reject-but px-3 py-1 text-lg font-bold bg-red-700 hover:bg-red-600 rounded text-white"
                onClick={async e=> {
                   let res = await rejectWorkspaceInvite(detail.GroupId)
-                  if(!res.ok) return
                   res = await deleteNotification([notification.id])
-                  if(!res.ok) return
                   for(let i = 0; i < notifications.length; i++) {
                      if(notifications[i].id === notification.id) {
                         notifications.splice(i,1)

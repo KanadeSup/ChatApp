@@ -65,25 +65,26 @@ function iso2Time(isoTime) {
    return format(date, "HH:mm")
 }
 
-function CreateMeetingDialog({ children, loadData, editData}) {
+function CreateMeetingDialog({ children, loadData, editData, loadMeeting}) {
    const [open, setOpen] = useState();
    return (
       <Dialog open={open} onOpenChange={setOpen} asChild>
          <DialogTrigger>{children}</DialogTrigger>
-         <DialogContent className="w-auto max-w-[1000px] min-w-[940px]">
+         <DialogContent className="w-auto max-w-[1000px] min-w-[800px]">
             <DialogHeader>
                <DialogTitle> Create new meeting </DialogTitle>
             </DialogHeader>
-            <MeetingForm  setOpen={setOpen} loadData={loadData} editData={editData} />
+            <MeetingForm  setOpen={setOpen} loadData={loadData} editData={editData} loadMeeting={loadMeeting} />
          </DialogContent>
       </Dialog>
    );
 }
-function MeetingForm({ setOpen, loadData, editData }) {
-   const [dateStart, setDateStart] = useState(editData ? iso2Date(editData.timeStart) : undefined)
-   const [dateEnd, setDateEnd] = useState(editData ? iso2Date(editData.timeEnd) : undefined)
-   const [timeStart, setTimeStart] = useState(editData ? iso2Time(editData.timeStart) : undefined)
-   const [timeEnd, setTimeEnd] = useState(editData ? iso2Time(editData.timeEnd) : undefined)
+
+function MeetingForm({ setOpen, loadData, editData, loadMeeting }) {
+   const [dateStart, setDateStart] = useState(editData ? iso2Date(editData.timeStart) : "")
+   const [dateEnd, setDateEnd] = useState(editData ? iso2Date(editData.timeEnd) : "")
+   const [timeStart, setTimeStart] = useState(editData ? iso2Time(editData.timeStart) : "")
+   const [timeEnd, setTimeEnd] = useState(editData ? iso2Time(editData.timeEnd) : "")
    const [name, setName] = useState(editData ? editData.name : "")
    const [id, setId] = useState(editData ? editData.sessionId : "")
    const [description, setDescription] = useState(editData ? editData.description : "")
@@ -94,6 +95,11 @@ function MeetingForm({ setOpen, loadData, editData }) {
    const submitRef = useRef()
    const cancelRef = useRef()
    const loaderRef = useRef()
+   const dateStartRef = useRef()
+   const dateEndRef = useRef()
+   const timeStartRef = useRef()
+   const timeEndRef = useRef()
+   const errorRef = useRef()
    const [selectedMembers, setSelectedMembers] = useState([])
    const [search, setSearch] = useState("")
 
@@ -102,10 +108,35 @@ function MeetingForm({ setOpen, loadData, editData }) {
          const data = await getMemberList(workspaceId)
          const uid = localStorage.getItem("userId")
          setMemberList(data.filter(member=> member.id !== uid))
-         console.log("data", data)
       }
       fetchMemberList()
    }, [])
+   function handleSchedule() {
+      if(dateStartRef.current.value === "") return
+      if(dateEndRef.current.value === "") return
+      if(timeEndRef.current.value === "") return
+      if(timeStartRef.current.value === "") return
+      if(compareDate(dateStartRef.current.value, dateEndRef.current.value) === 1){
+         errorRef.current.textContent = "The 'meeting start' must be before 'meeting end'"
+         dateStartRef.current.classList.add("border-red-500")
+         dateEndRef.current.classList.add("border-red-500")
+         return
+      }
+      console.log(compareTime(timeStartRef.current.value, timeEndRef.current.value) )
+      if(compareDate(dateStartRef.current.value, dateEndRef.current.value) === 0
+         && compareTime(timeStartRef.current.value, timeEndRef.current.value) === 1
+      ){
+         errorRef.current.textContent = "The 'meeting start' must be before 'meeting end'"
+         timeEndRef.current.classList.add("border-red-500")
+         timeStartRef.current.classList.add("border-red-500")
+         return
+      }
+      errorRef.current.textContent = ""
+      dateStartRef.current.classList.replace("border-red-500", "border-black")
+      dateEndRef.current.classList.replace("border-red-500", "border-black")
+      timeStartRef.current.classList.replace("border-red-500", "border-black")
+      timeEndRef.current.classList.replace("border-red-500", "border-black")
+   }
    return (
       <Form 
          onSubmit={async e=>{
@@ -117,15 +148,16 @@ function MeetingForm({ setOpen, loadData, editData }) {
             loaderRef.current.classList.remove("hidden")
             let res;
             if(editData) {
-               res = await createMeeting(workspaceId, null, id, name, password, description, meetingStart, meetingEnd, selectedMembers)
-            } else {
                res = await updateMeeting(workspaceId, null, meetingId, name, password, description, meetingStart, meetingEnd, selectedMembers)
+            } else {
+               res = await createMeeting(workspaceId, null, id, name, password, description, meetingStart, meetingEnd, selectedMembers)
             }
             submitRef.current.disabled = false
             cancelRef.current.disabled = false
             loaderRef.current.classList.add("hidden")
             if(res.ok) {
                loadData()
+               if(editData) loadMeeting()
                toast({
                   title: (
                      <p className="flex items-center gap-2">
@@ -217,67 +249,49 @@ function MeetingForm({ setOpen, loadData, editData }) {
                   }}
                />
 
-               {/* Date */}
-               <Label className="font-medium text-[16px] col-span-2"> Meeting start and end at </Label>
+               {/* Schedular start */}
+               <Label className="font-medium text-[16px] col-span-2"> Meeting start at </Label>
                <div className="flex col-span-4 items-center gap-1">
-                  <Input type="date" className="col-span-2" 
+                  <Input type="date" 
+                     className="" 
+                     ref={dateStartRef}
                      value={dateStart}
                      onChange={e=>{setDateStart(e.currentTarget.value)}} 
                      onBlur={e=>{
-                        if(e.currentTarget.value === "") {
-                           e.currentTarget.classList.add("border-red-500")
-                           e.currentTarget.classList.add("text-red-500")
-                           return
-                        }
-                        e.currentTarget.classList.replace("border-red-500","border-black")
-                        e.currentTarget.classList.replace("text-red-500","text-black")
-                     }}
-                  />
-                  -
-                  <Input type="date" className="col-span-2"
-                     value={dateEnd}
-                     onChange={e=>{setDateEnd(e.currentTarget.value)}} 
-                     onBlur={e=>{
-                        if(e.currentTarget.value === "") {
-                           e.currentTarget.classList.add("border-red-500")
-                           e.currentTarget.classList.add("text-red-500")
-                           return
-                        }
-                        e.currentTarget.classList.replace("border-red-500","border-black")
-                        e.currentTarget.classList.replace("text-red-500","text-black")
-                     }}
-                  />
-               </div>
-
-               {/* Time */}
-               <Label className="font-medium text-[16px] col-span-2"> Time: </Label>
-               <div className="flex col-span-4 items-center gap-1">
-                  <Input type="time" className="col-span-2" 
-                     value={timeStart}
-                     onChange={e=>{setTimeStart(e.currentTarget.value)}}
-                     onBlur={e=>{
-                        if(e.currentTarget.value === "") {
-                           e.currentTarget.classList.add("border-red-500")
-                           e.currentTarget.classList.add("text-red-500")
-                           return
-                        }
-                        e.currentTarget.classList.replace("border-red-500","border-black")
-                        e.currentTarget.classList.replace("text-red-500","text-black")
+                        handleSchedule()
                      }}
                   />
                   -
                   <Input type="time" 
+                     className="basis-[180px]"
+                     ref={timeStartRef}
+                     value={timeStart}
+                     onChange={e=>{setTimeStart(e.currentTarget.value)}}
+                     onBlur={e=>{
+                        handleSchedule()
+                     }}
+                  />   
+               </div>
+
+               {/* Schedule end*/}
+               <Label className="font-medium text-[16px] col-span-2"> Meeting end at: </Label>
+               <div className="flex col-span-4 items-center gap-1">
+                  <Input type="date" className="col-span-2"
+                     ref={dateEndRef}
+                     value={dateEnd}
+                     onChange={e=>{setDateEnd(e.currentTarget.value)}} 
+                     onBlur={e=>{
+                        handleSchedule()
+                     }}
+                  />
+                  -
+                  <Input type="time" 
+                     ref={timeEndRef}
                      value={timeEnd}
-                     className="col-span-2" 
+                     className="basis-[180px]" 
                      onChange={e=>{setTimeEnd(e.currentTarget.value)}}
                      onBlur={e=>{
-                        if(e.currentTarget.value === "") {
-                           e.currentTarget.classList.add("border-red-500")
-                           e.currentTarget.classList.add("text-red-500")
-                           return
-                        }
-                        e.currentTarget.classList.replace("border-red-500","border-black")
-                        e.currentTarget.classList.replace("text-red-500","text-black")
+                        handleSchedule()
                      }}
                   />
                </div>
@@ -285,7 +299,13 @@ function MeetingForm({ setOpen, loadData, editData }) {
                {/* Description */}
                <div className="col-span-6">
                   <Label> Description </Label>
-                  <Textarea value={description} onChange={e=>setDescription(e.currentTarget.value)} spellCheck="false" maxLength={255} />
+                  <Textarea value={description} 
+                     spellCheck="false" maxLength={255}
+                     onChange={e=>{
+                        const inputValue = e.currentTarget.value.replace("\n", "")
+                        setDescription(inputValue)
+                     }}  
+                  />
                </div>
             </div>
 
@@ -332,16 +352,18 @@ function MeetingForm({ setOpen, loadData, editData }) {
             </div>
          </div>
          {/* Submit  */}
-         <div className="flex justify-end col-span-6 gap-2 mt-2">
+         <div className="flex justify-end items-center col-span-6 gap-2 mt-2">
+            <p className="text-red-500 italic mr-auto" ref={errorRef}> 
+            </p>
             <Button type="button" variant="outline" onClick={e=>setOpen(false)} ref={cancelRef}> Cancel </Button>
             <Button ref={submitRef} 
                className="flex items-center"
                disabled={
                   !dateEnd || !dateStart || !timeStart || !timeEnd || !name || !id || !password
                   || name.trim() === "" || id.trim() === ""
-                  || compareDate(dateStart, dateEnd) === 1 || compareTime(timeStart, timeEnd) === 1
+                  || compareDate(dateStart, dateEnd) === 1 || (compareDate(dateStart, dateEnd) === 0 && compareTime(timeStart, timeEnd) === 1)
                }
-            > 
+            >
                <Loader2 className="w-4 h-4 mr-2 hidden animate-spin" ref={loaderRef} />
                {
                   editData ? "Edit" : "Create"

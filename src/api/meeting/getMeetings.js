@@ -2,6 +2,7 @@ import myFetch from "../myFetch";
 export default async function (wid) {
    const res = await myFetch({
       path: "Meeting/getMeetings",
+      params: `workspaceId=${wid}`,
       headers: {
          "Content-Type": "application/json",
          "workspace-id": wid
