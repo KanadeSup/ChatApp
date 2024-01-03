@@ -48,7 +48,7 @@ export default function ChannelChatBoxContent(props) {
         setIsClickedChannelUtility,
     } = useChannelStore();
 
-    //Kết nối với hub
+    // //Kết nối với hub
     useEffect(() => {
         // check access token is valid or not expired
         if (!localStorage.getItem("token")) {

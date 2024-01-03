@@ -4,10 +4,10 @@ import { Label } from "@/components/ui/label";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User2 } from "lucide-react";
-export default function ProfileDialog({ children, member }) {
+export default function ProfileDialog({ children, member}) {
    return (
       <Dialog>
-         <DialogTrigger>{children}</DialogTrigger>
+         <DialogTrigger asChild>{children}</DialogTrigger>
          <DialogContent>
             <DialogHeader>
                <div className="flex items-center gap-5">
