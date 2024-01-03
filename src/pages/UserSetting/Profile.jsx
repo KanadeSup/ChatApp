@@ -1,16 +1,4 @@
 import { Separator } from "@/components/ui/separator"
-import { Label } from "@/components/ui/label"
-import {
-   Card,
-   CardContent,
-   CardDescription,
-   CardFooter,
-   CardHeader,
-   CardTitle,
-} from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Pencil } from 'lucide-react'
-import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import CardProfile from "./CardProfile"
 

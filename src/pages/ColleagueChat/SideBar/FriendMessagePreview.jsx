@@ -19,7 +19,6 @@ export default function FriendMessagePreview(props) {
         if (ref.current) {
             ref.current.innerHTML = props.lastMessage;
             ref.current.textContent = ref.current.textContent
-            console.log("ref.current.textContent: ", ref.current.textContent);
             if (ref.current.textContent.length === 0) {
                 ref.current.textContent = "sent the attachment";
                 setIsSendFile(true);

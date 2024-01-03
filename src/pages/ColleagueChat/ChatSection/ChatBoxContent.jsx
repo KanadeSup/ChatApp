@@ -342,6 +342,7 @@ export default function ChatBoxContent() {
               files
             )
           }
+          isMention={false}
         />
       </div>
       {isClickedReply && (
