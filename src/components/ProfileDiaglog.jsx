@@ -9,7 +9,7 @@ import { convertDate } from "../utils/convertTime";
 export default function ProfileDialog({ children, member }) {
    return (
       <Dialog>
-         <DialogTrigger>{children}</DialogTrigger>
+         <DialogTrigger asChild>{children}</DialogTrigger>
          <DialogContent>
             <DialogHeader>
                <div className="flex items-center gap-5">

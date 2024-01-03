@@ -240,8 +240,9 @@ function VideoSection({shareScreen, subcribers, setSubcribers, publisher, setPub
             <button
                className={`border border-gray-300 rounded-lg p-2 ${isCamEnable ? "bg-green-600" : "bg-gray-400"}`}
                onClick={(e) => {
+                  if(isShareScreen) return
                   setIsCamEnable(!isCamEnable);
-                  publisher.isVideo = !isCamEnable
+                  publisher.isVideo = !isCamEnable || isShareScreen
                   setPublisher({...publisher})
                   publisher.streamManager.publishVideo(!isCamEnable);
                }}
@@ -252,12 +253,18 @@ function VideoSection({shareScreen, subcribers, setSubcribers, publisher, setPub
                   <CameraOff className={`stroke-black stroke-[2] ${deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""}` }/>
                )}
             </button>
+
             {/* Share screen */}
             <button
                className={`border border-gray-300 rounded-lg p-2 ${isShareScreen ? "bg-green-600" : "bg-gray-400"}`}
-               onClick={e=>{
+               onClick={async e=>{
+                  if(isCamEnable) return
+                  await shareScreen(!isShareScreen)
+                  setIsCamEnable(false)
                   setIsShareScreen(!isShareScreen)
-                  shareScreen(!isShareScreen)
+                  publisher.isVideo = isCamEnable || !isShareScreen
+                  setPublisher({...publisher})
+                  publisher.streamManager.publishVideo(!isShareScreen);
                }}
             >
                {

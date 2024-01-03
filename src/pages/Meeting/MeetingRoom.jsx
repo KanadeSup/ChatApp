@@ -58,7 +58,7 @@ function MeetingRoom() {
                audioSource: undefined, // The source of audio. If undefined default microphone
                videoSource: "screen", // The source of video. If undefined default webcam
                publishAudio: isMicEnable, // Whether you want to start publishing with your audio unmuted or not
-               publishVideo: isCamEnable, // Whether you want to start publishing with your video enabled or not
+               publishVideo: true, // Whether you want to start publishing with your video enabled or not
                resolution: "640x360", // The resolution of your video
                frameRate: 30, // The frame rate of your video
                insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
