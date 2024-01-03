@@ -1,13 +1,17 @@
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowDownWideNarrow, Check, Contact, Loader2, User, User2, X } from "lucide-react";
+import { ArrowDownWideNarrow, Check, Contact, Loader2, MoreVertical, RefreshCcw, User, User2, X } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton"
-
+import {
+   Popover,
+   PopoverContent,
+   PopoverTrigger,
+ } from "@/components/ui/popover"
 import {
    AlertDialog,
    AlertDialogCancel,
@@ -23,7 +27,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { getMemberList } from "/api/workspace";
 import ProfileDialog from "../../components/ProfileDiaglog";
 import { useNavigate, useParams } from "react-router-dom";
+import transferOwner from "../../api/workspace/transferOwner";
 
+const TRANSFEROWNER = 0
+const DELETEMEMBER = 1
 export default function () {
    const [memberList, setMemberList] = useState([]);
    const [open, setOpen] = useState({});
@@ -33,12 +40,17 @@ export default function () {
    const [search, setSearch] = useState("");
    const userId = localStorage.getItem("userId")
    const navigate = useNavigate()
+   const [ownerId, setOwnerId] = useState()
+   const [dialogType, setDialogType] = useState()
    function forceLoad() {
       setForce({});
    }
    useEffect(() => {
       async function fetchData() {
          let data = await getMemberList(workspaceId);
+         data.map(member=>{
+            if(member.isOwner) setOwnerId(member.id)
+         })
          setMemberList(data);
       }
       fetchData();
@@ -123,15 +135,39 @@ export default function () {
                                        <ProfileDialog member={member}>
                                           <Contact className="stroke-blue-600 cursor-pointer" />
                                        </ProfileDialog>
-                                       {
-                                          <X
-                                             className={`stroke-red-600 stroke-[3] cursor-pointer w-6 h-6} ${userId === member.id ? "invisible" : ""}`}
-                                             onClick={(e) => {
-                                                open[member.id] = true;
-                                                setOpen({ ...open });
-                                             }}
-                                          />
-                                       }
+                                       <Popover>
+                                          <PopoverTrigger asChild>
+                                             <MoreVertical 
+                                                className={`cursor-pointer 
+                                                   ${member.id !== ownerId && userId === member.id? " invisible" :""}
+                                                   ${member.id === ownerId ? " invisible" :""}
+                                                `}
+                                             />
+                                          </PopoverTrigger> 
+                                          <PopoverContent className="w-52 p-0">
+                                             <div className={`cursor-pointer hover:bg-gray-100 p-2 flex items-center text-blue-600 font-semibold  ${userId !== ownerId ? "hidden" : ""}`}
+                                                onClick={e=>{
+                                                   open[member.id] = true;
+                                                   setOpen({ ...open });
+                                                   setDialogType(TRANSFEROWNER)
+                                                }} 
+                                             >
+                                                <RefreshCcw className="w-5 h-5 mr-2 stroke-[3] stroke-blue-500"/>
+                                                Transfer owner
+                                             </div>
+                                             <div 
+                                                className={`cursor-pointer hover:bg-gray-100 p-2 flex items-center text-red-500 font-semibold  ${userId === member.id ? "hidden" : ""}`}
+                                                onClick={e=>{
+                                                   open[member.id] = true;
+                                                   setOpen({ ...open });
+                                                   setDialogType(DELETEMEMBER)
+                                                }}   
+                                             >
+                                                <X className={`w-5 h-5 stroke-[3] stroke-red-600 mr-2`} />
+                                                Kick this member
+                                             </div>
+                                          </PopoverContent>   
+                                       </Popover>
                                     </div>
                                     <AlertDialog
                                        open={open[member.id]}
@@ -144,8 +180,22 @@ export default function () {
                                           <AlertDialogHeader>
                                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                              <AlertDialogDescription>
-                                                This action will kick member from this channel. And you need the permission to do this. If not, the action will
-                                                be failed
+                                                {
+                                                   dialogType === DELETEMEMBER ? (
+                                                      <p>
+                                                         This action will kick member from this channel. And you need the permission to do this. If not, the action will
+                                                         be failed
+                                                      </p>
+                                                   ) : null
+                                                }
+                                                {
+                                                   dialogType === TRANSFEROWNER ? (
+                                                      <p>
+                                                         This action will transfer owner to <span className="font-bold text-black"> {member.username} </span> and you will loose your permission.
+                                                         This action will apply permanently, carefully your choice
+                                                      </p>
+                                                   ) : null
+                                                }
                                              </AlertDialogDescription>
                                           </AlertDialogHeader>
                                           <AlertDialogFooter>
@@ -155,14 +205,20 @@ export default function () {
                                                    e.preventDefault();
                                                    document.querySelector(`.submit-${member.id}`).disabled = true;
                                                    document.querySelector(`.loader-${member.id}`).classList.remove("hidden");
-                                                   const data = await deleteMember(workspaceId, member.id);
+                                                   let data;
+                                                   if(dialogType === DELETEMEMBER) {
+                                                      data = await deleteMember(workspaceId, member.id);
+                                                   }
+                                                   else {
+                                                      data = await transferOwner(workspaceId, member.id)
+                                                   }
                                                    document.querySelector(`.submit-${member.id}`).disabled = false;
                                                    document.querySelector(`.loader-${member.id}`).classList.add("hidden");
                                                    forceLoad();
                                                    open[member.id] = false;
                                                    setOpen({ ...open });
                                                    if (data.ok) {
-                                                      if(userId === member.id) {
+                                                      if(userId === member.id){
                                                          navigate("/Workspace")
                                                          return
                                                       }
@@ -170,7 +226,11 @@ export default function () {
                                                          title: (
                                                             <p className="flex">
                                                                <Check className="stroke-green-600 mr-2" />
-                                                               <span className="text-green-600">Remove Successfully!</span>
+                                                               <span className="text-green-600">
+                                                                  {
+                                                                     dialogType === DELETEMEMBER ? "Delete Successfully!": "Transfer successfully"
+                                                                  }
+                                                               </span>
                                                             </p>
                                                          ),
                                                       });
@@ -181,7 +241,7 @@ export default function () {
                                                          title: (
                                                             <p className="flex">
                                                                <X className="stroke-red-600 mr-2" />
-                                                               <span className="text-red-600">You don't have permission to remove invitation </span>
+                                                               <span className="text-red-600">You don't have permission to kick member </span>
                                                             </p>
                                                          ),
                                                       });

@@ -136,7 +136,7 @@ export default function () {
                                                   title: (
                                                      <p className="flex">
                                                         <Check className="stroke-green-600 mr-2" />
-                                                        <span className="text-green-600">Delete Successfully!</span>
+                                                        <span className="text-green-600">Remove Successfully!</span>
                                                      </p>
                                                   ),
                                                });
@@ -148,7 +148,7 @@ export default function () {
                                                      <p className="flex">
                                                         <X className="stroke-red-600 mr-2" />
                                                         <span className="text-red-600">
-                                                           You don't have permission to kick member
+                                                           You don't have permission to remove inviation
                                                         </span>
                                                      </p>
                                                   ),
