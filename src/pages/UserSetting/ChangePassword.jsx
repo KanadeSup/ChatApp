@@ -16,7 +16,7 @@ import getOTP from "../../api/auth/getOTP";
 import { useToast } from "@/components/ui/use-toast";
 import { Check } from "lucide-react";
 
-export default function () {
+export default function ({ children}) {
     const [currentPassword, setCurrentPassword] = useState();
     const [newPassword, setNewPassword] = useState();
     const [OTP, setOTP] = useState();
@@ -50,7 +50,7 @@ export default function () {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Change</Button>
+                {children}
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 <DialogHeader>

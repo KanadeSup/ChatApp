@@ -18,7 +18,7 @@ export default function ProfileDialog({ children, member }) {
                      </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                     <h1 className="text-xl font-bold"> {member.lastName + " " + member.firstName}</h1>
+                     <h1 className="text-xl font-bold"> { (member.firstName || "") + " " + (member.lastName || "")}</h1>
                      <p className="italic text-gray-500"> {member.email} </p>
                   </div>
                </div>
