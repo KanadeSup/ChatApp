@@ -38,7 +38,7 @@ export default function (props) {
    
    useEffect(() => {
       async function fetchWorkspace() {
-         if(workspace === null && workspaceId) {
+         if(workspace === null && workspaceId || workspace.id !== workspaceId) {
             const data = await getWorkspace(workspaceId)
             setWorkspace(data)
          }
@@ -53,7 +53,7 @@ export default function (props) {
          }
       }
       fetchUser()
-   }, []);
+   }, [workspaceId]);
 
    function handleLogout() {
       localStorage.removeItem("token");

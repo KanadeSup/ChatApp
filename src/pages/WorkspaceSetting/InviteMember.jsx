@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MailPlus, X, Search, User2, Contact, Loader2 } from "lucide-react";
+import { MailPlus, X, Search, User2, Contact, Loader2, Check } from "lucide-react";
 import { getMemberList } from "/api/workspace";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -128,10 +128,6 @@ export default function () {
                                             open[member.id] = false;
                                             setOpen({ ...open });
                                             if (data.ok) {
-                                               if (userId === member.id) {
-                                                  navigate("/Workspace");
-                                                  return;
-                                               }
                                                toast({
                                                   title: (
                                                      <p className="flex">

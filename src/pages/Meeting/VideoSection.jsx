@@ -1,16 +1,17 @@
-import { vi } from "date-fns/locale";
-import { Camera, CameraOff, LogOut, Mic, MicOff } from "lucide-react";
+import { Camera, CameraOff, LogOut, Mic, MicOff, Monitor, MonitorPlay } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { UserVideo } from "./UserVideo";
-import { useFetcher, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-function VideoSection({ subcribers, setSubcribers, publisher, setPublisher, leaveSession, defaultCamera, defaultMic }) {
+function VideoSection({shareScreen, subcribers, setSubcribers, publisher, setPublisher, leaveSession, defaultCamera, defaultMic }) {
    const [isMicEnable, setIsMicEnable] = useState(defaultMic);
    const [isCamEnable, setIsCamEnable] = useState(defaultCamera);
+   const [isShareScreen, setIsShareScreen] = useState(false);
    const [participants, setParticipants] = useState([]);
    const [pinnedUser, setPinnedUser] = useState(null);
    const { deviceType } = useParams();
    const navigate = useNavigate()
+
    useEffect(() => {
       const datas = [];
       if (publisher) {
@@ -250,6 +251,22 @@ function VideoSection({ subcribers, setSubcribers, publisher, setPublisher, leav
                ) : (
                   <CameraOff className={`stroke-black stroke-[2] ${deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""}` }/>
                )}
+            </button>
+            {/* Share screen */}
+            <button
+               className={`border border-gray-300 rounded-lg p-2 ${isShareScreen ? "bg-green-600" : "bg-gray-400"}`}
+               onClick={e=>{
+                  setIsShareScreen(!isShareScreen)
+                  shareScreen(!isShareScreen)
+               }}
+            >
+               {
+                  isShareScreen ? (
+                     <MonitorPlay className={`stroke-white stroke-[2] ${deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""}`}/>
+                  ): (
+                     <MonitorPlay className={`stroke-black stroke-[2] ${deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""}`}/>
+                  )
+               }
             </button>
          </div>
       </div>

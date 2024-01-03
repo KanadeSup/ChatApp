@@ -108,6 +108,7 @@ function WorkspaceInviteTemplate({ notification, setNotification, navigate }) {
    const { setWorkspace } = useInfo()
    const { notifications, setNotifications } = useNotification()
    const { toast } = useToast()
+   console.log(data)
    return (
       <div className="flex flex-col justify-center items-center gap-3 h-[calc(100vh-200px)] ">
          <div className="text-xl flex gap-1 items-center mb-3 border-b pb-5">
