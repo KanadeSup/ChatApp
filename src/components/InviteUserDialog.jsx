@@ -21,9 +21,10 @@ import { useParams } from "react-router-dom"
 import { useToast } from "@/components/ui/use-toast"
 import searchUser from "../api/user/searchUser"
 import { useDebounce } from "use-debounce"
+import searchUserWithoutWorkspace from "../api/user/searchUserWithoutWorkspace"
 
 
-export default function InviteUserDialog({ children, open, onOpenChange }) {
+export default function InviteUserDialog({ children, open, onOpenChange, load }) {
    const {workspaceId} = useParams()
    const [tags, setTags] = useState([])
    const [existTag, setExistTag] = useState(["", true])
@@ -34,7 +35,7 @@ export default function InviteUserDialog({ children, open, onOpenChange }) {
    const  [debounceSearch] = useDebounce(emailInput, 150)
    useEffect(() => {
       async function fetchData() {
-         const res = await searchUser(emailInput)
+         const res = await searchUserWithoutWorkspace(workspaceId, emailInput, 10)
          setSearchUsers(res.data ? res.data : [])
       }
       fetchData()
@@ -52,7 +53,7 @@ export default function InviteUserDialog({ children, open, onOpenChange }) {
                {children}
             </DialogTrigger>
             <DialogContent 
-               className="min-w-[700px]"
+               className="min-w-[300px]"
             >
                <DialogHeader>
                   <DialogTitle className="text-2xl font-bold"> Invite People to your workspace </DialogTitle>
@@ -68,7 +69,10 @@ export default function InviteUserDialog({ children, open, onOpenChange }) {
                   onOpenChange(false)
                   setTags([])
                   setEmailInput("")
-                  if(res.ok) return
+                  if(res.ok){
+                     if(load) load()
+                     return
+                  }
                   if(res.status === 403) {
                      toast({
                         title: 
@@ -111,9 +115,10 @@ export default function InviteUserDialog({ children, open, onOpenChange }) {
                      <Textarea 
                         placeholder="name@gmail.com ..."
                         value={emailInput}
+                        autoComplete="off"
                         maxLength="50"
                         rows="1"
-                        className={"min-h-[12px] " + (emailErr ? "text-red-500": "")}
+                        className={"min-h-[12px] resize-none " + (emailErr ? "text-red-500": "")}
                         onChange={(e)=>{
                            const value = e.target.value
                            setEmailErr(false)
@@ -143,7 +148,7 @@ export default function InviteUserDialog({ children, open, onOpenChange }) {
                            }
                         }}
                      />
-                     <div className={searchUsers.length !== 0 ? "absolute bg-white border-black border rounded-lg w-full max-h-[300px] overflow-y-scroll" : ""}>
+                     <div className={searchUsers.length !== 0 ? "absolute bg-white border-gray-300 border rounded w-full max-h-[300px] overflow-y-scroll" : ""}>
                         {
                            searchUsers? 
                               searchUsers

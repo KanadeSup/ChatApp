@@ -17,7 +17,6 @@ export default function () {
       async function fetchData() {
          if(!workspace) {
             const data = await getWorkspace(workspaceId)
-            console.log("data workspace: ", data)
             if (data.status === 500) navigate("/Workspace/")
             setWorkspace(data)
          }

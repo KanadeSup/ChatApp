@@ -68,8 +68,7 @@ export default function () {
                </div>
                <div>
                   <Label htmlFor="wname" className="">
-                     {" "}
-                     Workspace Name{" "}
+                     Workspace Name
                   </Label>
                   <Input
                      id="wname"
@@ -85,8 +84,7 @@ export default function () {
                <DialogFooter className="mt-4">
                   <DialogClose asChild>
                      <Button type="button" variant="secondary">
-                        {" "}
-                        Cancel{" "}
+                        Cancel
                      </Button>
                   </DialogClose>
                   <DialogClose asChild>

@@ -41,7 +41,6 @@ import { Toaster } from "@/components/ui/toaster"
                <div className="flex flex-col justify-start h-[300px] overflow-y-auto">
                   {members
                      ? members
-                        .filter(member=>member.isInvited)
                         .map((member) => {
                            return (
                               <div key={member.id}>

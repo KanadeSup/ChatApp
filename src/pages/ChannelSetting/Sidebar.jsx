@@ -50,7 +50,7 @@ export default function({ items }) {
             title: 
                <p className="flex items-center">
                   <X className="stroke-red-600 mr-2" />
-                  <span className="text-red-600"> You don't have permission to delete workspace </span>
+                  <span className="text-red-600"> You don't have permission to delete channel </span>
                </p>
          })
          return
