@@ -6,3 +6,8 @@ export default function convertTime(time, reverse = false) {
     if(reverse) return format(newDate, "dd/MM/yyyy HH:mm")
     return format(newDate, "HH:mm:ss dd/MM/yyyy");
 }
+export function convertDate(time) {
+    const date = parseISO(time);
+    const newDate = addHours(date, 0);
+    return format(newDate, "dd/MM/yyyy");
+}

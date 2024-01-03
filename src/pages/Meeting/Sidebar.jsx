@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 function Sidebar({ meetings, loadData}) {
     return (
-        <div className="w-72 border-r border-r-600 flex flex-col">
+        <div className="w-72 border-r border-r-600 flex flex-col flex-shrink-0">
             {/* Header */}
             <div className="px-3 py-3 border-b border-b-gray-300 flex justify-between items-center">
                 <h1 className="font-bold text-xl text-gray-700"> Meeting </h1>

@@ -8,6 +8,7 @@ import { getUserById } from "../../api";
 import { User2 } from "lucide-react";
 import { is } from "date-fns/locale";
 import useInfo from "../../storages/useInfo";
+import { convertDate } from "../../utils/convertTime";
 
 export default function () {
    // const [user, setUser] = useState(null);
@@ -90,7 +91,7 @@ export default function () {
 
             <Label> Birthday </Label>
             <span> : </span>
-            <p> {user.birthDay} </p>
+            <p> {convertDate(user.birthDay)} </p>
          </CardContent>
       </Card>
    );
