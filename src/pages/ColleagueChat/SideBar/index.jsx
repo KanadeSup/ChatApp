@@ -18,7 +18,7 @@ export default function () {
   const { isClickedReply, setIsClickedReply, messageParent, setMessageParent } = useColleagueStore();
   const [conversationId, setConversationId] = useState(null); // Id của cuộc trò chuyện đang được chọn
   const navigate = useNavigate();
-  const { workspaceId } = useParams()
+  const { workspaceId, conversationId : cid } = useParams()
   const audioRef = useRef();
 
   useEffect(() => {
@@ -27,10 +27,10 @@ export default function () {
       console.log("conversations: ", response);
       setConversations(response);
       setIsNewMessage(false);
-      // if (!conversationId && response.length > 0) {
-      //   console.log("conversationId cai dau tien: ", response[0].id);
-      //   navigate(workspaceId ? `/${workspaceId}/colleague-chat/${response[0].id}` : `/colleague-chat/${response[0].id}`);
-      // }
+      if (!cid && response.length > 0) {
+        console.log("conversationId cai dau tien: ", conversationId);
+        navigate(workspaceId ? `/${workspaceId}/colleague-chat/${response[0].id}` : `/colleague-chat/${response[0].id}`);
+      }
 
     }
     // if (isNewMessage) {
