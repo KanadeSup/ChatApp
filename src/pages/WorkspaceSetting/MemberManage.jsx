@@ -1,33 +1,28 @@
 import { Separator } from "@/components/ui/separator";
-import { Await, Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { ArrowDownWideNarrow, Check, Contact, Loader2, LogOut, MoreHorizontal, User, User2, X } from "lucide-react";
+import { ArrowDownWideNarrow, Check, Contact, Loader2, User, User2, X } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton"
 
 import {
    AlertDialog,
-   AlertDialogAction,
    AlertDialogCancel,
    AlertDialogContent,
    AlertDialogDescription,
    AlertDialogFooter,
    AlertDialogHeader,
    AlertDialogTitle,
-   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { deleteMember } from "../../api/workspace";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { getMemberList } from "/api/workspace";
 import ProfileDialog from "../../components/ProfileDiaglog";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function () {
    const [memberList, setMemberList] = useState([]);
@@ -175,7 +170,7 @@ export default function () {
                                                          title: (
                                                             <p className="flex">
                                                                <Check className="stroke-green-600 mr-2" />
-                                                               <span className="text-green-600">Delete Successfully!</span>
+                                                               <span className="text-green-600">Remove Successfully!</span>
                                                             </p>
                                                          ),
                                                       });
@@ -186,7 +181,7 @@ export default function () {
                                                          title: (
                                                             <p className="flex">
                                                                <X className="stroke-red-600 mr-2" />
-                                                               <span className="text-red-600">You don't have permission to kick member</span>
+                                                               <span className="text-red-600">You don't have permission to remove invitation </span>
                                                             </p>
                                                          ),
                                                       });

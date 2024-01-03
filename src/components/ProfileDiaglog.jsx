@@ -4,6 +4,8 @@ import { Label } from "@/components/ui/label";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User2 } from "lucide-react";
+import { convertDate } from "../utils/convertTime";
+
 export default function ProfileDialog({ children, member }) {
    return (
       <Dialog>
@@ -40,7 +42,7 @@ export default function ProfileDialog({ children, member }) {
 
                <Label> Birthday </Label>
                <span> : </span>
-               <p> {member.birthDay} </p>
+               <p> {convertDate(member.birthDay)} </p>
             </div>
          </DialogContent>
       </Dialog>
