@@ -20,6 +20,7 @@ import FileList from "./FileList";
 import HoverInformation from "./HoverInformation";
 import parse, { domToReact } from "html-react-parser";
 
+
 function handleContent(content) {
     const doc = new DOMParser().parseFromString(content, "text/html");
     doc.querySelectorAll("a").forEach((a) => {
@@ -31,13 +32,13 @@ function handleContent(content) {
 
 export default function Message(props) {
     const [showEmoij, setShowEmoij] = useState(false);
+    const [isOpenFile, setIsOpenFile] = useState(true);
+    const [editMessage, setEditMessage] = useState(false);
     const [isHoveredPin, setIsHoveredPin] = useState(false);
     const [isHoveredEdit, setIsHoveredEdit] = useState(false);
     const [isHoveredReply, setIsHoveredReply] = useState(false);
     const [isHoveredDelete, setIsHoveredDelete] = useState(false);
     const [isHoverViewReply, setIsHoverViewReply] = useState(false);
-    const [editMessage, setEditMessage] = useState(false);
-    const [isOpenFile, setIsOpenFile] = useState(true);
     const refContent = useRef(null);
     const [links, setLinks] = useState([]);
 
@@ -142,7 +143,9 @@ export default function Message(props) {
                                 <div
                                     ref={refContent}
                                     className="text-[15px] font-sans mt-1 leading-snug w-full break-words min-w-[300px]"
-                                    dangerouslySetInnerHTML={{__html: props.message.content}}
+                                    dangerouslySetInnerHTML={{
+                                        __html: props.message.content,
+                                    }}
                                 >
                                     {/* {content} */}
                                 </div>

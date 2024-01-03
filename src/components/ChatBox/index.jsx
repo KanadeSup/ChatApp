@@ -56,26 +56,25 @@ const CustomBulletList = BulletList.extend({
     },
 });
 const CustomMention = Mention.extend({
-    
-
     renderHTML(props) {
         const { node } = props;
         return [
             "div",
             {
                 class: "text-bold-blue bg-blue-100 rounded-md px-1",
-                "userkey": node.attrs.id,
+                userkey: node.attrs.id,
                 "data-username": node.attrs.label,
                 "data-linked-resource-type": "userinfo",
-                "href": `/user/${node.attrs.id}`,
-                "onclick": () => {alert("hello")}
+                href: `/user/${node.attrs.id}`,
+                onclick: () => {
+                    alert("hello");
+                },
             },
 
-            `@${node.attrs.label}`
+            `@${node.attrs.label}`,
         ];
-    }
-
-})
+    },
+});
 
 const ChatBox = React.forwardRef((props) => {
     const extensions = [
@@ -99,85 +98,90 @@ const ChatBox = React.forwardRef((props) => {
             protocols: ["http", "https", "mailto", "tel", "ftp"],
             validate: (href) => /^https?:\/\//.test(href),
         }),
-        Mention.configure({
-            HTMLAttributes: {
-                class: "text-bold-blue bg-blue-100 rounded-md px-1",
-                // onclick: 'window.open("https://nhattruyenup.com", "_blank")',
-            },
-            renderLabel({ options, node }) {
-                return `${options.suggestion.char}${
-                    node.attrs.label ?? node.attrs.id
-                }`;
-            },
-            suggestion: {
-                items: async ({ query }) => {
-                    const data = await props.getMembersChannel();
-                    return data
-                        .filter((item) =>
-                            item.firstName
-                                .toLowerCase()
-                                .startsWith(query.toLowerCase())
-                        )
-                        .slice(0, 5);
-                },
-
-                render: () => {
-                    let component;
-                    let popup;
-
-                    return {
-                        onStart: (props) => {
-                            component = new ReactRenderer(MentionList, {
-                                props,
-                                editor: props.editor,
-                            });
-
-                            if (!props.clientRect) {
-                                return;
-                            }
-
-                            popup = tippy("body", {
-                                getReferenceClientRect: props.clientRect,
-                                appendTo: () => document.body,
-                                content: component.element,
-                                showOnCreate: true,
-                                interactive: true,
-                                trigger: "manual",
-                                placement: "bottom-start",
-                            });
-                        },
-
-                        onUpdate(props) {
-                            component.updateProps(props);
-
-                            if (!props.clientRect) {
-                                return;
-                            }
-
-                            popup[0].setProps({
-                                getReferenceClientRect: props.clientRect,
-                            });
-                        },
-
-                        onKeyDown(props) {
-                            if (props.event.key === "Escape") {
-                                popup[0].hide();
-
-                                return true;
-                            }
-
-                            return component.ref?.onKeyDown(props);
-                        },
-
-                        onExit() {
-                            popup[0].destroy();
-                            component.destroy();
-                        },
-                    };
-                },
-            },
-        }),
     ];
+
+    if (props.isMention) {
+        extensions.push(
+            Mention.configure({
+                HTMLAttributes: {
+                    class: "text-bold-blue bg-blue-100 rounded-md px-1",
+                    // onclick: 'window.open("https://nhattruyenup.com", "_blank")',
+                },
+                renderLabel({ options, node }) {
+                    return `${options.suggestion.char}${
+                        node.attrs.label ?? node.attrs.id
+                    }`;
+                },
+                suggestion: {
+                    items: async ({ query }) => {
+                        const data = await props.getMembersChannel();
+                        return data
+                            .filter((item) =>
+                                item.firstName
+                                    .toLowerCase()
+                                    .startsWith(query.toLowerCase())
+                            )
+                            .slice(0, 5);
+                    },
+
+                    render: () => {
+                        let component;
+                        let popup;
+
+                        return {
+                            onStart: (props) => {
+                                component = new ReactRenderer(MentionList, {
+                                    props,
+                                    editor: props.editor,
+                                });
+
+                                if (!props.clientRect) {
+                                    return;
+                                }
+
+                                popup = tippy("body", {
+                                    getReferenceClientRect: props.clientRect,
+                                    appendTo: () => document.body,
+                                    content: component.element,
+                                    showOnCreate: true,
+                                    interactive: true,
+                                    trigger: "manual",
+                                    placement: "bottom-start",
+                                });
+                            },
+
+                            onUpdate(props) {
+                                component.updateProps(props);
+
+                                if (!props.clientRect) {
+                                    return;
+                                }
+
+                                popup[0].setProps({
+                                    getReferenceClientRect: props.clientRect,
+                                });
+                            },
+
+                            onKeyDown(props) {
+                                if (props.event.key === "Escape") {
+                                    popup[0].hide();
+
+                                    return true;
+                                }
+
+                                return component.ref?.onKeyDown(props);
+                            },
+
+                            onExit() {
+                                popup[0].destroy();
+                                component.destroy();
+                            },
+                        };
+                    },
+                },
+            })
+        );
+    }
 
     const editor = useEditor({
         extensions: extensions,
@@ -380,19 +384,32 @@ const ChatBox = React.forwardRef((props) => {
             {/* Chatbox */}
             <div
                 onKeyDown={(e) => {
-                    if (e.shiftKey && e.key === "@") {
-                        setAllowEnterSend(false);
-                        console.log("shift + 2 flase");
-                        return;
-                    }
-                    if (e.key === "Enter") {
-                        setAllowEnterSend(true);
-                        console.log("enter true");
-                    }
-                    if (allowEnterSend && e.key === "Enter" && !e.shiftKey) {
-                        console.log("allowEnterSend: ", allowEnterSend);
+                    console.log("isMention: ", props.isMention);
+                    if (!props.isMention && e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
                         handleSend();
+                        console.log("chay cai chat don");
+                        return;
+                    }
+                    if (props.isMention) {
+                        if (e.shiftKey && e.key === "@") {
+                            setAllowEnterSend(false);
+                            console.log("shift + 2 flase");
+                            return;
+                        }
+                        if (e.key === "Enter") {
+                            setAllowEnterSend(true);
+                            console.log("enter true");
+                        }
+                        if (
+                            allowEnterSend &&
+                            e.key === "Enter" &&
+                            !e.shiftKey
+                        ) {
+                            console.log("allowEnterSend: ", allowEnterSend);
+                            e.preventDefault();
+                            handleSend();
+                        }
                     }
                 }}
                 onPaste={handlePaste}

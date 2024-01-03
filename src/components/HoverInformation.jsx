@@ -8,15 +8,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Info, MessageCircle, User2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
-
-export default function HoverInformation({
-    name,
-    avatar,
-    children,
-    idUser
-}) {
+import ProfileDialog from "./ProfileDiaglog";
+import { getUserById } from "../api";
+import { useEffect, useState } from "react";
+export default function HoverInformation({ name, avatar, children, idUser }) {
     const navigate = useNavigate();
     const { workspaceId } = useParams();
+    const [user, setUser] = useState(null);
+    useEffect(() => {
+        async function fetchUser() {
+            const response = await getUserById(idUser);
+            setUser(response);
+        }
+        fetchUser();
+    }, [idUser]);
     return (
         <HoverCard>
             <HoverCardTrigger>
@@ -64,19 +69,26 @@ export default function HoverInformation({
                     <Button
                         variant="outline"
                         className="w-full border-slate-400"
-                        onClick={() => workspaceId ? navigate(`/${workspaceId}/colleague-chat/${idUser}`) : navigate(`/colleague-chat/${idUser}`)}
+                        onClick={() =>
+                            workspaceId
+                                ? navigate(
+                                      `/${workspaceId}/colleague-chat/${idUser}`
+                                  )
+                                : navigate(`/colleague-chat/${idUser}`)
+                        }
                     >
                         <MessageCircle className="scale-x-[-1] w-5 h-5" />{" "}
                         <span className="ml-2">Message</span>
                     </Button>
-                    <Button
-                        variant="outline"
-                        className="w-full border-slate-400"
-                        
-                    >
-                        <Info className="scale-x-[-1] w-5 h-5" />
-                        <span className="ml-2">View profile </span>
-                    </Button>
+                    <ProfileDialog member={user}>
+                        <Button
+                            variant="outline"
+                            className="w-full border-slate-400"
+                        >
+                            <Info className="scale-x-[-1] w-5 h-5" />
+                            <span className="ml-2">View profile </span>
+                        </Button>
+                    </ProfileDialog>
                 </div>
             </HoverCardContent>
         </HoverCard>

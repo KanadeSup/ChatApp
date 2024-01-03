@@ -411,10 +411,11 @@ export default function ChannelChatBoxContent(props) {
                             user,
                             scrollToBottom,
                             true,
-                            files
+                            files,
                         )
                     }
                     getMembersChannel={getMembersChannel}
+                    isMention={true}
                 />
             </div>
             {isClickedReply && (
