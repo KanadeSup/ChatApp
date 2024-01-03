@@ -12,4 +12,5 @@ export default async (wid) => {
       status: res.status,
       ok: res.ok,
    };
+
 };

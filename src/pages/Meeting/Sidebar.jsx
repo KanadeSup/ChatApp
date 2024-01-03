@@ -7,21 +7,7 @@ import convertTime from "../../utils/convertTime"
 import { isBeforeCurrentDate } from "../../utils/compareCurrentTime"
 import { Skeleton } from "@/components/ui/skeleton"
 
-function Sidebar() {
-    const [meetings, setMeetings] = useState()
-    const { workspaceId } = useParams()
-    const [forceLoad, setForceLoad] = useState({})
-    function loadData() {
-        setForceLoad({})
-    }
-    useEffect(()=> {
-        async function fetchData() {
-            const res = await getMeetings(workspaceId)
-            if(!res.ok) return
-            setMeetings(res.data)
-        }
-        fetchData()
-    },[forceLoad])
+function Sidebar({ meetings, loadData}) {
     return (
         <div className="w-72 border-r border-r-600 flex flex-col">
             {/* Header */}

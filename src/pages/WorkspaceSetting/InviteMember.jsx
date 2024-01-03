@@ -33,7 +33,7 @@ export default function() {
                <Input className="w-60" placeholder="Search ..."/>
                {/* <Button> Invite </Button> */}
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 max-h-[calc(100vh-300px)] overflow-auto">
                {
                   memberList
                   .map(member=> (

@@ -2,14 +2,15 @@ import { vi } from "date-fns/locale";
 import { Camera, CameraOff, LogOut, Mic, MicOff } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { UserVideo } from "./UserVideo";
-import { useFetcher, useParams } from "react-router-dom";
+import { useFetcher, useNavigate, useParams } from "react-router-dom";
 
-function VideoSection({ session, subcribers, setSubcribers, publisher, setPublisher, leaveSession }) {
-   const [isMicEnable, setIsMicEnable] = useState(false);
-   const [isCamEnable, setIsCamEnable] = useState(false);
+function VideoSection({ subcribers, setSubcribers, publisher, setPublisher, leaveSession, defaultCamera, defaultMic }) {
+   const [isMicEnable, setIsMicEnable] = useState(defaultMic);
+   const [isCamEnable, setIsCamEnable] = useState(defaultCamera);
    const [participants, setParticipants] = useState([]);
    const [pinnedUser, setPinnedUser] = useState(null);
    const { deviceType } = useParams();
+   const navigate = useNavigate()
    useEffect(() => {
       const datas = [];
       if (publisher) {
@@ -17,7 +18,15 @@ function VideoSection({ session, subcribers, setSubcribers, publisher, setPublis
       }
       subcribers.map((sub) => datas.push(sub));
       setParticipants(datas);
+      if(pinnedUser) {
+         datas.map((data) =>{
+            if(pinnedUser.id === data.id){
+               setPinnedUser(data)
+            }
+         })
+      }
    }, [publisher, subcribers]);
+
    function setParticipant(parti) {
       if (parti.id === publisher.id) {
          setPublisher({ ...parti });
@@ -41,7 +50,7 @@ function VideoSection({ session, subcribers, setSubcribers, publisher, setPublis
                   <UserVideo
                      participant={pinnedUser}
                      setParticipant={setParticipant}
-                     isPublisher={publisher === pinnedUser}
+                     isPublisher={publisher.id === pinnedUser.id}
                      setPinnedUser={setPinnedUser}
                      className="w-full"
                   />
@@ -51,13 +60,13 @@ function VideoSection({ session, subcribers, setSubcribers, publisher, setPublis
                <div className="h-full w-[25%] flex flex-wrap items-start justify-between content-start gap-1 overflow-y-scroll">
                   {participants.length !== 0
                      ? participants
-                          .filter((participant) => participant !== pinnedUser)
+                          .filter((participant) => participant.id !== pinnedUser.id)
                           .map((participant) => (
                              <UserVideo
                                 key={participant.id}
                                 setParticipant={setParticipant}
                                 participant={participant}
-                                isPublisher={publisher === participant}
+                                isPublisher={publisher.id === participant.id}
                                 setPinnedUser={setPinnedUser}
                                 className="w-[calc(50%-3px)]"
                              />
@@ -203,6 +212,7 @@ function VideoSection({ session, subcribers, setSubcribers, publisher, setPublis
                className={`border border-gray-300 rounded-lg p-2 bg-red-500`}
                onClick={(e) => {
                   leaveSession();
+                  navigate("..", {relative: "path"})
                }}
             >
                <LogOut className={`stroke-white stroke-[3] ${deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""}`} />
@@ -230,6 +240,8 @@ function VideoSection({ session, subcribers, setSubcribers, publisher, setPublis
                className={`border border-gray-300 rounded-lg p-2 ${isCamEnable ? "bg-green-600" : "bg-gray-400"}`}
                onClick={(e) => {
                   setIsCamEnable(!isCamEnable);
+                  publisher.isVideo = !isCamEnable
+                  setPublisher({...publisher})
                   publisher.streamManager.publishVideo(!isCamEnable);
                }}
             >

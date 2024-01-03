@@ -5,7 +5,7 @@ import NotificationDetailEmpty from "./NotificationDetailEmpty";
 import { useEffect, useState } from "react";
 import { getWorkspace } from "../../api";
 import { useParams } from "react-router-dom";
-
+import { Toaster } from "@/components/ui/toaster"
 export default function () {
    const [notification, setNotification] = useState(null);
    const [forceLoad, setForceLoad] = useState({});
@@ -17,6 +17,7 @@ export default function () {
          }
          <NotificationList setNotification={setNotification} forceLoad={forceLoad} setForceLoad={setForceLoad} />
          {notification ? <NotificationDetail notification={notification} setNotification={setNotification} setForceLoad={setForceLoad} /> : <NotificationDetailEmpty />}
+         <Toaster />
       </div>
    );
 }
