@@ -1,0 +1,13 @@
+.item {
+    background: transparent;
+    border: 1px solid transparent;
+    display: block;
+    margin: 0;
+    padding: 0.2rem 0.4rem;
+    text-align: left;
+    width: 100%;
+}
+.item.is-selected {
+    background: rgb(18,100,163);
+    color: #fff;
+}

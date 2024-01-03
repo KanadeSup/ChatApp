@@ -8,5 +8,6 @@ export default async function (cid) {
       },
    })
    const data = await res.json()
+   console.log(data)
    return data
 }

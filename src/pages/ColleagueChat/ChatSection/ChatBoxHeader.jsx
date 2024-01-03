@@ -8,6 +8,7 @@ import {
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { getShortDate } from "../../../utils/getShortDate";
 
 export default function ChatBoxHeader(props) {
     const [user, setUser] = useState(null);
@@ -34,31 +35,35 @@ export default function ChatBoxHeader(props) {
                         </p>
                     </div>
                 </HoverCardTrigger>
-                <HoverCardContent className="flex flex-col gap-2 items-center">
-                    <Avatar className="h-16 w-16">
+                <HoverCardContent className="flex flex-col gap-3 items-center">
+                    <Avatar className="h-16 mt-3 w-16">
                         <AvatarImage src={user?.picture} alt="@shadcn" />
                         <AvatarFallback className="bg-gray-300 p-1">
                             <User2 />
                         </AvatarFallback>
                     </Avatar>
-                    <span className="text-lg font-bold">
+                    <span className="text-[17px] font-bold">
                         {user?.firstName +
                             " " +
                             (user?.lastName ? user.lastName : "")}
                     </span>
-                    <div className="w-full border border-slate-300"></div>
+                    <div className="w-full border border-slate-400"></div>
                     <div className="grid w-full gap-1">
+                        <div className="flex items-center justify-start space-x-2 text-sm">
+                            <span className="w-14">Email:</span>
+                            <span className="underline">{user?.email}</span>
+                        </div>
                         <div className="flex items-center justify-start space-x-2 text-sm">
                             <span className="w-14">Phone:</span>
                             <span>{user?.phone}</span>
                         </div>
                         <div className="flex items-center justify-start space-x-2 text-sm">
-                            <span className="w-14">Email:</span>
-                            <span>{user?.email}</span>
-                        </div>
-                        <div className="flex items-center justify-start space-x-2 text-sm">
                             <span className="w-14">Gender:</span>
                             <span>{user?.gender ? "Male" : "female"}</span>
+                        </div>
+                        <div className="flex items-center justify-start space-x-2 text-sm">
+                            <span className="w-14">BirthDay:</span>
+                            <span>{getShortDate(user?.birthDay)}</span>
                         </div>
                     </div>
                 </HoverCardContent>
