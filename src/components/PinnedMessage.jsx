@@ -18,10 +18,8 @@ export default function PinnedMessage(props) {
       return new Date(a.sendAt) - new Date(b.sendAt);
     });
     props.setMessages(data);
-    console.log(props.setJump);
     props.setJump(props.message.id);
     console.log("data jump:", data);
-    console.log("data nhan:", props.message);
   }
 
   return (
@@ -98,7 +96,7 @@ export default function PinnedMessage(props) {
             {props.message.files.length > 0 && (
               <div>
                 {props.message.files.map((file) => (
-                  <div className="flex relative items-center mt-2 border rounded-xl p-2">
+                  <div key={file.id} className="flex relative items-center mt-2 border rounded-xl p-2">
                     <img src={imgFile(file.name, file.url)} className="w-8 h-8 mr-2" />
                     <span className="text-sm text-gray-700 truncate font-semibold">
                       {file.name}

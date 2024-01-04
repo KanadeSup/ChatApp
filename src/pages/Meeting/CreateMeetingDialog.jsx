@@ -69,7 +69,7 @@ function CreateMeetingDialog({ children, loadData, editData, loadMeeting}) {
    const [open, setOpen] = useState();
    return (
       <Dialog open={open} onOpenChange={setOpen} asChild>
-         <DialogTrigger>{children}</DialogTrigger>
+         <DialogTrigger asChild>{children}</DialogTrigger>
          <DialogContent className="w-auto max-w-[1000px] min-w-[800px]">
             <DialogHeader>
                <DialogTitle> Create new meeting </DialogTitle>
