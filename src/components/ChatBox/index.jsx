@@ -375,7 +375,7 @@ const ChatBox = React.forwardRef((props) => {
                         <>
                             <div className="absolute z-20 w-2 h-2 right-2.5 bottom-9 bg-black transform rotate-45"></div>
                             <div className="absolute flex items-center justify-center h-6 text-xs w-32 -top-9 -left-5 rounded-sm bg-black text-white">
-                                Upload file {`(<30mb)`}
+                                Upload file {`(<30MB)`}
                             </div>
                         </>
                     )}

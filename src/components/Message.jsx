@@ -9,6 +9,14 @@ import {
     Trash2,
     Pencil,
 } from "lucide-react";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ChatBoxEdit from "@/components/ChatBoxEdit";
 import { BsFillPinAngleFill } from "react-icons/bs";
@@ -18,8 +26,14 @@ import ViewLinkPreview from "./ViewLinkPreview";
 import { getShortDatetimeSendAt } from "../utils/getShortDatetimeSendAt";
 import FileList from "./FileList";
 import HoverInformation from "./HoverInformation";
+import { AiOutlineVideoCamera } from "react-icons/ai";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import convertTime from "../utils/convertTime";
+import { Separator } from "@/components/ui/separator"
 import parse, { domToReact } from "html-react-parser";
-
+import checkTime from "../utils/checkTime";
+import { useParams, useNavigate } from "react-router-dom";
 
 function handleContent(content) {
     const doc = new DOMParser().parseFromString(content, "text/html");
@@ -29,6 +43,8 @@ function handleContent(content) {
     });
     return doc.body.innerHTML;
 }
+
+
 
 export default function Message(props) {
     const [showEmoij, setShowEmoij] = useState(false);
@@ -41,7 +57,44 @@ export default function Message(props) {
     const [isHoverViewReply, setIsHoverViewReply] = useState(false);
     const refContent = useRef(null);
     const [links, setLinks] = useState([]);
+    const [dataMeeting, setDataMeeting] = useState("");
+    const { workspaceId } = useParams();
+    const navigate = useNavigate();
 
+    useEffect(() => {
+        if (props.message.type === 1) {
+            let data = JSON.parse(props.message.data);
+            if (typeof data === "string") {
+                data = JSON.parse(data);
+            } else {
+            }
+            console.log("data Meetingkkk: ", data);
+            setDataMeeting(data);
+        }
+    }, [props.message.data]);
+
+    function displayBadgeByTimeMeeting() {
+        if(!dataMeeting) return "";
+        if (checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 1) {
+            return "bg-[rgb(25,142,97)]";
+        }
+        if (props.message.type === 1 && checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 2) {
+            return "bg-[rgb(230,80,80)]";
+        }
+        return "bg-[rgb(254,249,236)]";
+    }
+
+    function displayBackgroundMessageByTimeMeeting() {
+        if(props.message.isPined) return "bg-[rgb(254,249,236)]";
+        if(props.message.type === 0) return "hover:bg-slate-50";
+        if (checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 1) {
+            return "bg-[rgb(227,255,243)]";
+        }
+        if (checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 2) {
+            return "bg-[rgb(255,236,236)]";
+        }
+        return "hover:bg-slate-50";
+    }
     // Thêm hover khi có @mention
     // const options = {
     //     replace: (domNode) => {
@@ -77,6 +130,13 @@ export default function Message(props) {
         setLinks(links);
     }, [props.message.content]);
 
+    if (props.message.type === 2) {
+        return (
+            <div className="w-full py-1 text-center text-gray-500">
+                {props.message.content}
+            </div>
+        );
+    }
     return (
         <div
             id={props.id}
@@ -84,14 +144,7 @@ export default function Message(props) {
             onMouseLeave={() => setShowEmoij(false)}
         >
             <div
-                className={
-                    style.messageDiv +
-                    ` flex flex-col  rounded-md ${
-                        props.message.isPined
-                            ? "bg-[rgb(254,249,236)]"
-                            : "hover:bg-slate-50"
-                    }`
-                }
+                className={style.messageDiv + " flex flex-col rounded-md " + displayBackgroundMessageByTimeMeeting()}
             >
                 {props.message.isPined && (
                     <div className="pt-1 mx-9 flex gap-2 items-center">
@@ -101,30 +154,49 @@ export default function Message(props) {
                         </span>
                     </div>
                 )}
+
                 {/* body tin nhắn */}
                 <div
                     className="flex w-full rounded-md p-2"
                     style={{ fontFamily: "'Roboto', Arial, sans-serif" }}
                 >
                     <div className="flex-shrink-0 mr-2">
-                        <HoverInformation
-                            name={props.message.senderName}
-                            avatar={props.message.senderAvatar}
-                            idUser={props.message.senderId}
-                        >
-                            <Avatar>
-                                <AvatarImage src={props.message.senderAvatar} />
-                                <AvatarFallback className="bg-gray-300">
-                                    <User2 />
-                                </AvatarFallback>
-                            </Avatar>
-                        </HoverInformation>
+                        {props.message.type === 1 ? (
+                            <div className={displayBadgeByTimeMeeting() + " rounded-sm h-10 w-10 flex items-center justify-center"}>
+                                <AiOutlineVideoCamera className="text-white w-6 h-6" />
+                            </div>
+                        ) : (
+                            <HoverInformation
+                                name={props.message.senderName}
+                                avatar={props.message.senderAvatar}
+                                idUser={props.message.senderId}
+                            >
+                                <Avatar>
+                                    <AvatarImage
+                                        src={props.message.senderAvatar}
+                                    />
+                                    <AvatarFallback className="bg-gray-300">
+                                        <User2 />
+                                    </AvatarFallback>
+                                </Avatar>
+                            </HoverInformation>
+                        )}
                     </div>
 
                     <div className="relative bottom-1 w-full max-w-[calc(100vw-28rem)]">
                         <div className="flex items-baseline min-w-[200px]">
                             <span className="font-bold font-sans text-sm cursor-pointer">
-                                {props.message.senderName}
+                                {props.message.type === 1 ? (
+                                    <>
+                                        A meeting is started by{" "}
+                                        {props.message.senderName}{" "}
+                                        <Badge className={displayBadgeByTimeMeeting() + " hover:bg-[rgb(20,130,85)]"}>
+                                            {checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 1 ? "Happening" : checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 2 ? "End" : "Early"}
+                                        </Badge>
+                                    </>
+                                ) : (
+                                    props.message.senderName
+                                )}
                             </span>
                             <span className="text-gray-500 flex gap-2 font-medium text-xs ml-2 cursor-default">
                                 {getShortDatetimeSendAt(props.message.sendAt)}
@@ -142,7 +214,12 @@ export default function Message(props) {
                                 {/* Hiển thị nội dung tin nhắn */}
                                 <div
                                     ref={refContent}
-                                    className="text-[15px] font-sans mt-1 leading-snug w-full break-words min-w-[300px]"
+                                    className={
+                                        "text-[15px] font-sans mt-1 leading-snug w-full break-words min-w-[300px]" +
+                                        (props.message.type === 1
+                                            ? "text-gray-500"
+                                            : "")
+                                    }
                                     dangerouslySetInnerHTML={{
                                         __html: props.message.content,
                                     }}
@@ -158,6 +235,45 @@ export default function Message(props) {
                                 )}
                             </>
                         )}
+                        {/*-- Data meeting --*/}
+                        {props.message.type === 1 && (
+                            <Card className="w-[350px] my-2">
+                                <CardTitle className="text-base text-center py-1">Meeting information</CardTitle>
+                                <Separator className="w-full" />
+                                <CardContent>
+                                    <div className="grid grid-cols-7 w-full items-center text-sm mt-1">
+                                        <div className="col-span-2 grid grid-rows-4">
+                                            <span >Session ID:</span>
+                                            <span>Password:</span>
+                                            <span>Time start:</span>
+                                            <span>Time end:</span>
+                                        </div>
+                                        <div className="col-span-5 grid grid-rows-4">
+                                            <span>{dataMeeting.SessionId}</span>
+                                            <span>{dataMeeting.Password}</span>
+                                            <span>{convertTime(dataMeeting?.TimeStart)}</span>
+                                            <span>{convertTime(dataMeeting?.TimeEnd)}</span>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+                        {/*--Join meeting--*/}
+                        {props.message.type === 1 && checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd)===1 && (
+                            <Button
+                                variant="outline"
+                                className="border border-[rgb(25,142,97)]"
+                                onClick={() => { navigate(`/Workspace/${workspaceId}/Meeting/${dataMeeting.Id}/room`) }}
+                            >
+                                <div className="bg-[rgb(25,142,97)] w-7 h-7 mr-1 rounded-sm flex items-center justify-center">
+                                    <AiOutlineVideoCamera className="w-4 h-4 text-white" />
+                                </div>{" "}
+                                <span className="font-semibold">
+                                    Join meeting
+                                </span>
+                            </Button>
+                        )}
+
                         {/*-- Files --*/}
                         {props.message.files?.length > 0 && (
                             <div>
@@ -177,26 +293,6 @@ export default function Message(props) {
 
                                 {isOpenFile && (
                                     <div className="flex flex-row flex-wrap gap-2 mt-1">
-                                        {/* {props.message.files.map((file, index) => (
-                      <FileCard
-                        key={index}
-                        file={file}
-                        allowDeletion={
-                          props.message.senderId ===
-                          localStorage.getItem("userId")
-                        }
-                        DeleteFile={(fileId) => {
-                          if (
-                            refContent.current.textContent === "" &&
-                            props.message.files.length === 1
-                          ) {
-                            props.DeleteMessage(props.message.id);
-                            return;
-                          }
-                          props.DeleteFile(fileId);
-                        }}
-                      />
-                    ))} */}
                                         <FileList
                                             files={props.message.files}
                                             allowDeletion={

@@ -8,6 +8,7 @@ import { MeetingRoom } from "../pages/Meeting/MeetingRoom";
 const RoomLoader = async ({ params }) =>{
    const { meetingId, workspaceId } = params
    const meetingRes  = await getMeetingById(meetingId)
+   console.log("meeting res:", meetingRes)
    if(!meetingRes.ok) return redirect(`/Workspace/${workspaceId}/Meeting`)
    const meeting = meetingRes.data
    const tokenRes = await joinMeeting(meeting.sessionId, meeting.password)

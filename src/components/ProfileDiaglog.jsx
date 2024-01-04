@@ -1,5 +1,4 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Children } from "react";
 import { Label } from "@/components/ui/label";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,7 +28,7 @@ export default function ProfileDialog({ children, member }) {
                <Label> Full name </Label>
                <span> : </span>
                <p>
-                  {member.lastName} {member.firstName}{" "}
+                  {member.firstName}{" "}{member.lastName}
                </p>
 
                <Label> Gender </Label>
@@ -42,7 +41,7 @@ export default function ProfileDialog({ children, member }) {
 
                <Label> Birthday </Label>
                <span> : </span>
-               <p> {convertDate(member.birthDay)} </p>
+               <p> {member?.birthDay ? convertDate(member.birthDay) : ""} </p>
             </div>
          </DialogContent>
       </Dialog>
