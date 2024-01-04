@@ -6,7 +6,6 @@ export default function (props) {
     <div className="flex flex-col bg-white w-full shadow gap-1">
       <ReplyHeader setIsClickedReply={props.setIsClickedReply} />
       <ReplyBox
-        key={props.message.id}
         setIsClickedReply={props.setIsClickedReply}
         message={props.message}
         setMessage={props.setMessage}

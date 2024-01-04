@@ -41,7 +41,6 @@ export default function ChannelList({ fetcher, name, avatar, setChannelName }) {
       }
       async function fetchData() {
          const data = await getChannelList(workspaceId, channelId);
-         console.log(data)
          setChannelList(data)
          if (!channelId && data.length > 0) {
             navigate(`/Workspace/${workspaceId}/${data[0].id}`)
@@ -66,7 +65,7 @@ export default function ChannelList({ fetcher, name, avatar, setChannelName }) {
             channelList
             .sort((a,b)=>a.name > b.name)
             .map((channel)=>(
-               <ChannelItem key={channel.id} name={channel.name} cid={channel.id} setChannelName={setChannelName}/>
+               <ChannelItem key={channel.id} name={channel.name} category={channel.category} cid={channel.id} setChannelName={setChannelName}/>
             ))
          }
          {

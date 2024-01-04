@@ -34,7 +34,6 @@ export default function ChannelChatBoxContent(props) {
     const [isNewMessage, setIsNewMessage] = useState(false);
     const [messagesChild, setMessagesChild] = useState([]); // Lưu lại tin nhắn con của tin nhắn đang được reply
     const [pinMessages, setPinMessages] = useState([]); // Lưu lại tin nhắn pin của channel
-    const [membersChannel, setMembersChannel] = useState([]); // Lưu lại danh sách thành viên trong channel
     // const {jumpId} = useJump()
     const [jumpId, setJumpId] = useState(null);
     const scrollDivRef = useRef();
@@ -44,8 +43,6 @@ export default function ChannelChatBoxContent(props) {
         setMessageParent,
         isClickedReply,
         setIsClickedReply,
-        isClickedChannelUtility,
-        setIsClickedChannelUtility,
     } = useChannelStore();
 
     // //Kết nối với hub
@@ -123,6 +120,7 @@ export default function ChannelChatBoxContent(props) {
         const now = new Date(timeFirst);
         const timeCursor = encodeURIComponent(now.toISOString());
         const data = await getMessages(channelId, 6, timeCursor);
+        console.log("data in fetch more data:", data);
 
         if (data.length === 0) {
             return 0;

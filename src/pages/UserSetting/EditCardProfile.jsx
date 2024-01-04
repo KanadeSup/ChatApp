@@ -170,6 +170,7 @@ export default function ({ user, isUpdate, setIsUpdate, setUser }) {
                     <span> : </span>
                     <Input
                         defaultValue={firstName}
+                        maxLength={12}
                         onChange={(e) => setFirstName(e.target.value)}
                     />
 
@@ -177,6 +178,7 @@ export default function ({ user, isUpdate, setIsUpdate, setUser }) {
                     <span> : </span>
                     <Input
                         defaultValue={lastName}
+                        maxLength={12}
                         onChange={(e) => setLastName(e.target.value)}
                     />
 
