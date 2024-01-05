@@ -6,41 +6,37 @@ import { useEffect, useRef, useState } from "react";
 import OneSignal from "react-onesignal";
 import config from "/appconfig.js";
 import { Toaster } from "@/components/ui/toaster";
-import useHubStore from "@/storages/useHubStore";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 
 const App = function () {
-    const { hub, setHub } = useHubStore();
 
     // Kết nối với hub
-    useEffect(() => {
-        // check access token is valid or not expired
-        if (!localStorage.getItem("token")) {
-            setHub(null);
-            return;
-        }
-        async function connect() {
-            const connection = new HubConnectionBuilder()
-                .withUrl(`https://api.firar.live/chatHub`, {
-                    accessTokenFactory: () => {
-                        return localStorage.getItem("token");
-                    },
-                })
-                .withAutomaticReconnect()
-                .configureLogging(LogLevel.Information)
-                .build();
-            try {
-                await connection.start();
-                console.log("connect success");
-                console.log("connectionqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq", connection);
-                setHub(connection);
-            } catch (e) {
-                console.log("error", e);
-            }
-        }
-        connect();
-    }, []);
+    // useEffect(() => {
+    //     // check access token is valid or not expired
+    //     if (!localStorage.getItem("token")) {
+    //         setHub(null);
+    //         return;
+    //     }
+    //     async function connect() {
+    //         const connection = new HubConnectionBuilder()
+    //             .withUrl(`https://api.firar.live/chatHub`, {
+    //                 accessTokenFactory: () => {
+    //                     return localStorage.getItem("token");
+    //                 },
+    //             })
+    //             .withAutomaticReconnect()
+    //             .configureLogging(LogLevel.Information)
+    //             .build();
+    //         try {
+    //             await connection.start();
+    //             console.log("connectionqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq", connection);
+    //             setHub(connection);
+    //         } catch (e) {
+    //             console.log("error", e);
+    //         }
+    //     }
+    //     connect();
+    // }, []);
 
     useEffect(() => {
         try {
