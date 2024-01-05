@@ -57,7 +57,7 @@ export default function Files(props) {
 
   useEffect(() => {
     async function getFilesChannel() {
-      const result = await getFiles(props.conversationId, 0, 10, true);
+      const result = await getFiles(props.conversationId, 0, 10, 2, true);
       setFiles(result);
       console.log(result);
     }
@@ -81,7 +81,7 @@ export default function Files(props) {
             d="M5 12h14M5 12l6-6m-6 6l6 6"
           ></path>
         </svg>
-        <span className="ml-2 text-sm">Media, Files, Links</span>
+        <span className="ml-2 text-sm">Media, Files</span>
       </div>
       <div className="flex flex-row justify-evenly py-2 font-medium text-gray-600 text-sm">
         <div
@@ -93,12 +93,12 @@ export default function Files(props) {
         <div className="cursor-pointer px-2 py-1 border-b-2 border-gray-600">
           Files
         </div>
-        <div
+        {/* <div
           className="cursor-pointer px-2 py-1 rounded-md hover:bg-gray-200 transition-all duration-500"
           onClick={() => props.setSelectedOption("links")}
         >
           Links
-        </div>
+        </div> */}
       </div>
       {/* Files */}
       <div
