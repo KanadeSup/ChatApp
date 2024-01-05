@@ -204,7 +204,9 @@ export default function ChannelChatBoxContent(props) {
                 });
             });
             return () => {
-                hub.off("receive_message");
+                if (hub) {
+                    hub.off("receive_message");
+                }
             };
         } else {
             console.error("Hub is not connected");
@@ -270,7 +272,9 @@ export default function ChannelChatBoxContent(props) {
                 //setIsNewMessage(true);
             });
             return () => {
-                hub.off("update_message");
+                if (hub) {
+                    hub.off("update_message");
+                }
             };
         } else {
             console.error("Hub is not connected");
@@ -324,7 +328,9 @@ export default function ChannelChatBoxContent(props) {
                 }
                 //setIsNewMessage(true);
                 return () => {
-                    hub.off("delete_message");
+                    if (hub) {
+                        hub.off("delete_message");
+                    }
                 };
             });
         } else {
@@ -339,7 +345,9 @@ export default function ChannelChatBoxContent(props) {
                 console.log("error", error);
             });
             return () => {
-                hub.off("error");
+                if (hub) {
+                    hub.off("error");
+                }
             };
         }
     }, [hub, channelId]);
