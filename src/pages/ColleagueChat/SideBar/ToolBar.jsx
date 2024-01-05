@@ -9,7 +9,7 @@ export default function ToolbarIconComponent(props) {
     <div className="flex h-14 rounded-b-md border-gray-300 justify-end items-center bg-gray-50 border-b">
       <div className="mx-4 font-semibold text-lg w-full">Colleague chat</div>
       {/* Filter */}
-      <div
+      {/* <div
         className="cursor-pointer relative"
         onMouseEnter={() => setIsHoveredFilter(true)}
         onMouseLeave={() => setIsHoveredFilter(false)}
@@ -40,7 +40,7 @@ export default function ToolbarIconComponent(props) {
             </div>
           </>
         )}
-      </div>
+      </div> */}
 
       {/* New Chat */}
       <div

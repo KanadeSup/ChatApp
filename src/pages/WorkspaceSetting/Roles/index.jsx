@@ -17,7 +17,7 @@ export default function() {
    return (
       <div className="space-y-5 w-[800px]">
          <div>
-            <h1 className="text-lg font-medium"> Role & Permisson </h1>
+            <h1 className="text-lg font-medium"> Role & Permission </h1>
             <p className="text-muted-foreground text-sm"> Manage workspace roles and its permission</p>
          </div>
          <Separator />

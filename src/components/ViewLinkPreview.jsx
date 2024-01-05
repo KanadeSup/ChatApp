@@ -46,7 +46,7 @@ export default function ViewLinkPreview({ url, className }) {
         <div className="flex flex-col justify-between">
           <p className="font-semibold font-sans text-sm">{dataPreview?.title}</p>
           <p className="text-gray-500 font-sans text-sm">{dataPreview?.description}</p>
-          <p className="text-bold-blue font-semibold font-sans text-sm">
+          <p className="text-bold-blue font-semibold font-sans text-sm truncate">
             {dataPreview?.domain ? dataPreview?.domain : dataPreview?.url}
           </p>
         </div>

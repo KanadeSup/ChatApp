@@ -17,6 +17,13 @@ export default async function changePassowrd (currentPassword, newPassword, otp)
             ok: true
         }
     }
+    if (res.status === 400) {
+        return {
+            data: "Password is incorrect",
+            status: res.status,
+            ok: false
+        }
+    }
     const data = await res.json();
     return {
         data: data,
