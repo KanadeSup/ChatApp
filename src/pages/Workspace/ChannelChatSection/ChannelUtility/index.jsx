@@ -12,7 +12,7 @@ export default function (props) {
       {selectedOption === "" && <ChannelOption setSelectedOption={setSelectedOption} setIsClickedChannelUtility={props.setIsClickedChannelUtility} />}
       {selectedOption === "pinnedMessageList" && <PinnedMessageList setJump={props.setJump} setSelectedOption={setSelectedOption} conversationId={props.conversationId} isChannel={props.isChannel} setPinMessages={props.setPinMessages} pinMessages={props.pinMessages} setMessages={props.setMessages}/>}
       {selectedOption === "allMember" && <AllMember setSelectedOption={setSelectedOption} conversationId={props.conversationId}/>}
-      {selectedOption === "media" && <Media setSelectedOption={setSelectedOption}/>}
+      {selectedOption === "media" && <Media setSelectedOption={setSelectedOption} conversationId={props.conversationId}/>}
       {selectedOption === "files" && <Files setSelectedOption={setSelectedOption} conversationId={props.conversationId}/>}
       {selectedOption === "links" && <Links setSelectedOption={setSelectedOption}/>}
     </div>

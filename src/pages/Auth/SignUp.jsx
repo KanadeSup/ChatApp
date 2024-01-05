@@ -134,7 +134,7 @@ export default function SignUp() {
     async function handleSubmit(e) {
         try {
             setIsLoading(true);
-            const response = await signUp(email, username, password);
+            const response = await signUp(email, username, password, firstName, lastName);
             console.log("response khi ddawng khi: ", response);
             setIsLoading(false);
             if (response.status === 400) {

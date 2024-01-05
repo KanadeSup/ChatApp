@@ -12,7 +12,7 @@ export default async function (sessionId, password) {
          "password": password
       })
    });
-   if (!res.ok) {
+   if (res.status === 404) {
       return {
          data: null,
          status: res.status,

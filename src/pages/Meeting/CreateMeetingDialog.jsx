@@ -23,7 +23,7 @@ import {
    AvatarImage,
  } from "@/components/ui/avatar"
  import { Checkbox } from "@/components/ui/checkbox"
- import { parseISO, addHours, format } from "date-fns";
+ import { parseISO, addHours, format, parse } from "date-fns";
 import updateMeeting from "../../api/meeting/updateMeeting";
 
 
@@ -33,6 +33,21 @@ function convertToISO(dateString, timeString) {
    month -= 1;
    const date = new Date(year, month, day, Number(hour), Number(minute));
    return date.toISOString();
+}
+function getCurrentDate(offset) {
+   const date = new Date()
+   date.setHours(date.getHours() + offset);
+   let year = date.getFullYear();
+   let month = ("0" + (date.getMonth() + 1)).slice(-2); // Months are zero based
+   let day = ("0" + date.getDate()).slice(-2);
+   return `${year}-${month}-${day}`
+}
+function getCurrentTime(offset) {
+   const date = new Date()
+   date.setHours(date.getHours() + offset);
+   let hours = ("0" + date.getHours()).slice(-2);
+   let minutes = ("0" + date.getMinutes()).slice(-2);
+   return `${hours}:${minutes}`
 }
 function compareDate(date1, date2) {
    const [year1, month1, day1] = date1.split("-")
@@ -79,12 +94,11 @@ function CreateMeetingDialog({ children, loadData, editData, loadMeeting}) {
       </Dialog>
    );
 }
-
 function MeetingForm({ setOpen, loadData, editData, loadMeeting }) {
-   const [dateStart, setDateStart] = useState(editData ? iso2Date(editData.timeStart) : "")
-   const [dateEnd, setDateEnd] = useState(editData ? iso2Date(editData.timeEnd) : "")
-   const [timeStart, setTimeStart] = useState(editData ? iso2Time(editData.timeStart) : "")
-   const [timeEnd, setTimeEnd] = useState(editData ? iso2Time(editData.timeEnd) : "")
+   const [dateStart, setDateStart] = useState(editData ? iso2Date(editData.timeStart) : getCurrentDate(0))
+   const [dateEnd, setDateEnd] = useState(editData ? iso2Date(editData.timeEnd) : getCurrentDate(2))
+   const [timeStart, setTimeStart] = useState(editData ? iso2Time(editData.timeStart) : getCurrentTime(0))
+   const [timeEnd, setTimeEnd] = useState(editData ? iso2Time(editData.timeEnd) : getCurrentTime(2))
    const [name, setName] = useState(editData ? editData.name : "")
    const [id, setId] = useState(editData ? editData.sessionId : "")
    const [description, setDescription] = useState(editData ? editData.description : "")
@@ -102,12 +116,16 @@ function MeetingForm({ setOpen, loadData, editData, loadMeeting }) {
    const errorRef = useRef()
    const [selectedMembers, setSelectedMembers] = useState([])
    const [search, setSearch] = useState("")
-
    useEffect(() => {
       async function fetchMemberList() {
          const data = await getMemberList(workspaceId)
          const uid = localStorage.getItem("userId")
          setMemberList(data.filter(member=> member.id !== uid))
+         if(editData) {
+            const seclections = []
+            editData.participants.map(parti => seclections.push(parti.id))
+            setSelectedMembers(seclections)
+         }
       }
       fetchMemberList()
    }, [])
@@ -122,7 +140,6 @@ function MeetingForm({ setOpen, loadData, editData, loadMeeting }) {
          dateEndRef.current.classList.add("border-red-500")
          return
       }
-      console.log(compareTime(timeStartRef.current.value, timeEndRef.current.value) )
       if(compareDate(dateStartRef.current.value, dateEndRef.current.value) === 0
          && compareTime(timeStartRef.current.value, timeEndRef.current.value) === 1
       ){
@@ -169,7 +186,7 @@ function MeetingForm({ setOpen, loadData, editData, loadMeeting }) {
                setOpen(false)
                return
             }
-            if(res.status === "403") {
+            if(res.status === 403) {
                toast({
                   title: (
                      <p className="flex items-center gap-2">
@@ -335,6 +352,7 @@ function MeetingForm({ setOpen, loadData, editData, loadMeeting }) {
                               </span>
                               <Checkbox 
                                  className="ml-auto"
+                                 checked={selectedMembers.includes(member.id)}
                                  onCheckedChange={checked=>{
                                     if(checked) {
                                        selectedMembers.push(member.id)

@@ -27,7 +27,6 @@ export default function() {
    useEffect(()=>{
       async function fetchData() {
          const data = await getChannel(channelId)
-         console.log(data)
          setChannel(data)
          setName(data.name)
          setDescription(data.description)

@@ -12,9 +12,9 @@ export default function ({setIsChatOption, setJump, conversationId, isChannel, s
       {selectedOption === "" && <ColleagueOption setSelectedOption={setSelectedOption} setIsChatOption={setIsChatOption}/>}
       {selectedOption === "pinnedMessageList" && <PinnedMessageList setJump={setJump} setSelectedOption={setSelectedOption} conversationId={conversationId} isChannel={false} setPinMessages={setPinMessages} pinMessages={pinMessages} setMessages={setMessages}/>}
       {selectedOption === "allMember" && <AllMember setSelectedOption={setSelectedOption} conversationId={props.conversationId}/>}
-      {selectedOption === "media" && <Media setSelectedOption={setSelectedOption}/>}
+      {selectedOption === "media" && <Media setSelectedOption={setSelectedOption} conversationId={conversationId}/>}
       {selectedOption === "files" && <Files setSelectedOption={setSelectedOption} conversationId={conversationId}/>}
-      {selectedOption === "links" && <Links setSelectedOption={setSelectedOption}/>}
+      {/* {selectedOption === "links" && <Links setSelectedOption={setSelectedOption}/>} */}
     </div>
   );
 }

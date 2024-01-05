@@ -21,6 +21,9 @@ import Mention from "@tiptap/extension-mention";
 import { ReactRenderer } from "@tiptap/react";
 import tippy from "tippy.js";
 import MentionList from "./MentionList.jsx";
+import CharacterCount from "@tiptap/extension-character-count";
+
+const limit = 4000;
 
 // import suggestion from "./suggestion.js";
 
@@ -97,6 +100,9 @@ const ChatBox = React.forwardRef((props) => {
             },
             protocols: ["http", "https", "mailto", "tel", "ftp"],
             validate: (href) => /^https?:\/\//.test(href),
+        }),
+        CharacterCount.configure({
+            limit,
         }),
     ];
 
@@ -481,6 +487,9 @@ const ChatBox = React.forwardRef((props) => {
                         )}
                     </div>
                 ))}
+            </div>
+            <div className="character-count w-full flex justify-end text-xs">
+                {editor?.storage.characterCount.characters()}/{limit}
             </div>
         </div>
     );
