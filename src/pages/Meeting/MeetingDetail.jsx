@@ -22,7 +22,9 @@ function MeetingDetail() {
          const res = await getMeetingById(meetingId)
          if(!res.ok) return
          setMeeting(res.data)
+         setChannelIdOfMeeting(res.data.channelId)
          console.log(res.data.description)
+         console.log("channel id of meeting: ", res.data.channelId)
       }
       fetchData()
    }, [meetingId, forceLoad])

@@ -7,7 +7,8 @@ import { getMessagesColleague } from "../../../api";
 import useIsNewMessage from "../../../storages/useIsNewMessage";
 import { getUserById } from "../../../api";
 import useColleagueStore from "@/storages/useColleagueStore";
-import useHubStore from "@/storages/useHubStore";
+// import useHubStore from "@/storages/useHubStore";
+import HubContext from "../../../contexts/HubContext";
 import { InfiniteScroll } from "@/components/InfinityScroll";
 import {
   SendMessage,
@@ -22,7 +23,8 @@ import ColleagueUtility from "./ColleagueUtility";
 
 export default function ChatBoxContent() {
   const { conversationId } = useParams();
-  const { hub, setHub } = useHubStore();
+  // const { hub, setHub } = useHubStore();
+  const { hub, setHub } = useContext(HubContext);
   const { messages, setMessages, messagesChild, setMessagesChild } =
     useContext(ColleagueContext);
   const [jumpId, setJumpId] = useState(null);
@@ -304,6 +306,7 @@ export default function ChatBoxContent() {
               message={message}
               setMessage={setMessageParent}
               setIsClickedReply={setIsClickedReply}
+              setIsClickedChannelUtility={setIsChatOption}
               DeleteMessage={(idMessage) =>
                 DeleteMessage(hub, idMessage, setMessages, setIsClickedReply)
               }

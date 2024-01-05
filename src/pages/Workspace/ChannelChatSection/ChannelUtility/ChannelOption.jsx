@@ -29,7 +29,7 @@ export default function ChannelOption(props) {
       >
         <IoPeopleOutline className="w-6 h-6 text-gray-600 " />
         <span className="text-sm ml-3 relative top-0.5 font-medium select-none">
-          All memmber
+          All member
         </span>
       </div>
       {/* Media, files, links */}

@@ -5,16 +5,18 @@ import getConversions from "../../../api/colleague/getConversions";
 import useIsNewMessage from "../../../storages/useIsNewMessage";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import useColleagueStore from "@/storages/useColleagueStore";
-import useHubStore from "@/storages/useHubStore";
+// import useHubStore from "@/storages/useHubStore";
 import ColleagueContext from "../../../contexts/ColleagueContext";
 import audio from "@/assets/bip.mp3";
 import ReadMessage from "../../../utils/hubs/ReadMessage";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import HubContext from "../../../contexts/HubContext";
 
 export default function () {
     const { messages, setMessages, messagesChild, setMessagesChild } =
         useContext(ColleagueContext);
-    const { hub, setHub } = useHubStore();
+    const { hub, setHub } = useContext(HubContext);
+    // const { hub, setHub } = useHubStore();
     const { isNewMessage, setIsNewMessage } = useIsNewMessage();
     const [conversations, setConversations] = useState([]); // Danh sách các cuộc trò chuyện
     const {

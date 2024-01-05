@@ -78,7 +78,7 @@ export default function ChatBoxHeader(props) {
                     strokeWidth={1.5}
                     stroke="currentColor"
                     className="w-6 h-6 mx-5 cursor-pointer text-gray-600 hover:text-black"
-                    onClick={() => props.setIsChatOption(!props.isChatOption)}
+                    onClick={() => {props.setIsChatOption(!props.isChatOption); props.setIsClickedReply(false)}}
                 >
                     <path
                         strokeLinecap="round"
