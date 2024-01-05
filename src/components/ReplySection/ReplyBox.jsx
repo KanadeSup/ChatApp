@@ -20,6 +20,7 @@ export default function ReplyBox(props) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    props.setMessagesChild([]);
     async function fetchData() {
       const data = await getUserById(localStorage.getItem("userId"));
       setUser(data);
@@ -34,11 +35,10 @@ export default function ReplyBox(props) {
       );
       const reversedData = data.reverse();
       props.setMessagesChild(reversedData);
-      console.log("data con:", data);
     }
     fetchMessages();
     fetchData();
-  }, []);
+  }, [props.message.id]);
 
   useEffect(() => {
     chatBoxRef.current.scrollIntoView();
