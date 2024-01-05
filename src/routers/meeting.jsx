@@ -44,21 +44,17 @@ export default [
       )
    },
    {
-      path: "/mobile/:workspaceId/:meetingId/:userId/:token",
-      element: MobileMeetingRedirection
+      path: "/mobilemeeting",
+      loader: ({ params, request })=>{
+         const url = new URL(request.url);
+         const token =  url.searchParams.get("token");
+         const userId =  url.searchParams.get("userId");
+         const workspaceId =  url.searchParams.get("workspaceId");
+         const meetingId =  url.searchParams.get("meetingId");
+         localStorage.setItem("token", token)
+         localStorage.setItem("userId", userId)
+         return redirect(`/Workspace/${workspaceId}/Meeting/${meetingId}/room`)
+      },
+      element: <div/>
    }
 ]
-function MobileMeetingRedirection() {
-   const navigate = useNavigate()
-   const {token, userId, workspaceId, meetingId} = useParams()
-
-   useEffect(()=> {
-      localStorage.setItem("token", token)
-      localStorage.setItem("userId", userId)
-      navigate(`/Workspace/${workspaceId}/Meeting/${meetingId}/room`)
-   },[])
-   return (
-      <div>
-      </div>
-   )
-}
