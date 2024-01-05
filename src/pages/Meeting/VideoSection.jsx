@@ -6,11 +6,12 @@ import {
     MicOff,
     Monitor,
     MonitorPlay,
+    MessageSquare,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { UserVideo } from "./UserVideo";
 import { useNavigate, useParams } from "react-router-dom";
-import ReplySection from "../../components/ReplySection";
+import ChatMeeting from "../../components/ChatMeeting";
 
 function VideoSection({
     shareScreen,
@@ -27,6 +28,7 @@ function VideoSection({
     const [isShareScreen, setIsShareScreen] = useState(false);
     const [participants, setParticipants] = useState([]);
     const [pinnedUser, setPinnedUser] = useState(null);
+    const [isChatMeeting, setIsChatMeeting] = useState(false);
     const { deviceType } = useParams();
     const navigate = useNavigate();
 
@@ -60,7 +62,7 @@ function VideoSection({
         }
     }
     return (
-        <div className="w-full h-screen">
+        <div className="w-full flex flex-row h-screen">
             <div className="w-full h-screen flex flex-col">
                 {/* Pinned layout */}
                 {pinnedUser !== null && !deviceType ? (
@@ -361,9 +363,35 @@ function VideoSection({
                             />
                         )}
                     </button>
+
+                    {/* Chat */}
+                    <button
+                        className={`border border-gray-300 rounded-lg p-2 ${
+                            isChatMeeting ? "bg-green-600" : "bg-gray-400"
+                        }`}
+                        onClick={() => setIsChatMeeting(!isChatMeeting)}
+                    >
+                        {isChatMeeting ? (
+                            <MessageSquare
+                                className={`stroke-white stroke-[2] ${
+                                    deviceType?.toUpperCase() === "MOBILE"
+                                        ? "w-16 h-16"
+                                        : ""
+                                }`}
+                            />
+                        ) : (
+                            <MessageSquare
+                                className={`stroke-black stroke-[2] ${
+                                    deviceType?.toUpperCase() === "MOBILE"
+                                        ? "w-16 h-16"
+                                        : ""
+                                }`}
+                            />
+                        )}
+                    </button>
                 </div>
             </div>
-            {/* <ReplySection /> */}
+            {isChatMeeting ? <ChatMeeting setIsChatMeeting={setIsChatMeeting}/> : null}
         </div>
     );
 }

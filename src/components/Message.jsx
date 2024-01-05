@@ -30,7 +30,7 @@ import { AiOutlineVideoCamera } from "react-icons/ai";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import convertTime from "../utils/convertTime";
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@/components/ui/separator";
 import parse, { domToReact } from "html-react-parser";
 import checkTime from "../utils/checkTime";
 import { useParams, useNavigate } from "react-router-dom";
@@ -43,8 +43,6 @@ function handleContent(content) {
     });
     return doc.body.innerHTML;
 }
-
-
 
 export default function Message(props) {
     const [showEmoij, setShowEmoij] = useState(false);
@@ -74,19 +72,22 @@ export default function Message(props) {
     }, [props.message.data]);
 
     function displayBadgeByTimeMeeting() {
-        if(!dataMeeting) return "";
+        if (!dataMeeting) return "";
         if (checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 1) {
             return "bg-[rgb(25,142,97)]";
         }
-        if (props.message.type === 1 && checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 2) {
+        if (
+            props.message.type === 1 &&
+            checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 2
+        ) {
             return "bg-[rgb(230,80,80)]";
         }
         return "bg-[rgb(254,249,236)]";
     }
 
     function displayBackgroundMessageByTimeMeeting() {
-        if(props.message.isPined) return "bg-[rgb(254,249,236)]";
-        if(props.message.type === 0) return "hover:bg-slate-50";
+        if (props.message.isPined) return "bg-[rgb(254,249,236)]";
+        if (props.message.type === 0) return "hover:bg-slate-50";
         if (checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 1) {
             return "bg-[rgb(227,255,243)]";
         }
@@ -144,7 +145,11 @@ export default function Message(props) {
             onMouseLeave={() => setShowEmoij(false)}
         >
             <div
-                className={style.messageDiv + " flex flex-col rounded-md " + displayBackgroundMessageByTimeMeeting()}
+                className={
+                    style.messageDiv +
+                    " flex flex-col rounded-md " +
+                    displayBackgroundMessageByTimeMeeting()
+                }
             >
                 {props.message.isPined && (
                     <div className="pt-1 mx-9 flex gap-2 items-center">
@@ -162,7 +167,12 @@ export default function Message(props) {
                 >
                     <div className="flex-shrink-0 mr-2">
                         {props.message.type === 1 ? (
-                            <div className={displayBadgeByTimeMeeting() + " rounded-sm h-10 w-10 flex items-center justify-center"}>
+                            <div
+                                className={
+                                    displayBadgeByTimeMeeting() +
+                                    " rounded-sm h-10 w-10 flex items-center justify-center"
+                                }
+                            >
                                 <AiOutlineVideoCamera className="text-white w-6 h-6" />
                             </div>
                         ) : (
@@ -190,8 +200,23 @@ export default function Message(props) {
                                     <>
                                         A meeting is started by{" "}
                                         {props.message.senderName}{" "}
-                                        <Badge className={displayBadgeByTimeMeeting() + " hover:bg-[rgb(20,130,85)]"}>
-                                            {checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 1 ? "Happening" : checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd) === 2 ? "End" : "Early"}
+                                        <Badge
+                                            className={
+                                                displayBadgeByTimeMeeting() +
+                                                " hover:bg-[rgb(20,130,85)]"
+                                            }
+                                        >
+                                            {checkTime(
+                                                dataMeeting.TimeStart,
+                                                dataMeeting.TimeEnd
+                                            ) === 1
+                                                ? "Happening"
+                                                : checkTime(
+                                                      dataMeeting.TimeStart,
+                                                      dataMeeting.TimeEnd
+                                                  ) === 2
+                                                ? "End"
+                                                : "Early"}
                                         </Badge>
                                     </>
                                 ) : (
@@ -238,12 +263,14 @@ export default function Message(props) {
                         {/*-- Data meeting --*/}
                         {props.message.type === 1 && (
                             <Card className="w-[350px] my-2">
-                                <CardTitle className="text-base text-center py-1">Meeting information</CardTitle>
+                                <CardTitle className="text-base text-center py-1">
+                                    Meeting information
+                                </CardTitle>
                                 <Separator className="w-full" />
                                 <CardContent>
                                     <div className="grid grid-cols-7 w-full items-center text-sm mt-1">
                                         <div className="col-span-2 grid grid-rows-4">
-                                            <span >Session ID:</span>
+                                            <span>Session ID:</span>
                                             <span>Password:</span>
                                             <span>Time start:</span>
                                             <span>Time end:</span>
@@ -251,28 +278,44 @@ export default function Message(props) {
                                         <div className="col-span-5 grid grid-rows-4">
                                             <span>{dataMeeting.SessionId}</span>
                                             <span>{dataMeeting.Password}</span>
-                                            <span>{convertTime(dataMeeting?.TimeStart)}</span>
-                                            <span>{convertTime(dataMeeting?.TimeEnd)}</span>
+                                            <span>
+                                                {convertTime(
+                                                    dataMeeting?.TimeStart
+                                                )}
+                                            </span>
+                                            <span>
+                                                {convertTime(
+                                                    dataMeeting?.TimeEnd
+                                                )}
+                                            </span>
                                         </div>
                                     </div>
                                 </CardContent>
                             </Card>
                         )}
                         {/*--Join meeting--*/}
-                        {props.message.type === 1 && checkTime(dataMeeting.TimeStart, dataMeeting.TimeEnd)===1 && (
-                            <Button
-                                variant="outline"
-                                className="border border-[rgb(25,142,97)]"
-                                onClick={() => { navigate(`/Workspace/${workspaceId}/Meeting/${dataMeeting.Id}/room`) }}
-                            >
-                                <div className="bg-[rgb(25,142,97)] w-7 h-7 mr-1 rounded-sm flex items-center justify-center">
-                                    <AiOutlineVideoCamera className="w-4 h-4 text-white" />
-                                </div>{" "}
-                                <span className="font-semibold">
-                                    Join meeting
-                                </span>
-                            </Button>
-                        )}
+                        {props.message.type === 1 &&
+                            checkTime(
+                                dataMeeting.TimeStart,
+                                dataMeeting.TimeEnd
+                            ) === 1 && (
+                                <Button
+                                    variant="outline"
+                                    className="border border-[rgb(25,142,97)]"
+                                    onClick={() => {
+                                        navigate(
+                                            `/Workspace/${workspaceId}/Meeting/${dataMeeting.Id}/room`
+                                        );
+                                    }}
+                                >
+                                    <div className="bg-[rgb(25,142,97)] w-7 h-7 mr-1 rounded-sm flex items-center justify-center">
+                                        <AiOutlineVideoCamera className="w-4 h-4 text-white" />
+                                    </div>{" "}
+                                    <span className="font-semibold">
+                                        Join meeting
+                                    </span>
+                                </Button>
+                            )}
 
                         {/*-- Files --*/}
                         {props.message.files?.length > 0 && (
@@ -453,7 +496,7 @@ export default function Message(props) {
                             <>
                                 <div className="absolute z-20 w-2 h-2 right-2.5 bottom-9 bg-black transform rotate-45"></div>
 
-                                <div className="absolute flex justify-center items-center w-24 h-6 z-20 bottom-10 -right-10 bg-black text-white text-xs rounded-md">
+                                <div className="absolute flex justify-center items-center w-24 h-6 z-20 bottom-10 -right-8 bg-black text-white text-xs rounded-md">
                                     <span>Edit message</span>
                                 </div>
                             </>
@@ -462,31 +505,33 @@ export default function Message(props) {
                 )}
 
                 {/* Reply */}
-                <div
-                    className="hover:bg-gray-100 p-1.5"
-                    onClick={() => {
-                        props.setIsClickedReply(true);
-                        props.setMessage(props.message);
-                        localStorage.setItem("idMessage", props.message.id);
-                        if (props.setIsClickedChannelUtility) {
-                            props.setIsClickedChannelUtility(false);
-                        }
-                    }}
-                    onMouseEnter={() => setIsHoveredReply(true)}
-                    onMouseLeave={() => setIsHoveredReply(false)}
-                >
-                    <Reply className="w-4 h-4 text-gray-600" />
+                {props.isMeeting ? null : (
+                    <div
+                        className="hover:bg-gray-100 p-1.5"
+                        onClick={() => {
+                            props.setIsClickedReply(true);
+                            props.setMessage(props.message);
+                            localStorage.setItem("idMessage", props.message.id);
+                            if (props.setIsClickedChannelUtility) {
+                                props.setIsClickedChannelUtility(false);
+                            }
+                        }}
+                        onMouseEnter={() => setIsHoveredReply(true)}
+                        onMouseLeave={() => setIsHoveredReply(false)}
+                    >
+                        <Reply className="w-4 h-4 text-gray-600" />
 
-                    {isHoveredReply && (
-                        <>
-                            <div className="absolute z-20 w-2 h-2 right-10 bottom-9 bg-black transform rotate-45"></div>
+                        {isHoveredReply && (
+                            <>
+                                <div className="absolute z-20 w-2 h-2 right-10 bottom-9 bg-black transform rotate-45"></div>
 
-                            <div className="absolute flex justify-center items-center w-24 h-6 z-20 bottom-10 right-0 bg-black text-white text-xs rounded-md">
-                                <span>Reply message</span>
-                            </div>
-                        </>
-                    )}
-                </div>
+                                <div className="absolute flex justify-center items-center w-24 h-6 z-20 bottom-10 right-0 bg-black text-white text-xs rounded-md">
+                                    <span>Reply message</span>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )}
 
                 {/* Delete */}
                 {props.message.senderId === localStorage.getItem("userId") && (

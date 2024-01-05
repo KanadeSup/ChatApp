@@ -12,7 +12,7 @@ export function ValidateUsername(inputText) {
     return (
         String(inputText)
             .toLowerCase()
-            .match(/^[a-zA-Z0-9]{5,12}$/)
+            .match(/^[a-zA-Z0-9]{5,20}$/)
     );
 }
 
@@ -21,5 +21,13 @@ export function ValidatePassword(inputText) {
         String(inputText)
             .toLowerCase()
             .match(/^[a-zA-Z0-9!@#$%^&*]{6,20}$/)
+    );
+}
+
+export function ValidateName(inputText) {
+    return (
+        String(inputText)
+            .toLowerCase()
+            .match(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,12}$/)
     );
 }

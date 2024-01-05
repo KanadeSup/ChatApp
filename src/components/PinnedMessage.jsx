@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import convertTime from "../utils/convertTime";
-import useHubStore from "../storages/useHubStore";
+// import useHubStore from "../storages/useHubStore";
+import HubContext from "../contexts/HubContext";
 import useJump from "../storages/useJump";
 import { PinMessage } from "../utils/hubs";
 import { getMessageJump } from "../api";
@@ -9,7 +10,8 @@ import { typeFile, imgFile } from "../utils/supportImgFile";
 
 export default function PinnedMessage(props) {
   const [isHoverUnpin, setIsHoverUnpin] = useState(false);
-  const { hub } = useHubStore();
+  // const { hub } = useHubStore();
+  const { hub } = useContext(HubContext);
   const { setJumpId } = useJump();
   async function fetchData() {
     const data = await getMessageJump(props.message.id);

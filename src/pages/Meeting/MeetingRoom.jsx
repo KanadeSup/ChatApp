@@ -1,6 +1,6 @@
 import { OpenVidu } from "openvidu-browser";
 import { useEffect, useRef, useState } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import useInfo from "/storages/useInfo";
 import { Camera, Loader2, Mic, User2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,8 +8,13 @@ import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserById } from "/api";
 import { VideoSection } from "./VideoSection";
+import getMeetingById from "../../api/meeting/getMeetingById"
+import useChannelIdOfMeeting from "../../storages/useChannelIdOfMeeting";
+
 function MeetingRoom() {
    const { token, meeting } = useLoaderData();
+   const { meetingId } = useParams();
+   console.log("token", token)
    const [session, setSession] = useState(null);
    const [subcribers, setSubcribers] = useState([]);
    const [publisher, setPublisher] = useState(null);
@@ -23,6 +28,7 @@ function MeetingRoom() {
    const loaderRef = useRef();
    const navigate = useNavigate();
    const sessionRef = useRef();
+   const { setChannelIdOfMeeting } = useChannelIdOfMeeting();
    function leaveSession() {
       if (sessionRef.current) {
          sessionRef.current.disconnect();
@@ -49,6 +55,15 @@ function MeetingRoom() {
       }
       fetchUser();
    }, [user]);
+
+   useEffect(() => {
+      async function fetchData() {
+         const res = await getMeetingById(meetingId)
+         if(!res.ok) return;
+         setChannelIdOfMeeting(res.data.channelId)
+      }
+      fetchData()
+   }, [meetingId])
    
    async function shareScreen(isShare) {
       if(isShare){

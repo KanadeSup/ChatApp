@@ -4,10 +4,9 @@ import ChatBoxContent from "./ChatBoxContent";
 import useColleagueStore from "@/storages/useColleagueStore";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-
 export default function () {
   const { conversationId } = useParams();
-  const { isNewChat, setIsNewChat, isChatOption, setIsChatOption } = useColleagueStore();
+  const { isNewChat, setIsNewChat, isChatOption, setIsChatOption, setIsClickedReply  } = useColleagueStore();
   useEffect(() => {
     setIsNewChat(false);
     setIsChatOption(false);
@@ -23,6 +22,7 @@ export default function () {
           conversationId={conversationId}
           isChatOption={isChatOption}
           setIsChatOption={setIsChatOption}
+          setIsClickedReply={setIsClickedReply}
         />
       )}
 
