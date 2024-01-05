@@ -158,7 +158,9 @@ export default function ChatBoxContent() {
         }
         setIsNewMessage(true);
         return () => {
-          hub.off("update_message");
+          if (hub) {
+            hub.off("update_message");
+          }
         };
       });
     } else {
@@ -212,7 +214,9 @@ export default function ChatBoxContent() {
         }
         //setIsNewMessage(true);
         return () => {
-          hub.off("delete_message");
+          if (hub) {
+            hub.off("delete_message");
+          }
         };
       });
     } else {
@@ -225,7 +229,7 @@ export default function ChatBoxContent() {
     if (hub) {
       hub.off("receive_emoji");
       hub.on("receive_emoji", (emoji) => {
-        console.log("emoji", emoji);
+        console.log("da nhan emoji", emoji);
         setMessages((messages) =>
           messages.map((message) =>
             message.id === emoji.messageId
@@ -235,7 +239,9 @@ export default function ChatBoxContent() {
         );
       });
       return () => {
-        hub.off("receive_emoji");
+        if (hub) {
+          hub.off("receive_emoji");
+        }
       };
     } else {
       console.error("Hub is not connected");
@@ -250,7 +256,9 @@ export default function ChatBoxContent() {
         console.log("error", error);
       });
       return () => {
-        hub.off("error");
+        if (hub) {
+          hub.off("error");
+        }
       };
     }
   }, [hub]);
