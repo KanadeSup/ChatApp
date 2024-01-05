@@ -30,7 +30,7 @@ export default [
       ],
    },
    {
-      path: "/Workspace/:workspaceId/Meeting/:meetingId/Room",
+      path: "/:deviceType?/Workspace/:workspaceId/Meeting/:meetingId/Room/",
       loader: RoomLoader,
       element: <MeetingRoom />
    }

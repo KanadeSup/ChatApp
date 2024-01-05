@@ -140,7 +140,7 @@ function VideoSection({
                <div className="flex flex-col h-full min-h-0 min-w-0">
                   <div
                      className={`flex overflow-x-auto 
-                     ${subcribers.length > 3 ? "h-[50%]" : ""}
+                     ${subcribers.length > 3 ? "h-[50px]" : ""}
                   `}
                   >
                      {subcribers.slice(2).map((sub) => (
@@ -182,7 +182,7 @@ function VideoSection({
                   {/* Sub section */}
                   <div
                      className={`flex overflow-x-auto 
-                     ${subcribers.length > 3 ? "h-[50%]" : ""}
+                     ${subcribers.length > 3 ? " h-[50%]" : ""}
                   `}
                   >
                      {participants
