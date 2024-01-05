@@ -35,7 +35,7 @@ export default [
    {
       path: "login",
       element: <Login />,
-      // loader: loginLoader,
+      loader: loginLoader,
    },
    {
       path: "signup",

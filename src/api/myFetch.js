@@ -32,6 +32,10 @@ export default async function ({ path, params = "", method = "GET", headers = {}
       //    localStorage.setItem("refreshTokenTimeOut", data.refreshTokenTimeOut)
       //    return await fetch(`${config.apiURL}/${path}?${params}`, request)
       // }
+      localStorage.removeItem("token")
+      localStorage.removeItem("tokenTimeOut")
+      localStorage.removeItem("refreshToken")
+      localStorage.removeItem("refreshTokenTimeOut")
 
       OneSignal.logout()
       location.href = "/Login";
