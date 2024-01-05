@@ -22,7 +22,7 @@ function UserVideo({ setParticipant, participant, isPublisher, setPinnedUser,  c
          {
             participant?.isVideo === false ? (
                <div className="absolute w-full h-full flex items-center justify-center z-10 bg-gray-900">
-                  <div className="flex flex-col items-center h-[50%] aspect-square ">
+                  <div className={`flex flex-col items-center aspect-square ${deviceType?.toUpperCase() === "MOBILE"? "w-[30%]" : "h-[50%]"}`}>
                      <Avatar className="w-full h-full rounded-full ">
                         <AvatarImage className="w-full h-full" src={participant.avatar} />
                         <AvatarFallback className="w-full">

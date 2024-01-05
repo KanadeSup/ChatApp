@@ -140,7 +140,7 @@ function VideoSection({
                <div className="flex flex-col h-full min-h-0 min-w-0">
                   <div
                      className={`flex overflow-x-auto 
-                     ${subcribers.length > 3 ? "h-[800px]" : ""}
+                     ${subcribers.length > 2 ? " h-[40%]" : ""}
                   `}
                   >
                      {subcribers.slice(2).map((sub) => (
@@ -345,8 +345,11 @@ function VideoSection({
                </button>
             </div>
          </div>
-         {isChatMeeting ? (
-               <ChatMeeting setIsChatMeeting={setIsChatMeeting} />
+         {isChatMeeting && deviceType?.toUpperCase() !== "MOBILE" ? (
+            <ChatMeeting setIsChatMeeting={setIsChatMeeting} />
+         ) : null}
+         {isChatMeeting && deviceType?.toUpperCase() === "MOBILE" ? (
+            <ChatMeeting setIsChatMeeting={setIsChatMeeting} />
          ) : null}
       </div>
    );

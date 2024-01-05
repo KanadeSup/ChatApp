@@ -19,6 +19,7 @@ import {
 import useChannelIdOfMeeting from "../../storages/useChannelIdOfMeeting";
 import { Separator } from "@/components/ui/separator";
 import { X } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 export default function ChatMeeting({setIsChatMeeting}) {
     const { hub, setHub } = useContext(HubContext);
@@ -314,20 +315,23 @@ export default function ChatMeeting({setIsChatMeeting}) {
         });
     }, [forceScroll]);
 
+    const {deviceType} = useParams()
     return (
         <div
             style={{
                 boxShadow:
                     "rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px",
             }}
-            className="relative 2xl:w-[600px] flex flex-col my-2 mr-2 justify-end border rounded-xl"
+            className={` 2xl:w-[600px] flex flex-col  mr-2 justify-start border bg-white 
+                ${deviceType?.toUpperCase() === "MOBILE" ? " absolute left-0 top-0 w-full h-full z-50 mb-2": "relative rounded-xl my-2"}
+            `}
         >
             <div className="flex items-center justify-between h-full max-h-10 mx-3 bg-white">
                 <span className="font-bold text-gray-800 flex justify-between w-full">Meeting Chat <X className="cursor-pointer text-gray-700 p-0.5" onClick={() => setIsChatMeeting(false)}/></span>
             </div>
             <Separator />
 
-            <div className="flex flex-col bg-white h-[calc(89vh)] 2xl:h-[94%] mb-2">
+            <div className="flex flex-col bg-white h-full mb-2">
                 <InfiniteScroll
                     getMore={fetchMoreData}
                     invokeHeight={5}
