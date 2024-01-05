@@ -8,13 +8,13 @@ import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserById } from "/api";
 import { VideoSection } from "./VideoSection";
-import getMeetingById from "../../api/meeting/getMeetingById"
+import getMeetingById from "../../api/meeting/getMeetingById";
 import useChannelIdOfMeeting from "../../storages/useChannelIdOfMeeting";
 
 function MeetingRoom() {
    const { token, meeting } = useLoaderData();
-   const { meetingId } = useParams();
-   console.log("token", token)
+   const { meetingId, deviceType } = useParams();
+   console.log("token", token);
    const [session, setSession] = useState(null);
    const [subcribers, setSubcribers] = useState([]);
    const [publisher, setPublisher] = useState(null);
@@ -58,16 +58,16 @@ function MeetingRoom() {
 
    useEffect(() => {
       async function fetchData() {
-         const res = await getMeetingById(meetingId)
-         if(!res.ok) return;
-         setChannelIdOfMeeting(res.data.channelId)
+         const res = await getMeetingById(meetingId);
+         if (!res.ok) return;
+         setChannelIdOfMeeting(res.data.channelId);
       }
-      fetchData()
-   }, [meetingId])
-   
+      fetchData();
+   }, [meetingId]);
+
    async function shareScreen(isShare) {
-      if(isShare){
-         if(screenManager === null) {
+      if (isShare) {
+         if (screenManager === null) {
             const pub = await ov.initPublisherAsync(undefined, {
                audioSource: undefined, // The source of audio. If undefined default microphone
                videoSource: "screen", // The source of video. If undefined default webcam
@@ -78,25 +78,24 @@ function MeetingRoom() {
                insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
                mirror: false, // Whether to mirror your local video or not
             });
-            setScreenManager(pub)
-            await session.unpublish(publisher.streamManager)
+            setScreenManager(pub);
+            await session.unpublish(publisher.streamManager);
             session.publish(pub);
-            publisher.streamManager = pub
-            setPublisher({...publisher})
-         }
-         else {
-            await session.unpublish(publisher.streamManager)
-            publisher.streamManager = screenManager
-            setPublisher({...publisher})
+            publisher.streamManager = pub;
+            setPublisher({ ...publisher });
+         } else {
+            await session.unpublish(publisher.streamManager);
+            publisher.streamManager = screenManager;
+            setPublisher({ ...publisher });
             await session.publish(screenManager);
          }
       } else {
-         if(publisher.streamManager === classicManager) return
+         if (publisher.streamManager === classicManager) return;
          try {
-            await session.unpublish(publisher.streamManager)
-         }  finally {
-            publisher.streamManager = classicManager
-            setPublisher({...publisher})
+            await session.unpublish(publisher.streamManager);
+         } finally {
+            publisher.streamManager = classicManager;
+            setPublisher({ ...publisher });
             await session.publish(classicManager);
          }
       }
@@ -154,7 +153,7 @@ function MeetingRoom() {
          setSubcribers([...subcribers]);
       });
       session.on("exception", (e) => {
-         console.log("errorrrr", e)
+         console.log("errorrrr", e);
       });
       await session.connect(token, {
          name: user.username,
@@ -181,8 +180,7 @@ function MeetingRoom() {
          avatar: user.picture,
       });
       setSession(session);
-      setClassicManager(publisher)
-
+      setClassicManager(publisher);
    }
    if (!user)
       return (
@@ -198,36 +196,37 @@ function MeetingRoom() {
                   className="absolute right-5 top-5 w-10 h-10 p-2 border-2 border-gray-600 stroke-gray-600 rounded-full stroke-[3] cursor-pointer"
                   onClick={(e) => navigate("..", { relative: "path" })}
                />
-               <div className="text-lg text-gray-600 mb-5 flex flex-col gap-3 items-center">
-                  Choose your video and audio setting before join the meeting
-                  <h1 className="text-black text-2xl font-bold"> {meeting.name} </h1>
-               </div>
-               <div className="py-10 px-40 rounded-lg flex flex-col items-center justify-center border border-gray-300">
-                  <Avatar className="w-40 h-40 ">
-                     <AvatarImage src={user.picture} alt="@shadcn" className="w-40 h-40" />
-                     <AvatarFallback className="w-40 h-40">
-                        {" "}
-                        <User2 />{" "}
-                     </AvatarFallback>
-                  </Avatar>
-                  <Button
-                     className="px-10 font-semibold mt-5"
-                     ref={joinRef}
-                     onClick={(e) => {
-                        initialize();
-                     }}
-                  >
-                     <Loader2 ref={loaderRef} className="w-4 h-4 mr-2 animate-spin hidden" />
-                     Join now
-                  </Button>
-                  <div className="flex items-center gap-20 mt-5">
-                     <div className="flex gap-2 items-center">
-                        <Camera className="stroke-gray-500" />
-                        <Switch checked={isCamEnable} onCheckedChange={(check) => setIsCamEnable(check)} />
-                     </div>
-                     <div className="flex gap-2 items-center">
-                        <Mic className="stroke-gray-500" />
-                        <Switch checked={isMicEnable} onCheckedChange={(check) => setIsMicEnable(check)} />
+               <div className={`${deviceType?.toUpperCase() === "MOBILE" ? "scale-[1.5]":""}`}>
+                  <div className="text-lg text-gray-600 mb-5 flex flex-col gap-3 items-center">
+                     Choose your video and audio setting before join the meeting
+                     <h1 className="text-black text-2xl font-bold"> {meeting.name} </h1>
+                  </div>
+                  <div className="py-10 px-40 rounded-lg flex flex-col items-center justify-center border border-gray-300">
+                     <Avatar className="w-40 h-40 ">
+                        <AvatarImage src={user.picture} alt="@shadcn" className="w-40 h-40" />
+                        <AvatarFallback className="w-40 h-40">
+                           <User2 />
+                        </AvatarFallback>
+                     </Avatar>
+                     <Button
+                        className="px-10 font-semibold mt-5"
+                        ref={joinRef}
+                        onClick={(e) => {
+                           initialize();
+                        }}
+                     >
+                        <Loader2 ref={loaderRef} className="w-4 h-4 mr-2 animate-spin hidden" />
+                        Join now
+                     </Button>
+                     <div className="flex items-center gap-20 mt-5">
+                        <div className="flex gap-2 items-center">
+                           <Camera className="stroke-gray-500" />
+                           <Switch checked={isCamEnable} onCheckedChange={(check) => setIsCamEnable(check)} />
+                        </div>
+                        <div className="flex gap-2 items-center">
+                           <Mic className="stroke-gray-500" />
+                           <Switch checked={isMicEnable} onCheckedChange={(check) => setIsMicEnable(check)} />
+                        </div>
                      </div>
                   </div>
                </div>

@@ -140,7 +140,7 @@ function VideoSection({
                <div className="flex flex-col h-full min-h-0 min-w-0">
                   <div
                      className={`flex overflow-x-auto 
-                     ${subcribers.length > 3 ? "h-[50px]" : ""}
+                     ${subcribers.length > 3 ? "h-[800px]" : ""}
                   `}
                   >
                      {subcribers.slice(2).map((sub) => (
@@ -291,7 +291,10 @@ function VideoSection({
 
                {/* Share screen */}
                <button
-                  className={`border border-gray-300 rounded-lg p-2 ${isShareScreen ? "bg-green-600" : "bg-gray-400"}`}
+                  className={`border border-gray-300 rounded-lg p-2 
+                     ${isShareScreen ? "bg-green-600" : "bg-gray-400"}
+                     ${deviceType?.toUpperCase() === "MOBILE" ? " hidden": ""}
+                  `}
                   onClick={async (e) => {
                      if (isCamEnable) {
                         setIsCamEnable(false);

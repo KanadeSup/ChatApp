@@ -33,5 +33,13 @@ export default [
       path: "/:deviceType?/Workspace/:workspaceId/Meeting/:meetingId/Room/",
       loader: RoomLoader,
       element: <MeetingRoom />
+   },
+   {
+      path: "/:deviceType?/Workspace/:workspaceId/Meeting/:meetingId/",
+      element: (
+         <div className="h-screen w-full flex items-center justify-center">
+            <span className="font-bold text-xl scale-[2]"> You has leave the meeting </span>
+         </div>
+      )
    }
 ]
