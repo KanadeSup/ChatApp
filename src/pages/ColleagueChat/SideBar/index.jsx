@@ -146,7 +146,9 @@ export default function () {
                 });
             });
             return () => {
-                hub.off("receive_message");
+                if (hub) {
+                    hub.off("receive_message");
+                }
             };
         } else {
             console.error("Hub is not connected");
