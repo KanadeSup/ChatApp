@@ -391,7 +391,7 @@ function VideoSection({
                     </button>
                 </div>
             </div>
-            {isChatMeeting ? <ChatMeeting /> : null}
+            {isChatMeeting ? <ChatMeeting setIsChatMeeting={setIsChatMeeting}/> : null}
         </div>
     );
 }
