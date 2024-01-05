@@ -196,7 +196,7 @@ function MeetingRoom() {
                   className="absolute right-5 top-5 w-10 h-10 p-2 border-2 border-gray-600 stroke-gray-600 rounded-full stroke-[3] cursor-pointer"
                   onClick={(e) => navigate("..", { relative: "path" })}
                />
-               <div className={`${deviceType?.toUpperCase() === "MOBILE" ? "scale-[1.5]":""}`}>
+               <div className={`${deviceType?.toUpperCase() === "MOBILE" ? "scale-[0.6]":""}`}>
                   <div className="text-lg text-gray-600 mb-5 flex flex-col gap-3 items-center">
                      Choose your video and audio setting before join the meeting
                      <h1 className="text-black text-2xl font-bold"> {meeting.name} </h1>

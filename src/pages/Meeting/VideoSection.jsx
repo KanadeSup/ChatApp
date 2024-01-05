@@ -182,7 +182,7 @@ function VideoSection({
                   {/* Sub section */}
                   <div
                      className={`flex overflow-x-auto 
-                     ${subcribers.length > 3 ? " h-[50%]" : ""}
+                     ${subcribers.length > 3 ? " h-[20%]" : ""}
                   `}
                   >
                      {participants
@@ -226,7 +226,7 @@ function VideoSection({
                   }}
                >
                   <LogOut
-                     className={`stroke-white stroke-[3] ${deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""}`}
+                     className={`stroke-white stroke-[3] ${deviceType?.toUpperCase() === "MOBILE" ? "" : ""}`}
                   />
                </button>
 
@@ -243,13 +243,13 @@ function VideoSection({
                   {isMicEnable ? (
                      <Mic
                         className={`stroke-white stroke-[2] ${
-                           deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""
+                           deviceType?.toUpperCase() === "MOBILE" ? "" : ""
                         }`}
                      />
                   ) : (
                      <MicOff
                         className={`stroke-black stroke-[2] ${
-                           deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""
+                           deviceType?.toUpperCase() === "MOBILE" ? "" : ""
                         }`}
                      />
                   )}
@@ -277,13 +277,13 @@ function VideoSection({
                   {isCamEnable ? (
                      <Camera
                         className={`stroke-white stroke-[2] ${
-                           deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""
+                           deviceType?.toUpperCase() === "MOBILE" ? "" : ""
                         }`}
                      />
                   ) : (
                      <CameraOff
                         className={`stroke-black stroke-[2] ${
-                           deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""
+                           deviceType?.toUpperCase() === "MOBILE" ? "" : ""
                         }`}
                      />
                   )}
@@ -312,13 +312,13 @@ function VideoSection({
                   {isShareScreen ? (
                      <MonitorPlay
                         className={`stroke-white stroke-[2] ${
-                           deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""
+                           deviceType?.toUpperCase() === "MOBILE" ? "" : ""
                         }`}
                      />
                   ) : (
                      <MonitorPlay
                         className={`stroke-black stroke-[2] ${
-                           deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""
+                           deviceType?.toUpperCase() === "MOBILE" ? "" : ""
                         }`}
                      />
                   )}
@@ -332,23 +332,20 @@ function VideoSection({
                   {isChatMeeting ? (
                      <MessageSquare
                         className={`stroke-white stroke-[2] ${
-                           deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""
+                           deviceType?.toUpperCase() === "MOBILE" ? "" : ""
                         }`}
                      />
                   ) : (
                      <MessageSquare
                         className={`stroke-black stroke-[2] ${
-                           deviceType?.toUpperCase() === "MOBILE" ? "w-16 h-16" : ""
+                           deviceType?.toUpperCase() === "MOBILE" ? "" : ""
                         }`}
                      />
                   )}
                </button>
             </div>
          </div>
-         {isChatMeeting && deviceType?.toUpperCase() !== "MOBILE" ? (
-            <ChatMeeting setIsChatMeeting={setIsChatMeeting} />
-         ) : null}
-         {isChatMeeting && deviceType?.toUpperCase() === "MOBILE" ? (
+         {isChatMeeting ? (
             <ChatMeeting setIsChatMeeting={setIsChatMeeting} />
          ) : null}
       </div>

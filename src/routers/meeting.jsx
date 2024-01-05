@@ -1,9 +1,10 @@
-import { redirect } from "react-router-dom";
+import { redirect, useNavigate, useParams } from "react-router-dom";
 import joinMeeting from "../api/meeting/joinMeeting";
 import Meeting from "../pages/Meeting";
 import { MeetingDetail } from "../pages/Meeting/MeetingDetail";
 import getMeetingById from "/api/meeting/getMeetingById"
 import { MeetingRoom } from "../pages/Meeting/MeetingRoom";
+import { useEffect } from "react";
 
 const RoomLoader = async ({ params }) =>{
    const { meetingId, workspaceId } = params
@@ -38,8 +39,26 @@ export default [
       path: "/:deviceType?/Workspace/:workspaceId/Meeting/:meetingId/",
       element: (
          <div className="h-screen w-full flex items-center justify-center">
-            <span className="font-bold text-xl scale-[2]"> You has leave the meeting </span>
+            <span className="font-bold text-xl"> You has leave the meeting </span>
          </div>
       )
+   },
+   {
+      path: "/mobile/:workspaceId/:meetingId/:userId/:token",
+      element: MobileMeetingRedirection
    }
 ]
+function MobileMeetingRedirection() {
+   const navigate = useNavigate()
+   const {token, userId, workspaceId, meetingId} = useParams()
+
+   useEffect(()=> {
+      localStorage.setItem("token", token)
+      localStorage.setItem("userId", userId)
+      navigate(`/Workspace/${workspaceId}/Meeting/${meetingId}/room`)
+   },[])
+   return (
+      <div>
+      </div>
+   )
+}
