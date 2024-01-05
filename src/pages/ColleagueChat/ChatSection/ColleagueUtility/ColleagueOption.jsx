@@ -49,19 +49,19 @@ export default function ChannelOption({setIsChatOption, setSelectedOption}) {
           ></path>
         </svg>
         <span className="text-sm ml-3 relative top-0.5 font-medium select-none">
-          Media, files, links
+          Media, files
         </span>
       </div>
       {/* Assets */}
       {showAssets && <Assets setSelectedOption={setSelectedOption}/>}
 
       {/* Ban chat */}
-      <div className="flex flex-row pl-5 py-2 cursor-pointer group text-gray-600 hover:bg-slate-100">
+      {/* <div className="flex flex-row pl-5 py-2 cursor-pointer group text-gray-600 hover:bg-slate-100">
         <Ban className="w-5 h-5 text-gray-600"/>
         <span className="text-sm ml-3 relative font-medium select-none">
           Block
         </span>
-      </div>
+      </div> */}
     </>
   );
 }

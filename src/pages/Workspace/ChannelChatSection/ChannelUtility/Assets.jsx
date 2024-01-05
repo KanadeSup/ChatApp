@@ -40,7 +40,7 @@ export default function Assets(props) {
         </span>
       </div>
       {/* Links */}
-      <div
+      {/* <div
         className="flex flex-row pl-9 py-2 cursor-pointer group text-gray-600 hover:bg-slate-100"
         onClick={() => props.setSelectedOption("links")}
       >
@@ -58,7 +58,7 @@ export default function Assets(props) {
         <span className="text-sm ml-3 relative top-0.5 font-medium select-none">
           Links
         </span>
-      </div>
+      </div> */}
     </div>
   );
 }

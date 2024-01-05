@@ -2,7 +2,7 @@ import appconfig from "../../appconfig";
 import myFetch from "../myFetch";
 const apikey = appconfig.apiKey
 
-export default async (email, username, password) => {
+export default async (email, username, password, firstName, lastName) => {
     try {
         const response = await myFetch({
             path: "Auth/signup",
@@ -16,8 +16,8 @@ export default async (email, username, password) => {
                 "Email": email,
                 "Username": username,
                 "Password": password,
-                "FirstName": "string",
-                "LastName": "string",
+                "FirstName": firstName,
+                "LastName": lastName,
                 "Phone": "0123456789",
                 "Gender": true,
                 "BirthDay": "2023-11-09T09:04:28.587Z"
