@@ -118,7 +118,14 @@ function MeetingDetail() {
                </AlertDialogContent>
             </AlertDialog>
          </div>
-         <div className="border border-gray-200 inline-block px-7 pt-5 pb-3 rounded-lg mt-5 max-w-[500px]">
+         <div className="border border-gray-200 inline-block px-7 pb-3 rounded-lg mt-5 max-w-[500px] min-w-[400px]">
+            <div className="font-bold text-lg flex items-center justify-center border-b border-b-black py-1 mb-3">
+               Meeting infomation
+            </div>
+            <div>
+               <span className="text-lg font-semibold"> Meeting id: </span>
+               <span className="text-lg text-gray-500"> {meeting.sessionId} </span>
+            </div>
             {meeting.description !== "" ? (
                <div>
                   <span className="text-lg font-semibold"> Description: </span>
@@ -135,7 +142,7 @@ function MeetingDetail() {
                   <span className="text-lg text-gray-500"> {convertTime(meeting.timeEnd, true)} </span>
                </div>
             </div>
-            <div className="mt-5 flex justify-end items-center">
+            <div className="mt-2 flex justify-end items-center">
                <CreateMeetingDialog editData={meeting} loadData={loadData} loadMeeting={loadMeeting}>
                   <Button variant="link" className="text-md font-bold">
                      Edit
