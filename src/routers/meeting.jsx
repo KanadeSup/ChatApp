@@ -53,7 +53,7 @@ export default [
          const meetingId =  url.searchParams.get("meetingId");
          localStorage.setItem("token", token)
          localStorage.setItem("userId", userId)
-         return redirect(`/Workspace/${workspaceId}/Meeting/${meetingId}/room`)
+         return redirect(`/mobile/Workspace/${workspaceId}/Meeting/${meetingId}/room`)
       },
       element: <div/>
    }
