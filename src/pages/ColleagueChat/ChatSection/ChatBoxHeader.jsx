@@ -70,7 +70,7 @@ export default function ChatBoxHeader(props) {
             </HoverCard>
 
             <div className="flex relative items-center flex-row w-1/2 h-12 justify-end select-none">
-                <Search />
+                {/* <Search /> */}
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

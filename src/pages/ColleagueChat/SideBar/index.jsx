@@ -85,7 +85,7 @@ export default function () {
         if (hub) {
             hub.off("receive_message");
             hub.on("receive_message", (message) => {
-                console.log("message đã nhận: ", message);
+                console.log("message đã nhận: ");
                 setIsNewMessage(true);
                 console.log("conversationId", conversationId);
                 console.log("message.senderId", message.senderId);
