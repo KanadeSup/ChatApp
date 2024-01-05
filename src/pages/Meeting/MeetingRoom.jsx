@@ -88,14 +88,17 @@ function MeetingRoom() {
             await session.unpublish(publisher.streamManager)
             publisher.streamManager = screenManager
             setPublisher({...publisher})
-            session.publish(screenManager);
+            await session.publish(screenManager);
          }
       } else {
          if(publisher.streamManager === classicManager) return
-         await session.unpublish(publisher.streamManager)
-         publisher.streamManager = classicManager
-         setPublisher({...publisher})
-         session.publish(classicManager);
+         try {
+            await session.unpublish(publisher.streamManager)
+         }  finally {
+            publisher.streamManager = classicManager
+            setPublisher({...publisher})
+            await session.publish(classicManager);
+         }
       }
    }
 

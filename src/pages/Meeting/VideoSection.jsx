@@ -258,8 +258,16 @@ function VideoSection({
                {/* Camera */}
                <button
                   className={`border border-gray-300 rounded-lg p-2 ${isCamEnable ? "bg-green-600" : "bg-gray-400"}`}
-                  onClick={(e) => {
-                     if (isShareScreen) return;
+                  onClick={async (e) => {
+                     if (isShareScreen) {
+                        try {
+                           await shareScreen(false);
+                        } finally {
+                           setIsShareScreen(false);
+                           publisher.isVideo = !isCamEnable;
+                           setPublisher({ ...publisher });
+                        }
+                     };
                      setIsCamEnable(!isCamEnable);
                      publisher.isVideo = !isCamEnable || isShareScreen;
                      setPublisher({ ...publisher });
@@ -285,13 +293,17 @@ function VideoSection({
                <button
                   className={`border border-gray-300 rounded-lg p-2 ${isShareScreen ? "bg-green-600" : "bg-gray-400"}`}
                   onClick={async (e) => {
-                     if (isCamEnable) return;
-                     await shareScreen(!isShareScreen);
-                     setIsCamEnable(false);
-                     setIsShareScreen(!isShareScreen);
-                     publisher.isVideo = isCamEnable || !isShareScreen;
-                     setPublisher({ ...publisher });
-                     publisher.streamManager.publishVideo(!isShareScreen);
+                     if (isCamEnable) {
+                        setIsCamEnable(false);
+                     }
+                     try {
+                        await shareScreen(!isShareScreen);
+                        publisher.streamManager.publishVideo(!isShareScreen);
+                     } finally {
+                        setIsShareScreen(!isShareScreen);
+                        publisher.isVideo = isCamEnable || !isShareScreen;
+                        setPublisher({ ...publisher });
+                     }
                   }}
                >
                   {isShareScreen ? (
