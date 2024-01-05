@@ -3,8 +3,8 @@ import ReplyBox from "./ReplyBox";
 
 export default function (props) {
   return (
-    <div className="flex flex-col bg-white w-full shadow gap-1">
-      <ReplyHeader setIsClickedReply={props.setIsClickedReply} />
+    <div className={"flex flex-col bg-white w-full shadow gap-1 " + props.className}>
+      <ReplyHeader setIsClickedReply={props.setIsClickedReply} className={props.className} />
       <ReplyBox
         setIsClickedReply={props.setIsClickedReply}
         message={props.message}
