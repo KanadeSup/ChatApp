@@ -142,7 +142,7 @@ function MeetingDetail() {
                   </Button>
                </CreateMeetingDialog>
 
-               {isBeforeCurrentDate(meeting.timeStart) && !isBeforeCurrentDate(meeting.timeEnd) ? (
+               {true ? (
                   <button
                      className="px-3 font-semibold bg-black text-white text-md rounded flex items-center"
                      onClick={async (e) => {
