@@ -72,6 +72,7 @@ export default function ChatMeeting({setIsChatMeeting}) {
     // //Kết nối với hub
     useEffect(() => {
         // check access token is valid or not expired
+        console.log("hub laf: ", hub)
         if (!localStorage.getItem("token")) {
             setHub(null);
             return;
