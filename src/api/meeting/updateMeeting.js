@@ -1,5 +1,6 @@
 import myFetch from '../myFetch'
 export default async function (wid, cid, mid, name, password, description, start, end, members) {
+   console.log(mid, members)
    const res = await myFetch({
       path: `Meeting/update/${mid}`,
       method: "PUT",

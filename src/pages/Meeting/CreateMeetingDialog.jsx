@@ -122,7 +122,6 @@ function MeetingForm({ setOpen, loadData, editData, loadMeeting }) {
          dateEndRef.current.classList.add("border-red-500")
          return
       }
-      console.log(compareTime(timeStartRef.current.value, timeEndRef.current.value) )
       if(compareDate(dateStartRef.current.value, dateEndRef.current.value) === 0
          && compareTime(timeStartRef.current.value, timeEndRef.current.value) === 1
       ){

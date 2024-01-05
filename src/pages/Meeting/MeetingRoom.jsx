@@ -10,7 +10,6 @@ import { getUserById } from "/api";
 import { VideoSection } from "./VideoSection";
 function MeetingRoom() {
    const { token, meeting } = useLoaderData();
-   console.log("token", token)
    const [session, setSession] = useState(null);
    const [subcribers, setSubcribers] = useState([]);
    const [publisher, setPublisher] = useState(null);
