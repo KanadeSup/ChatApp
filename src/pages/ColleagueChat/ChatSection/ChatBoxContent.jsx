@@ -297,7 +297,7 @@ export default function ChatBoxContent() {
     <div className="flex flex-row">
       <div
         style={{ height: "calc(100vh - 3.5rem)" }}
-        className="flex flex-col w-full"
+        className="flex flex-col w-full min-w-[55%] 2xl:min-w-[60%]"
       >
         <InfiniteScroll
           getMore={fetchMoreData}

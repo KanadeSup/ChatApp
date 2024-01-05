@@ -425,7 +425,7 @@ export default function Message(props) {
                                     </>
                                 ) : (
                                     <div className="text-xs text-gray-500">
-                                        Last reply at 11:10 10/10/2023
+                                        Last reply today
                                     </div>
                                 )}
                             </div>

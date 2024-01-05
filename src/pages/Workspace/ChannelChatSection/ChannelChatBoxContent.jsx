@@ -368,7 +368,7 @@ export default function ChannelChatBoxContent(props) {
         <div className="flex flex-row bg-white">
             <div
                 style={{ height: "calc(100vh - 4rem)" }}
-                className="flex flex-col w-full"
+                className="flex flex-col w-full min-w-[55%] 2xl:min-w-[60%]"
             >
                 <InfiniteScroll
                     getMore={fetchMoreData}

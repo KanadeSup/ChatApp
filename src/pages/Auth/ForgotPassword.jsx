@@ -61,6 +61,7 @@ export default function ForgotPassword() {
                 </div>
                 <input
                   type="text"
+                  maxLength={10}
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
                   onChange={(e) => setOTP(e.target.value)}
                 />
@@ -74,7 +75,8 @@ export default function ForgotPassword() {
                   <i className="mdi mdi-lock text-gray-400 text-lg" />
                 </div>
                 <input
-                  type="text"
+                  type="password"
+                  maxLength={25}
                   className="w-full -ml-10 pl-10 pr-3 py-2 rounded-md border-[1.5px] border-gray-300 outline-none focus:border-indigo-500"
                   onChange={(e) => setPassword(e.target.value)}
                 />

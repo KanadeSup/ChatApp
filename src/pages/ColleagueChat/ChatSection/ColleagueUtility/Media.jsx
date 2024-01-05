@@ -59,7 +59,7 @@ export default function Media(props) {
             {/* Media */}
             <div
                 style={{ height: "calc(100vh - 11rem)" }}
-                className="flex flex-row flex-wrap overflow-y-scroll px-2 mt-5"
+                className="grid grid-cols-2 auto-rows-auto w-full overflow-y-scroll px-2 mt-5"
             >
                 {media === null ? (
                     <div className="text-center w-full">Loading...</div>
@@ -68,9 +68,10 @@ export default function Media(props) {
                 ) : (
                     media?.map((file) => (
                         <img
-                            className="w-1/3 h-1/4 p-1 object-cover"
+                            className=" p-1 w-full object-cover cursor-pointer"
                             src={file.url}
                             alt=""
+                            onClick={() => {window.open(file.url)}}
                         />
                     ))
                 )}

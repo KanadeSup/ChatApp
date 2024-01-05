@@ -205,7 +205,7 @@ export default function () {
                </TabsTrigger>
                <TabsTrigger value="permissions" className="">
                   
-                  Permissons
+                  Permissions
                </TabsTrigger>
                <TabsTrigger value="members" className="">
                   

@@ -157,7 +157,7 @@ export default function() {
          <Tabs defaultValue="display" className="w-[600px] mt-5" activationMode="manual">
             <TabsList className="w-full grid grid-cols-3 mb-7">
                <TabsTrigger value="display" className=""> Display </TabsTrigger>
-               <TabsTrigger value="permissions" className=""> Permissons </TabsTrigger>
+               <TabsTrigger value="permissions" className=""> Permissions </TabsTrigger>
                <TabsTrigger value="members" className=""> Members </TabsTrigger>
             </TabsList>
             <TabsContent value="display" className="space-y-5">
