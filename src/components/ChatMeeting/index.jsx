@@ -168,7 +168,9 @@ export default function ChatMeeting({setIsChatMeeting}) {
             });
         }
         return () => {
-            hub.off("receive_message");
+            if (hub) {
+                hub.off("receive_message");
+            }
         };
     }, [hub]);
 
@@ -220,7 +222,9 @@ export default function ChatMeeting({setIsChatMeeting}) {
             });
         }
         return () => {
-            hub.off("update_message");
+            if (hub) {
+                hub.off("update_message");
+            }
         };
     }, [hub]);
 
@@ -278,7 +282,9 @@ export default function ChatMeeting({setIsChatMeeting}) {
             });
         }
         return () => {
-            hub.off("delete_message");
+            if (hub) {
+                hub.off("delete_message");
+            }
         };
     }, [hub]);
 
@@ -289,7 +295,9 @@ export default function ChatMeeting({setIsChatMeeting}) {
                 console.log("error", error);
             });
             return () => {
-                hub.off("error");
+                if (hub) {
+                    hub.off("error");
+                }
             };
         }
     }, [hub, channelIdOfMeeting]);
