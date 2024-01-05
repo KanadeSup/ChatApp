@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ReplyList from "./ReplyList";
 import MessageReply from "./MessageReply";
 import ChatBox from "/components/ChatBox";
 import useColleagueStore from "@/storages/useColleagueStore";
-import useHubStore from "@/storages/useHubStore";
+// import useHubStore from "@/storages/useHubStore";
+import HubContext from "../../contexts/HubContext";
 import { getUserById } from "@/api";
 import {
   SendMessageReply,
@@ -17,7 +18,8 @@ import { getMessagesColleague } from "../../api";
 
 export default function ReplyBox(props) {
   // const { message, setMessage } = useColleagueStore();
-  const { hub } = useHubStore();
+  // const { hub } = useHubStore();
+  const { hub } = useContext(HubContext);
   const chatBoxRef = useRef(null);
   const [user, setUser] = useState(null);
   // const [messagesChild, setMessagesChild] = useState([]);
