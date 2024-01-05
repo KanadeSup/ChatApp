@@ -155,12 +155,10 @@ export default function ({ user, isUpdate, setIsUpdate, setUser }) {
                         </Label>
                         <div>
                             <h1 className="text-xl font-medium">
-                                {" "}
-                                {lastName} {firstName}{" "}
+                                {firstName} {lastName} 
                             </h1>
                             <h2 className="italic text-md text-muted-foreground">
-                                {" "}
-                                {user.email}{" "}
+                                {user.email}
                             </h2>
                         </div>
                     </div>
@@ -237,8 +235,8 @@ export default function ({ user, isUpdate, setIsUpdate, setUser }) {
                         </Button>
                     ) : (
                         <Button className="w-20" onClick={handleSave}>
-                            {" "}
-                            Save{" "}
+                            
+                            Save
                         </Button>
                     )}
                 </DialogFooter>

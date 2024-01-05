@@ -50,15 +50,6 @@ export default function({ children, fetcher, open, onOpenChange }) {
                      <Hash className="w-5 h-5 stroke-gray-500 absolute left-2 top-[10px]"/>
                   </div>
                </div>
-               <div className="flex justify-between items-center mt-5">
-                  <div>
-                     <h1 className="text-md font-medium"> Private Channel </h1>
-                     <p className="text-sm text-muted-foreground"> 
-                        Members who is added can access this channel
-                     </p>
-                  </div>
-                  <Switch />
-               </div>
                <DialogFooter className="mt-5">
                   <DialogClose 
                      disabled={navigate.state !== "idle"}

@@ -9,7 +9,7 @@ export default async function (wid, cid, id, name, password, description, start,
          "channel-id": cid ? cid : undefined,
       },
       body: JSON.stringify({
-         "id": id,
+         "sessionId": id,
          "name": name.trim(),
          "password": password,
          "description": description,

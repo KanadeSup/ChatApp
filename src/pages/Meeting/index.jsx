@@ -15,7 +15,7 @@ export default function Meeting() {
         async function fetchData() {
             const res = await getMeetings(workspaceId)
             if(!res.ok) return
-            setMeetings(res.data)
+            setMeetings(res.data.filter(meeting=>(meeting.status !== 3)))
         }
         fetchData()
     },[forceLoad])

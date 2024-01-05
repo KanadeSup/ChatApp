@@ -27,7 +27,7 @@ export default function () {
       description: "",
       logo: "",
    });
-
+   console.log("workspace", logo)
    useEffect(() => {
       const fetchData = async () => {
          let data;
@@ -38,7 +38,7 @@ export default function () {
          }
          setName(data.name);
          setDescription(data.description);
-         setLogo(data.avatarUrl);
+         setLogo(data.avatarUrl + `?_=${+ new Date()}`);
          setDefaultValue({
             name: data.name,
             description: data.description,
@@ -126,7 +126,7 @@ export default function () {
                         <label className="cursor-pointer">
                            <Avatar className="w-20 h-20 border border-gray-500 rounded-lg">
                               <AvatarImage src={logo} className="w-20 h-20" />
-                              <AvatarFallback className="w-20 h-20"> {toCharacters(name).trim().toUpperCase()} </AvatarFallback>
+                              <AvatarFallback className="w-20 h-20 font-bold flex items-center justify-center bg-gray-300 text-xl"> {toCharacters(name).trim().toUpperCase()} </AvatarFallback>
                            </Avatar>
                            <input
                               type="file"

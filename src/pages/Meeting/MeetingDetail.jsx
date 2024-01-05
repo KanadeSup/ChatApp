@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import getMeetingById from "../../api/meeting/getMeetingById";
-import { Check, Loader2, Trash, Video } from "lucide-react";
+import { Check, Loader2, Trash, Video, X } from "lucide-react";
 import convertTime from "../../utils/convertTime";
 import { Button } from "@/components/ui/button";
 import joinMeeting from "../../api/meeting/joinMeeting";
@@ -19,14 +19,13 @@ import {
    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import deleteMeeting from "../../api/meeting/deleteMeeting";
-
-
 function MeetingDetail() {
    const loadData = useOutletContext();
    const { meetingId } = useParams();
    const [meeting, setMeeting] = useState();
    const navigate = useNavigate();
    const [forceLoad, setForceLoad] = useState();
+   const [open, setOpen] = useState();
    const {toast} = useToast()
    function loadMeeting() {
       setForceLoad({});
@@ -46,17 +45,13 @@ function MeetingDetail() {
             <Video className="border border-gray-300 rounded p-1 w-7 h-7 stroke-gray-500" />
             <h1 className="text-lg font-bold">{meeting.name}</h1>
             <div>
-               {isBeforeCurrentDate(meeting.timeStart) && !isBeforeCurrentDate(meeting.timeEnd) ? (
+               {meeting.status === 1 ? (
                   <div className="ml-auto text-[10px] font-bold bg-green-600 rounded-full text-white px-[8px] py-[2px]">
                      Live
                   </div>
-               ) : isBeforeCurrentDate(meeting.timeEnd) ? (
-                  <div className="ml-auto text-[10px] font-bold bg-red-600 rounded-full text-white px-[10px] py-[2px]">
-                     End
-                  </div>
                ) : null}
             </div>
-            <AlertDialog>
+            <AlertDialog open={open} onOpenChange={setOpen}>
                <AlertDialogTrigger asChild>
                   <Trash className="ml-auto stroke-red-500 cursor-pointer" />
                </AlertDialogTrigger>
@@ -87,6 +82,18 @@ function MeetingDetail() {
                                  )
                                  
                               })
+                              return
+                           }
+                           if(res.status === 403) {
+                              toast({
+                                 title: (
+                                    <p className="flex items-center"> 
+                                       <X className="stroke-red-500 w-6 h-6 stroke-[3] mr-2"/> 
+                                       You don't have permission to delete meeting
+                                    </p>
+                                 )
+                              })
+                              setOpen(false)
                               return
                            }
                            toast({
