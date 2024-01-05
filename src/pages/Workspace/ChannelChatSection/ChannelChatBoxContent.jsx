@@ -2,12 +2,13 @@ import Message from "../../../components/Message";
 import ChatBox from "/components/ChatBox";
 import ReplySection from "../../../components/ReplySection";
 import ChannelUtility from "./ChannelUtility";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { getMessages } from "../../../api";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { InfiniteScroll } from "@/components/InfinityScroll";
-import useHubStore from "../../../storages/useHubStore";
+// import useHubStore from "../../../storages/useHubStore";
+import HubContext from "../../../contexts/HubContext";
 import {
     SendMessage,
     UpdateMessage,
@@ -27,7 +28,8 @@ import GetMemberList from "../../../api/channel/GetMemberList";
 
 export default function ChannelChatBoxContent(props) {
     const { channelId } = useParams();
-    const { hub, setHub } = useHubStore();
+    // const { hub, setHub } = useHubStore();
+    const { hub, setHub } = useContext(HubContext);
     const [messages, setMessages] = useState([]);
     const [user, setUser] = useState(null);
     const [forceScroll, setForceScroll] = useState({});
@@ -150,6 +152,7 @@ export default function ChannelChatBoxContent(props) {
     useEffect(() => {
         if (hub) {
             hub.off("receive_message");
+            console.log("Day la receive message vs hub la: ", hub);
             hub.on("receive_message", (message) => {
                 //setIsNewMessage(true);
                 console.log("đã chạy receive message");
@@ -328,6 +331,7 @@ export default function ChannelChatBoxContent(props) {
             console.error("Hub is not connected");
         }
     }, [hub, channelId]);
+
     useEffect(() => {
         if (hub) {
             hub.off("error");
@@ -409,7 +413,7 @@ export default function ChannelChatBoxContent(props) {
                             user,
                             scrollToBottom,
                             true,
-                            files,
+                            files
                         )
                     }
                     getMembersChannel={getMembersChannel}

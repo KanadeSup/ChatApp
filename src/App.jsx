@@ -6,9 +6,11 @@ import { useEffect, useRef, useState } from "react";
 import OneSignal from "react-onesignal";
 import config from "/appconfig.js";
 import { Toaster } from "@/components/ui/toaster";
-
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import HubContext from "./contexts/HubContext";
 
 const App = function () {
+    const [hub, setHub] = useState(null);
 
     // Kết nối với hub
     // useEffect(() => {
@@ -18,6 +20,7 @@ const App = function () {
     //         return;
     //     }
     //     async function connect() {
+    //         console.log("Bắt đầu chạy hub");
     //         const connection = new HubConnectionBuilder()
     //             .withUrl(`https://api.firar.live/chatHub`, {
     //                 accessTokenFactory: () => {
@@ -29,7 +32,10 @@ const App = function () {
     //             .build();
     //         try {
     //             await connection.start();
-    //             console.log("connectionqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq", connection);
+    //             console.log(
+    //                 "connectionqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    //                 connection
+    //             );
     //             setHub(connection);
     //         } catch (e) {
     //             console.log("error", e);
@@ -45,13 +51,12 @@ const App = function () {
             console.log("error", e);
         }
     }, []);
-    // const [hub, setHub] = useHubContext();
     return (
         <>
-            {/* //<HubContext.Provider value={[hub, setHub]}> */}
-            <RouterProvider router={router} />
-            <Toaster />
-            {/* //</HubContext.Provider> */}
+            <HubContext.Provider value={{hub, setHub}}>
+                <RouterProvider router={router} />
+                <Toaster />
+            </HubContext.Provider>
         </>
     );
 };
