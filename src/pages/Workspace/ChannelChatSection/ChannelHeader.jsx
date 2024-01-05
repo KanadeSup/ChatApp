@@ -11,8 +11,8 @@ export default function ChannelHeader(props) {
 
          <div className="flex relative items-center flex-row h-12 justify-end select-none">
             <div className="relative">
-               <Input placeholder="search" className="w-[300px]" />
-               <Search className="absolute right-2 top-2 stroke-gray-500" />
+               {/* <Input placeholder="search" className="w-[300px]" /> */}
+               {/* <Search className="absolute right-2 top-2 stroke-gray-500" /> */}
             </div>
             <MoreVertical
                className="w-6 h-6 cursor-pointer mr-4 ml-3"
