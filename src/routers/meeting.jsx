@@ -38,7 +38,7 @@ export default [
       path: "/:deviceType?/Workspace/:workspaceId/Meeting/:meetingId/",
       element: (
          <div className="h-screen w-full flex items-center justify-center">
-            <span className="font-bold text-xl scale-[2]"> You has leave the meeting </span>
+            <span className="font-bold text-xl"> You has leave the meeting </span>
          </div>
       )
    }

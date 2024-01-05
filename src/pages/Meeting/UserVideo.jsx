@@ -42,7 +42,7 @@ function UserVideo({ setParticipant, participant, isPublisher, setPinnedUser,  c
             >
                <MicOff 
                   className={` stroke-red-500 ${participant?.isAudio ? "hidden " : " "}
-                     ${deviceType?.toUpperCase() === "MOBILE" ? "w-10 h-10" : "w-4 h-4"}
+                     ${deviceType?.toUpperCase() === "MOBILE" ? "w-4 h-4" : "w-4 h-4"}
                   `}/>
                {participant?.name} 
             </div> 
@@ -55,7 +55,7 @@ function UserVideo({ setParticipant, participant, isPublisher, setPinnedUser,  c
                      <MicOff 
                         className={`stroke-gray-800 cursor-pointer hover:bg-gray-100 hover:bg-opacity-30 p-1 rounded-full 
                            ${isPublisher ? "hidden " : " "}
-                           ${deviceType?.toUpperCase() === "MOBILE" ? "w-20 h-20" : "w-6 h-6"}
+                           ${deviceType?.toUpperCase() === "MOBILE" ? "w-10 h-10" : "w-6 h-6"}
                         `}
                         onClick={e=>{
                            participant.streamManager.subscribeToAudio(true)
@@ -68,7 +68,7 @@ function UserVideo({ setParticipant, participant, isPublisher, setPinnedUser,  c
                      <Mic 
                         className={` stroke-gray-800 cursor-pointer hover:bg-gray-100 hover:bg-opacity-30 rounded-full 
                            ${isPublisher ? "hidden " : " "}
-                           ${deviceType?.toUpperCase() === "MOBILE" ? "w-20 h-20" : "w-6 h-6"}
+                           ${deviceType?.toUpperCase() === "MOBILE" ? "w-10 h-10" : "w-6 h-6"}
                         `}
                         onClick={e=>{
                            participant.streamManager.subscribeToAudio(false)
@@ -81,7 +81,7 @@ function UserVideo({ setParticipant, participant, isPublisher, setPinnedUser,  c
                }
                <Pin 
                   className={`stroke-gray-800 cursor-pointer hover:bg-gray-100 hover:bg-opacity-30 p-1 rounded-full
-                     ${deviceType?.toUpperCase() === "MOBILE" ? "w-20 h-20" : "w-8 h-8"}
+                     ${deviceType?.toUpperCase() === "MOBILE" ? "w-10 h-10" : "w-8 h-8"}
                   `}
                   onClick={e=>{
                      setPinnedUser(prev=>{

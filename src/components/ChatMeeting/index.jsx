@@ -323,7 +323,7 @@ export default function ChatMeeting({setIsChatMeeting}) {
                     "rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px",
             }}
             className={` 2xl:w-[600px] flex flex-col  mr-2 justify-start border bg-white 
-                ${deviceType?.toUpperCase() === "MOBILE" ? " absolute left-0 top-0 w-full h-full z-50 mb-2": "relative rounded-xl my-2"}
+                ${deviceType?.toUpperCase() === "MOBILE" ? " absolute left-0 top-0 w-full h-full z-50": "relative rounded-xl my-2"}
             `}
         >
             <div className="flex items-center justify-between h-full max-h-10 mx-3 bg-white">
@@ -331,7 +331,7 @@ export default function ChatMeeting({setIsChatMeeting}) {
             </div>
             <Separator />
 
-            <div className="flex flex-col bg-white h-full mb-2">
+            <div className="flex flex-col bg-white h-full overflow-hidden">
                 <InfiniteScroll
                     getMore={fetchMoreData}
                     invokeHeight={5}
