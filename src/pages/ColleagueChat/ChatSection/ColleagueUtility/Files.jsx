@@ -7,7 +7,10 @@ import { typeFile, imgFile } from "../../../../utils/supportImgFile";
 function FileCard({ file }) {
     return (
         <div className="relative">
-            <div className="relative flex flex-row items-center px-4 py-3 select-none cursor-pointer hover:bg-slate-100 w-full" onClick={() => window.open(file.url, "_blank")}>
+            <div
+                className="relative flex flex-row items-center px-4 py-3 select-none cursor-pointer hover:bg-slate-100 w-full"
+                onClick={() => window.open(file.url, "_blank")}
+            >
                 <div className="relative">
                     <img
                         src={imgFile(file.name, file.url)}
@@ -29,18 +32,27 @@ function FileCard({ file }) {
                 </div>
             </div>
             <div className="absolute flex flex-row gap-2 px-2 py-0.5 rounded-sm top-2 right-3 shadow bg-white">
-                <ArrowDownToLine className="h-6 w-6 p-1 text-gray-600 rounded-[1px] hover:bg-gray-200" onClick={() => window.open(file.url, "_blank")}/>
+                <ArrowDownToLine
+                    className="h-6 w-6 p-1 text-gray-600 rounded-[1px] hover:bg-gray-200"
+                    onClick={() => window.open(file.url, "_blank")}
+                />
             </div>
         </div>
     );
 }
 
 export default function Files(props) {
-    const [files, setFiles] = useState([]);
+    const [files, setFiles] = useState(null);
 
     useEffect(() => {
         async function getFilesChannel() {
-            const result = await getFiles(props.conversationId, 0, 10, 2, false);
+            const result = await getFiles(
+                props.conversationId,
+                0,
+                10,
+                2,
+                false
+            );
             setFiles(result);
             console.log(result);
         }
@@ -88,9 +100,13 @@ export default function Files(props) {
                 style={{ height: "calc(100vh - 11rem)" }}
                 className="flex flex-col overflow-y-scroll mt-5"
             >
-                {files.map((file) => (
-                    <FileCard key={file.id} file={file} />
-                ))}
+                {files === null ? (
+                    <div className="text-center w-full">Loading...</div>
+                ) : files?.length === 0 ? (
+                    <div className="text-center w-full">No files</div>
+                ) : (
+                    files.map((file) => <FileCard key={file.id} file={file} />)
+                )}
             </div>
         </>
     );

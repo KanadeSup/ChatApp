@@ -38,7 +38,7 @@ export default function ({ children}) {
     }
     async function handleGetOTP() {
         const res = await getOTP(2, localStorage.getItem("email"));
-        console.log(res);
+        console.log("phan hoi lay otp: ", res);
         if (!res.ok) {
             setError(res.title);
             return;
@@ -118,5 +118,6 @@ export default function ({ children}) {
                 </DialogFooter>
             </DialogContent>
         </Dialog>
+        
     );
 }

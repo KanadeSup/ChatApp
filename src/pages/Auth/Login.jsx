@@ -54,6 +54,7 @@ export default function Login() {
                 setIsLoading(false);
                 return;
             }
+            console.log("response login: ", response);
 
             localStorage.setItem("userId", response.userId);
             localStorage.setItem("token", response.token);
@@ -63,8 +64,8 @@ export default function Login() {
                 "refreshTokenTimeOut",
                 response.refreshTokenTimeOut
             );
+            localStorage.setItem("email", response.email);
             connectHub();
-            localStorage.setItem("email", email);
             loginOneSignal(response.userId);
             navigate("/Workspace");
         } catch (error) {

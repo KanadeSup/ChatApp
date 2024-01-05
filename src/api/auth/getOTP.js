@@ -19,11 +19,18 @@ export default async (otpType, email) => {
         });
         console.log(response);
         if (response.status === 200) {
-            console.log('Phản hồi từ máy chủ là 200.');
-        } else {
-            console.log('Phản hồi từ máy chủ là 400: ');
+            return {
+                data: null,
+                status: response.status,
+                ok: true
+            }
         }
-        return await response.json();
+        const data = await response.json();
+        return {
+            data: data,
+            status: response.status,
+            ok: false
+        }
 
     } catch (error) {
         return error;

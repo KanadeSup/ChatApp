@@ -142,7 +142,7 @@ export default function MessageReply(props) {
           </div>
 
           {/* Pin */}
-          <div
+          {/* <div
             className="relative hover:bg-gray-200 p-1.5"
             onMouseEnter={() => setIsHoveredPin(true)}
             onMouseLeave={() => setIsHoveredPin(false)}
@@ -158,7 +158,7 @@ export default function MessageReply(props) {
                 </div>
               </>
             )}
-          </div>
+          </div> */}
 
           {/* Edit */}
           {props.message.senderId === localStorage.getItem("userId") && (

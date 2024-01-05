@@ -8,7 +8,7 @@ import Links from "./Links";
 export default function ({setIsChatOption, setJump, conversationId, isChannel, setMessages, setPinMessages, pinMessages}) {
   const [selectedOption, setSelectedOption] = useState("");
   return (
-    <div className="flex flex-col w-2/5 flex-shrink-0 border shadow">
+    <div className="flex flex-col w-2/5 2xl:w-1/3 flex-shrink-0 border shadow">
       {selectedOption === "" && <ColleagueOption setSelectedOption={setSelectedOption} setIsChatOption={setIsChatOption}/>}
       {selectedOption === "pinnedMessageList" && <PinnedMessageList setJump={setJump} setSelectedOption={setSelectedOption} conversationId={conversationId} isChannel={false} setPinMessages={setPinMessages} pinMessages={pinMessages} setMessages={setMessages}/>}
       {selectedOption === "allMember" && <AllMember setSelectedOption={setSelectedOption} conversationId={props.conversationId}/>}

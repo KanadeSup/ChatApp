@@ -22,7 +22,7 @@ export default function() {
          to: `/Workspace/${workspaceId}/WorkspaceSetting/Invites`,
       },
       {
-         title: "Permisson & Role",
+         title: "Permission & Role",
          to: `/Workspace/${workspaceId}/WorkspaceSetting/Role`,
       },
    ]

@@ -185,6 +185,7 @@ export default function () {
                         onClick={() => {
                             setIsClickedReply(false);
                             user.isRead = true;
+                            ReadMessage(hub, user.lastMessageId);
                         }}
                     >
                         <FriendMessagePreview
