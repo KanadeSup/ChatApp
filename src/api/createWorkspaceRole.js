@@ -1,6 +1,7 @@
 import myFetch from './myFetch'
 
 export default async (wid, roledata) => {
+   console.log(roledata)
    const res = await myFetch({
       path: `Workspace/${wid}/roles`,
       method: "POST",

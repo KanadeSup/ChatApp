@@ -88,7 +88,6 @@ export default function () {
 
    return (
       <Form
-         method="post"
          onSubmit={async (e) => {
             e.preventDefault();
             const enableList = [];

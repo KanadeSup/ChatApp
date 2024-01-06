@@ -13,4 +13,9 @@ export default async (wid,cid, name, description) => {
          "description": description.trim()
       })
    })
+   return {
+      data: null, 
+      status: res.status,
+      ok: res.ok
+   }
 };
