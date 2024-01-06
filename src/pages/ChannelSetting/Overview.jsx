@@ -9,7 +9,7 @@ import { Avatar } from "@/components/ui/avatar"
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
 import { Suspense, useEffect, useState } from "react"
 import { getChannel, updateChannel } from "/api"
-import { Check, Loader2, RefreshCcw, RefreshCw } from "lucide-react"
+import { Check, Loader2, RefreshCcw, RefreshCw, X } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 
@@ -50,23 +50,47 @@ export default function() {
                document.querySelector(".loader").classList.remove("hidden")
                document.querySelector(".submit-but").setAttribute("disabled","")
                document.querySelector(".reset-but").setAttribute("disabled","")
-               await updateChannel(workspaceId,channelId,name,description)
+               const res = await updateChannel(workspaceId,channelId,name,description)
                document.querySelector(".loader").classList.add("hidden")
                document.querySelector(".submit-but").removeAttribute("disabled")
                document.querySelector(".reset-but").removeAttribute("disabled")
-               setDefaultValue({
-                  name: name.trim(),
-                  description: description.trim()
-               })
+               if(res.ok){
+                  setDefaultValue({
+                     name: name.trim(),
+                     description: description.trim()
+                  })
+                  toast({
+                     duration: 1000,
+                     title: (
+                        <p className="text-green-600 flex items-center">
+                           <Check className="w-6 h-6 stroke-green-600 mr-2"/>
+                           Update successfully!
+                        </p>
+                     )
+                  })
+                  return
+               }
+               if(res.status === 403) {
+                  toast({
+                     duration: 1000,
+                     title: (
+                        <p className="text-red-600 flex items-center">
+                           <X className="w-6 h-6 stroke-red-600 mr-2" />
+                           You don't have permission to do this action
+                        </p>
+                     ),
+                  });
+                  return
+               }
                toast({
                   duration: 1000,
                   title: (
-                     <p className="text-green-600 flex items-center">
-                        <Check className="w-6 h-6 stroke-green-600 mr-2"/>
-                        Update successfully!
+                     <p className="text-red-600 flex items-center">
+                        <X className="w-6 h-6 stroke-red-600 mr-2" />
+                        Something went wrong, please try again
                      </p>
-                  )
-               })
+                  ),
+               });
             }
          }
       >
